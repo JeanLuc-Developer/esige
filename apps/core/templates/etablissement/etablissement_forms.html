@@ -1,5 +1,440 @@
 {% extends "base.html" %}
 {% load static %}
 {% block content %}
-<p>forms etablissement</p>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    .container {
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    /* Carte d'en-tête */
+    .header-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 25px 30px;
+        margin-bottom: 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-title {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-title h1 {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .header-title p {
+        color: #7f8c8d;
+        font-size: 1rem;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 15px;
+    }
+
+    .action-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .back-btn {
+        background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        color: white;
+    }
+
+    .save-btn {
+        background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%);
+        color: white;
+    }
+
+    .reset-btn {
+        background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+        color: #212529;
+    }
+
+    .action-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .action-btn:active {
+        transform: translateY(-1px);
+    }
+
+    /* Carte du formulaire */
+    .form-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        margin-bottom: 25px;
+    }
+
+    .form-header {
+        background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+        color: white;
+        padding: 20px 25px;
+    }
+
+    .form-header h2 {
+        font-weight: 600;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .form-header h2 i {
+        margin-right: 10px;
+    }
+
+    .form-body {
+        padding: 30px;
+    }
+
+    .form-row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -15px 20px;
+    }
+
+    .form-group {
+        flex: 1 0 300px;
+        padding: 0 15px;
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ced4da;
+        border-radius: 6px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        border-color: #4b6cb7;
+        box-shadow: 0 0 0 3px rgba(75, 108, 183, 0.2);
+        outline: none;
+    }
+
+    .form-group-full {
+        flex: 1 0 100%;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .radio-group {
+        display: flex;
+        gap: 20px;
+        margin-top: 5px;
+    }
+
+    .radio-option {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .radio-option input {
+        margin: 0;
+    }
+
+    .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    /* Style pour les statuts */
+    .status {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .status-active {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .header-card {
+            flex-direction: column;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .action-buttons {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .action-btn {
+            flex: 1;
+            justify-content: center;
+        }
+
+        .form-group {
+            flex: 1 0 100%;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .form-actions button {
+            width: 100%;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .action-buttons {
+            flex-direction: column;
+        }
+
+        .radio-group {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+
+<div class="container">
+    <!-- Carte d'en-tête -->
+    <div class="header-card">
+        <div class="header-title">
+            <h1>Gestion des Établissements Scolaires</h1>
+            <p>Formulaire d'ajout et de modification des établissements</p>
+        </div>
+        <div class="action-buttons">
+            <a class="action-btn back-btn" id="backButton" href="{% url 'etablissement' %}">
+                <i class="fas fa-arrow-left"></i>
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    <!-- Carte du formulaire -->
+    <div class="form-card">
+        <div class="form-header">
+            <h2><i class="fas fa-edit"></i>
+                <span id="formTitle">Ajouter un établissement</span>
+            </h2>
+        </div>
+        <div class="form-body">
+            <form id="establishmentForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Nom de l'établissement *</label>
+                        <input type="text" id="name" name="name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="schoolYear">Année scolaire *</label>
+                        <select id="schoolYear" name="schoolYear" class="form-control" required>
+                            <option value="">Sélectionnez une année</option>
+                            <option value="2022-2023">2022-2023</option>
+                            <option value="2023-2024" selected>2023-2024</option>
+                            <option value="2024-2025">2024-2025</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="provision">Provision *</label>
+                        <select id="provision" name="provision" class="form-control" required>
+                            <option value="">Sélectionnez une provision</option>
+                            <option value="Provision A">Provision A</option>
+                            <option value="Provision B">Provision B</option>
+                            <option value="Provision C">Provision C</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="division">Division *</label>
+                        <select id="division" name="division" class="form-control" required>
+                            <option value="">Sélectionnez une division</option>
+                            <option value="Division Nord">Division Nord</option>
+                            <option value="Division Sud">Division Sud</option>
+                            <option value="Division Est">Division Est</option>
+                            <option value="Division Ouest">Division Ouest</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="subdivision">Sous-division *</label>
+                        <select id="subdivision" name="subdivision" class="form-control" required>
+                            <option value="">Sélectionnez une sous-division</option>
+                            <option value="Sous-division 1">Sous-division 1</option>
+                            <option value="Sous-division 2">Sous-division 2</option>
+                            <option value="Sous-division 3">Sous-division 3</option>
+                            <option value="Sous-division 4">Sous-division 4</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="principal">Chef d'établissement *</label>
+                        <input type="text" id="principal" name="principal" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Téléphone *</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="createdDate">Créé le</label>
+                        <input type="date" id="createdDate" name="createdDate" class="form-control">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Statut *</label>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="statusActive" name="status" value="active" checked>
+                                <label for="statusActive"><span class="status status-active">Actif</span></label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="statusInactive" name="status" value="inactive">
+                                <label for="statusInactive"><span class="status status-inactive">Inactif</span></label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="statusPending" name="status" value="pending">
+                                <label for="statusPending"><span class="status status-pending">En attente</span></label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group form-group-full">
+                        <label for="address">Adresse *</label>
+                        <textarea id="address" name="address" class="form-control" required></textarea>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="action-btn reset-btn" id="resetButton">
+                        <i class="fas fa-redo"></i>
+                        Réinitialiser
+                    </button>
+                    <button type="submit" class="action-btn save-btn">
+                        <i class="fas fa-save"></i>
+                        Enregistrer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Gestion du formulaire
+    document.getElementById('establishmentForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        // Récupération des valeurs du formulaire
+        const formData = new FormData(this);
+        const data = Object.fromEntries(formData);
+
+        // Simulation d'enregistrement
+        console.log('Données du formulaire:', data);
+
+        // Affichage d'un message de succès
+        alert('Établissement enregistré avec succès!');
+
+        // Redirection vers la liste (simulée)
+        setTimeout(() => {
+            window.location.href = 'table.html'; // Remplacez par l'URL de votre page de table
+        }, 1500);
+    });
+
+    // Bouton de réinitialisation
+    document.getElementById('resetButton').addEventListener('click', function () {
+        if (confirm('Êtes-vous sûr de vouloir réinitialiser le formulaire? Toutes les données saisies seront perdues.')) {
+            document.getElementById('establishmentForm').reset();
+        }
+    });
+
+    // Bouton de retour
+    document.getElementById('backButton').addEventListener('click', function () {
+        if (confirm('Les modifications non enregistrées seront perdues. Voulez-vous vraiment quitter?')) {
+            window.location.href = 'table.html'; // Remplacez par l'URL de votre page de table
+        }
+    });
+
+    // Fonction pour remplir le formulaire en mode édition
+    function fillFormForEdit(establishmentData) {
+        document.getElementById('formTitle').textContent = 'Modifier un établissement';
+        document.getElementById('name').value = establishmentData.name || '';
+        document.getElementById('schoolYear').value = establishmentData.schoolYear || '';
+        document.getElementById('provision').value = establishmentData.provision || '';
+        document.getElementById('division').value = establishmentData.division || '';
+        document.getElementById('subdivision').value = establishmentData.subdivision || '';
+        document.getElementById('principal').value = establishmentData.principal || '';
+        document.getElementById('phone').value = establishmentData.phone || '';
+        document.getElementById('address').value = establishmentData.address || '';
+        document.getElementById('createdDate').value = establishmentData.createdDate || '';
+
+        // Sélection du statut
+        if (establishmentData.status) {
+            document.querySelector(`input[name="status"][value="${establishmentData.status}"]`).checked = true;
+        }
+    }
+
+    // Simulation de données pour l'édition (à supprimer en production)
+    // Décommentez la ligne suivante pour tester le mode édition
+    // fillFormForEdit({name: "Lycée Victor Hugo", schoolYear: "2023-2024", provision: "Provision A", division: "Division Nord", subdivision: "Sous-division 1", principal: "M. Dupont", phone: "01 23 45 67 89", address: "123 Rue de l'Éducation, Paris", status: "active"});
+</script>
+
 {% endblock content %}
