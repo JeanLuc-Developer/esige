@@ -1,6 +1,50 @@
 from django.db import models
 
 
+class Provinces(models.Model):
+    # id (int(11), AUTO_INCREMENT, Non) - Géré automatiquement par Django.
+
+    # code_province (varchar(20), Non)
+    code_province = models.CharField(
+        max_length=20, 
+        unique=True, 
+        verbose_name="Code Province"
+    ) #
+
+    # nom_province (varchar(255), Oui)
+    nom_province = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Nom de la Province"
+    ) #
+
+    # sigle_province (varchar(20), Oui)
+    sigle_province = models.CharField(
+        max_length=20, 
+        null=True, 
+        verbose_name="Sigle Province"
+    ) #
+    
+    # st_3_IdProv (int(11), Qui)
+    # Ce champ semble être un ID externe ou hérité de l'ancienne enquête ST3.
+    # Dans un nouveau système, nous le gardons souvent pour la migration.
+    st_3_IdProv = models.IntegerField(
+        null=True, 
+        verbose_name="ID Province ST3 Hérité"
+    ) #
+
+    def __str__(self):
+        return f"{self.nom_province} ({self.code_province})"
+
+    class Meta:
+        verbose_name = "Province"
+        verbose_name_plural = "Provinces"
+        # Ajout d'une contrainte pour s'assurer qu'une province n'a qu'un code unique
+        constraints = [
+            models.UniqueConstraint(fields=['code_province'], name='unique_code_province')
+        ]
+
+
 class Annee_scolaire(models.Model):
     # La colonne 'id' est implicitement créée par Django comme clé primaire AutoField.
 
@@ -2476,16 +2520,562 @@ class St3_effectif_eleve_inscrit_sexe_annee_etude_age_revolu(models.Model):
         verbose_name = "Liaison Effectif Élèves ST3"
         verbose_name_plural = "Liaisons Effectif Élèves ST3"   
 
-class St3_effectif_eleve_type_enseignant(models.Model):
-    pass
+class St3_personnel_administratif_fonction_sexe(models.Model):
+    # Clés de référence
+    # 133. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    ) #
+
+    # 134. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- Conseiller Pédagogique (F) ---
+    st_3_Nombre_Conseiller_PedagogiqueF_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueF_P6 = models.IntegerField(null=True) #
+
+    # --- Conseiller Pédagogique (H) ---
+    st_3_Nombre_Conseiller_PedagogiqueH_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Conseiller_PedagogiqueH_P6 = models.IntegerField(null=True) #
+
+    # --- Directeur de Discipline (F) ---
+    st_3_Nombre_Directeur_DisciplineF_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineF_P6 = models.IntegerField(null=True) #
+
+    # --- Directeur de Discipline (H) ---
+    st_3_Nombre_Directeur_DisciplineH_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_DisciplineH_P6 = models.IntegerField(null=True) #
+    
+    # --- Directeur d'Études (F) ---
+    st_3_Nombre_Directeur_EtudesF_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesF_P6 = models.IntegerField(null=True) #
+
+    # --- Directeur d'Études (H) ---
+    st_3_Nombre_Directeur_EtudesH_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Directeur_EtudesH_P6 = models.IntegerField(null=True) #
+
+    # --- Ouvriers et Autres (F) ---
+    st_3_Nombre_Ouvriers_EtAutresF_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresF_P6 = models.IntegerField(null=True) #
+
+    # --- Ouvriers et Autres (H) ---
+    st_3_Nombre_Ouvriers_EtAutresH_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Ouvriers_EtAutresH_P6 = models.IntegerField(null=True) #
+
+    # --- Préfet d'Études (F) ---
+    st_3_Nombre_Prefet_EtudesF_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesF_P6 = models.IntegerField(null=True) #
+
+    # --- Préfet d'Études (H) ---
+    st_3_Nombre_Prefet_EtudesH_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_DR = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_IR = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_LA = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_Prefet_EtudesH_P6 = models.IntegerField(null=True) #
+
+    # --- Surveillant (F) ---
+    st_3_Nombre_SurveillantF_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_DR = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_IR = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_LA = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantF_P6 = models.IntegerField(null=True) #
+
+    # --- Surveillant (H) ---
+    st_3_Nombre_SurveillantH_A1 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_Autres = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_D6 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_DR = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_G3 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_IR = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_L2 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_L2A = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_LA = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_MoinsD6 = models.IntegerField(null=True) #
+    st_3_Nombre_SurveillantH_P6 = models.IntegerField(null=True) #
+
+
+    def __str__(self):
+        return f"Personnel Administratif ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Personnel Administratif Fonction Sexe ST3"
+        verbose_name_plural = "Personnel Administratif Fonction Sexe ST3"
 
 # Modèle pour 'st3_effectif_par_age_sexe'
 class St3_effectif_par_age_sexe(models.Model):
-    pass
+    # Clé de référence
+    # form_st_id (bigint(20), Oui)
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- NIVEAU 1H ---
+    # Filles
+    effectifEleves1HFMoins12 = models.IntegerField(null=True, verbose_name="1H F < 12 ans")
+    effectifEleves1HF12 = models.IntegerField(null=True, verbose_name="1H F 12 ans")
+    effectifEleves1HF13 = models.IntegerField(null=True, verbose_name="1H F 13 ans")
+    effectifEleves1HF14 = models.IntegerField(null=True, verbose_name="1H F 14 ans")
+    effectifEleves1HF15 = models.IntegerField(null=True, verbose_name="1H F 15 ans")
+    effectifEleves1HF16 = models.IntegerField(null=True, verbose_name="1H F 16 ans")
+    effectifEleves1HF17 = models.IntegerField(null=True, verbose_name="1H F 17 ans")
+    effectifEleves1HFPlus17 = models.IntegerField(null=True, verbose_name="1H F > 17 ans")
+    # Garçons
+    effectifEleves1HGMoins12 = models.IntegerField(null=True, verbose_name="1H G < 12 ans")
+    effectifEleves1HG12 = models.IntegerField(null=True, verbose_name="1H G 12 ans")
+    effectifEleves1HG13 = models.IntegerField(null=True, verbose_name="1H G 13 ans")
+    effectifEleves1HG14 = models.IntegerField(null=True, verbose_name="1H G 14 ans")
+    effectifEleves1HG15 = models.IntegerField(null=True, verbose_name="1H G 15 ans")
+    effectifEleves1HG16 = models.IntegerField(null=True, verbose_name="1H G 16 ans")
+    effectifEleves1HG17 = models.IntegerField(null=True, verbose_name="1H G 17 ans")
+    effectifEleves1HGPlus17 = models.IntegerField(null=True, verbose_name="1H G > 17 ans")
+
+    # --- NIVEAU 2H ---
+    # Filles
+    effectifEleves2HFMoins12 = models.IntegerField(null=True, verbose_name="2H F < 12 ans")
+    effectifEleves2HF12 = models.IntegerField(null=True, verbose_name="2H F 12 ans")
+    effectifEleves2HF13 = models.IntegerField(null=True, verbose_name="2H F 13 ans")
+    effectifEleves2HF14 = models.IntegerField(null=True, verbose_name="2H F 14 ans")
+    effectifEleves2HF15 = models.IntegerField(null=True, verbose_name="2H F 15 ans")
+    effectifEleves2HF16 = models.IntegerField(null=True, verbose_name="2H F 16 ans")
+    effectifEleves2HF17 = models.IntegerField(null=True, verbose_name="2H F 17 ans")
+    effectifEleves2HFPlus17 = models.IntegerField(null=True, verbose_name="2H F > 17 ans")
+    # Garçons
+    effectifEleves2HGMoins12 = models.IntegerField(null=True, verbose_name="2H G < 12 ans")
+    effectifEleves2HG12 = models.IntegerField(null=True, verbose_name="2H G 12 ans")
+    effectifEleves2HG13 = models.IntegerField(null=True, verbose_name="2H G 13 ans")
+    effectifEleves2HG14 = models.IntegerField(null=True, verbose_name="2H G 14 ans")
+    effectifEleves2HG15 = models.IntegerField(null=True, verbose_name="2H G 15 ans")
+    effectifEleves2HG16 = models.IntegerField(null=True, verbose_name="2H G 16 ans")
+    effectifEleves2HG17 = models.IntegerField(null=True, verbose_name="2H G 17 ans")
+    effectifEleves2HGPlus17 = models.IntegerField(null=True, verbose_name="2H G > 17 ans")
+    
+    # --- NIVEAU 3H ---
+    # Filles
+    effectifEleves3HFMoins12 = models.IntegerField(null=True, verbose_name="3H F < 12 ans")
+    effectifEleves3HF12 = models.IntegerField(null=True, verbose_name="3H F 12 ans")
+    effectifEleves3HF13 = models.IntegerField(null=True, verbose_name="3H F 13 ans")
+    effectifEleves3HF14 = models.IntegerField(null=True, verbose_name="3H F 14 ans")
+    effectifEleves3HF15 = models.IntegerField(null=True, verbose_name="3H F 15 ans")
+    effectifEleves3HF16 = models.IntegerField(null=True, verbose_name="3H F 16 ans")
+    effectifEleves3HF17 = models.IntegerField(null=True, verbose_name="3H F 17 ans")
+    effectifEleves3HFPlus17 = models.IntegerField(null=True, verbose_name="3H F > 17 ans")
+    # Garçons
+    effectifEleves3HGMoins12 = models.IntegerField(null=True, verbose_name="3H G < 12 ans")
+    effectifEleves3HG12 = models.IntegerField(null=True, verbose_name="3H G 12 ans")
+    effectifEleves3HG13 = models.IntegerField(null=True, verbose_name="3H G 13 ans")
+    effectifEleves3HG14 = models.IntegerField(null=True, verbose_name="3H G 14 ans")
+    effectifEleves3HG15 = models.IntegerField(null=True, verbose_name="3H G 15 ans")
+    effectifEleves3HG16 = models.IntegerField(null=True, verbose_name="3H G 16 ans")
+    effectifEleves3HG17 = models.IntegerField(null=True, verbose_name="3H G 17 ans")
+    effectifEleves3HGPlus17 = models.IntegerField(null=True, verbose_name="3H G > 17 ans")
+
+    # --- NIVEAU 4H ---
+    # Filles
+    effectifEleves4HFMoins12 = models.IntegerField(null=True, verbose_name="4H F < 12 ans")
+    effectifEleves4HF12 = models.IntegerField(null=True, verbose_name="4H F 12 ans")
+    effectifEleves4HF13 = models.IntegerField(null=True, verbose_name="4H F 13 ans")
+    effectifEleves4HF14 = models.IntegerField(null=True, verbose_name="4H F 14 ans")
+    effectifEleves4HF15 = models.IntegerField(null=True, verbose_name="4H F 15 ans")
+    effectifEleves4HF16 = models.IntegerField(null=True, verbose_name="4H F 16 ans")
+    effectifEleves4HF17 = models.IntegerField(null=True, verbose_name="4H F 17 ans")
+    effectifEleves4HFPlus17 = models.IntegerField(null=True, verbose_name="4H F > 17 ans")
+    # Garçons
+    effectifEleves4HGMoins12 = models.IntegerField(null=True, verbose_name="4H G < 12 ans")
+    effectifEleves4HG12 = models.IntegerField(null=True, verbose_name="4H G 12 ans")
+    effectifEleves4HG13 = models.IntegerField(null=True, verbose_name="4H G 13 ans")
+    effectifEleves4HG14 = models.IntegerField(null=True, verbose_name="4H G 14 ans")
+    effectifEleves4HG15 = models.IntegerField(null=True, verbose_name="4H G 15 ans")
+    effectifEleves4HG16 = models.IntegerField(null=True, verbose_name="4H G 16 ans")
+    effectifEleves4HG17 = models.IntegerField(null=True, verbose_name="4H G 17 ans")
+    effectifEleves4HGPlus17 = models.IntegerField(null=True, verbose_name="4H G > 17 ans")
+
+    # --- NIVEAU 5H ---
+    # Filles
+    effectifEleves5HFMoins12 = models.IntegerField(null=True, verbose_name="5H F < 12 ans")
+    effectifEleves5HF12 = models.IntegerField(null=True, verbose_name="5H F 12 ans")
+    effectifEleves5HF13 = models.IntegerField(null=True, verbose_name="5H F 13 ans")
+    effectifEleves5HF14 = models.IntegerField(null=True, verbose_name="5H F 14 ans")
+    effectifEleves5HF15 = models.IntegerField(null=True, verbose_name="5H F 15 ans")
+    effectifEleves5HF16 = models.IntegerField(null=True, verbose_name="5H F 16 ans")
+    effectifEleves5HF17 = models.IntegerField(null=True, verbose_name="5H F 17 ans")
+    effectifEleves5HFPlus17 = models.IntegerField(null=True, verbose_name="5H F > 17 ans")
+    # Garçons
+    effectifEleves5HGMoins12 = models.IntegerField(null=True, verbose_name="5H G < 12 ans")
+    effectifEleves5HG12 = models.IntegerField(null=True, verbose_name="5H G 12 ans")
+    effectifEleves5HG13 = models.IntegerField(null=True, verbose_name="5H G 13 ans")
+    effectifEleves5HG14 = models.IntegerField(null=True, verbose_name="5H G 14 ans")
+    effectifEleves5HG15 = models.IntegerField(null=True, verbose_name="5H G 15 ans")
+    effectifEleves5HG16 = models.IntegerField(null=True, verbose_name="5H G 16 ans")
+    effectifEleves5HG17 = models.IntegerField(null=True, verbose_name="5H G 17 ans")
+    effectifEleves5HGPlus17 = models.IntegerField(null=True, verbose_name="5H G > 17 ans")
+
+    # --- NIVEAU 6H ---
+    # Filles
+    effectifEleves6HFMoins12 = models.IntegerField(null=True, verbose_name="6H F < 12 ans")
+    effectifEleves6HF12 = models.IntegerField(null=True, verbose_name="6H F 12 ans")
+    effectifEleves6HF13 = models.IntegerField(null=True, verbose_name="6H F 13 ans")
+    effectifEleves6HF14 = models.IntegerField(null=True, verbose_name="6H F 14 ans")
+    effectifEleves6HF15 = models.IntegerField(null=True, verbose_name="6H F 15 ans")
+    effectifEleves6HF16 = models.IntegerField(null=True, verbose_name="6H F 16 ans")
+    effectifEleves6HF17 = models.IntegerField(null=True, verbose_name="6H F 17 ans")
+    effectifEleves6HFPlus17 = models.IntegerField(null=True, verbose_name="6H F > 17 ans")
+    # Garçons
+    effectifEleves6HGMoins12 = models.IntegerField(null=True, verbose_name="6H G < 12 ans")
+    effectifEleves6HG12 = models.IntegerField(null=True, verbose_name="6H G 12 ans")
+    effectifEleves6HG13 = models.IntegerField(null=True, verbose_name="6H G 13 ans")
+    effectifEleves6HG14 = models.IntegerField(null=True, verbose_name="6H G 14 ans")
+    effectifEleves6HG15 = models.IntegerField(null=True, verbose_name="6H G 15 ans")
+    effectifEleves6HG16 = models.IntegerField(null=True, verbose_name="6H G 16 ans")
+    effectifEleves6HG17 = models.IntegerField(null=True, verbose_name="6H G 17 ans")
+    effectifEleves6HGPlus17 = models.IntegerField(null=True, verbose_name="6H G > 17 ans")
+
+    # --- NIVEAU 7H ---
+    # Filles
+    effectifEleves7HFMoins12 = models.IntegerField(null=True, verbose_name="7H F < 12 ans")
+    effectifEleves7HF12 = models.IntegerField(null=True, verbose_name="7H F 12 ans")
+    effectifEleves7HF13 = models.IntegerField(null=True, verbose_name="7H F 13 ans")
+    effectifEleves7HF14 = models.IntegerField(null=True, verbose_name="7H F 14 ans")
+    effectifEleves7HF15 = models.IntegerField(null=True, verbose_name="7H F 15 ans")
+    effectifEleves7HF16 = models.IntegerField(null=True, verbose_name="7H F 16 ans")
+    effectifEleves7HF17 = models.IntegerField(null=True, verbose_name="7H F 17 ans")
+    effectifEleves7HFPlus17 = models.IntegerField(null=True, verbose_name="7H F > 17 ans")
+    # Garçons
+    effectifEleves7HGMoins12 = models.IntegerField(null=True, verbose_name="7H G < 12 ans")
+    effectifEleves7HG12 = models.IntegerField(null=True, verbose_name="7H G 12 ans")
+    effectifEleves7HG13 = models.IntegerField(null=True, verbose_name="7H G 13 ans")
+    effectifEleves7HG14 = models.IntegerField(null=True, verbose_name="7H G 14 ans")
+    effectifEleves7HG15 = models.IntegerField(null=True, verbose_name="7H G 15 ans")
+    effectifEleves7HG16 = models.IntegerField(null=True, verbose_name="7H G 16 ans")
+    effectifEleves7HG17 = models.IntegerField(null=True, verbose_name="7H G 17 ans")
+    effectifEleves7HGPlus17 = models.IntegerField(null=True, verbose_name="7H G > 17 ans")
+
+    # --- NIVEAU 8H ---
+    # Filles
+    effectifEleves8HFMoins12 = models.IntegerField(null=True, verbose_name="8H F < 12 ans")
+    effectifEleves8HF12 = models.IntegerField(null=True, verbose_name="8H F 12 ans")
+    effectifEleves8HF13 = models.IntegerField(null=True, verbose_name="8H F 13 ans")
+    effectifEleves8HF14 = models.IntegerField(null=True, verbose_name="8H F 14 ans")
+    effectifEleves8HF15 = models.IntegerField(null=True, verbose_name="8H F 15 ans")
+    effectifEleves8HF16 = models.IntegerField(null=True, verbose_name="8H F 16 ans")
+    effectifEleves8HF17 = models.IntegerField(null=True, verbose_name="8H F 17 ans")
+    effectifEleves8HFPlus17 = models.IntegerField(null=True, verbose_name="8H F > 17 ans")
+    # Garçons
+    effectifEleves8HGMoins12 = models.IntegerField(null=True, verbose_name="8H G < 12 ans")
+    effectifEleves8HG12 = models.IntegerField(null=True, verbose_name="8H G 12 ans")
+    effectifEleves8HG13 = models.IntegerField(null=True, verbose_name="8H G 13 ans")
+    effectifEleves8HG14 = models.IntegerField(null=True, verbose_name="8H G 14 ans")
+    effectifEleves8HG15 = models.IntegerField(null=True, verbose_name="8H G 15 ans")
+    effectifEleves8HG16 = models.IntegerField(null=True, verbose_name="8H G 16 ans")
+    effectifEleves8HG17 = models.IntegerField(null=True, verbose_name="8H G 17 ans")
+    effectifEleves8HGPlus17 = models.IntegerField(null=True, verbose_name="8H G > 17 ans")
+
+    def __str__(self):
+        return f"Effectif par Âge et Sexe ST3 (Formulaire ID: {self.form_st_id})"
+
+    class Meta:
+        verbose_name = "Effectif par Âge et Sexe ST3"
+        verbose_name_plural = "Effectifs par Âge et Sexe ST3"
 
 # Modèle pour 'st3_effectif_par_categorie_particuliere'
 class St3_effectif_par_categorie_particuliere(models.Model):
-    pass
+    # Clé de référence
+    # form_st_id (bigint(20), Oui)
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- NIVEAU 1H (Hommes) ---
+    effectifEleves1HFAutochtone = models.IntegerField(null=True, verbose_name="1H F - Autochtone")
+    effectifEleves1HFAvecHandicap = models.IntegerField(null=True, verbose_name="1H F - Avec Handicap")
+    effectifEleves1HFDeplacesExternes = models.IntegerField(null=True, verbose_name="1H F - Déplacés Externes")
+    effectifEleves1HFDeplacesInternes = models.IntegerField(null=True, verbose_name="1H F - Déplacés Internes")
+    effectifEleves1HFEtrangers = models.IntegerField(null=True, verbose_name="1H F - Étrangers")
+    effectifEleves1HFInternat = models.IntegerField(null=True, verbose_name="1H F - Internat")
+    effectifEleves1HFOrphelins = models.IntegerField(null=True, verbose_name="1H F - Orphelins")
+    effectifEleves1HFReIntegrant = models.IntegerField(null=True, verbose_name="1H F - Réintégrant")
+    effectifEleves1HFRedoublons = models.IntegerField(null=True, verbose_name="1H F - Redoublons")
+    effectifEleves1HFRefugies = models.IntegerField(null=True, verbose_name="1H F - Réfugiés") # Ajouté pour consistance
+
+    effectifEleves1HGAutochtone = models.IntegerField(null=True, verbose_name="1H G - Autochtone")
+    effectifEleves1HGAvecHandicap = models.IntegerField(null=True, verbose_name="1H G - Avec Handicap")
+    effectifEleves1HGDeplacesExternes = models.IntegerField(null=True, verbose_name="1H G - Déplacés Externes")
+    effectifEleves1HGDeplacesInternes = models.IntegerField(null=True, verbose_name="1H G - Déplacés Internes")
+    effectifEleves1HGEtrangers = models.IntegerField(null=True, verbose_name="1H G - Étrangers")
+    effectifEleves1HGInternat = models.IntegerField(null=True, verbose_name="1H G - Internat")
+    effectifEleves1HGOrphelins = models.IntegerField(null=True, verbose_name="1H G - Orphelins")
+    effectifEleves1HGReIntegrant = models.IntegerField(null=True, verbose_name="1H G - Réintégrant")
+    effectifEleves1HGRedoublons = models.IntegerField(null=True, verbose_name="1H G - Redoublons")
+    effectifEleves1HGRefugies = models.IntegerField(null=True, verbose_name="1H G - Réfugiés") # Ajouté pour consistance
+
+    # --- NIVEAU 2H (Hommes) ---
+    effectifEleves2HFAutochtone = models.IntegerField(null=True, verbose_name="2H F - Autochtone")
+    effectifEleves2HFAvecHandicap = models.IntegerField(null=True, verbose_name="2H F - Avec Handicap")
+    effectifEleves2HFDeplacesExternes = models.IntegerField(null=True, verbose_name="2H F - Déplacés Externes")
+    effectifEleves2HFDeplacesInternes = models.IntegerField(null=True, verbose_name="2H F - Déplacés Internes")
+    effectifEleves2HFEtrangers = models.IntegerField(null=True, verbose_name="2H F - Étrangers")
+    effectifEleves2HFInternat = models.IntegerField(null=True, verbose_name="2H F - Internat")
+    effectifEleves2HFOrphelins = models.IntegerField(null=True, verbose_name="2H F - Orphelins")
+    effectifEleves2HFReIntegrant = models.IntegerField(null=True, verbose_name="2H F - Réintégrant")
+    effectifEleves2HFRedoublons = models.IntegerField(null=True, verbose_name="2H F - Redoublons")
+    effectifEleves2HFRefugies = models.IntegerField(null=True, verbose_name="2H F - Réfugiés")
+
+    effectifEleves2HGAutochtone = models.IntegerField(null=True, verbose_name="2H G - Autochtone")
+    effectifEleves2HGAvecHandicap = models.IntegerField(null=True, verbose_name="2H G - Avec Handicap")
+    effectifEleves2HGDeplacesExternes = models.IntegerField(null=True, verbose_name="2H G - Déplacés Externes")
+    effectifEleves2HGDeplacesInternes = models.IntegerField(null=True, verbose_name="2H G - Déplacés Internes")
+    effectifEleves2HGEtrangers = models.IntegerField(null=True, verbose_name="2H G - Étrangers")
+    effectifEleves2HGInternat = models.IntegerField(null=True, verbose_name="2H G - Internat")
+    effectifEleves2HGOrphelins = models.IntegerField(null=True, verbose_name="2H G - Orphelins")
+    effectifEleves2HGReIntegrant = models.IntegerField(null=True, verbose_name="2H G - Réintégrant")
+    effectifEleves2HGRedoublons = models.IntegerField(null=True, verbose_name="2H G - Redoublons")
+    effectifEleves2HGRefugies = models.IntegerField(null=True, verbose_name="2H G - Réfugiés")
+    
+    # --- NIVEAU 3H (Hommes) ---
+    effectifEleves3HFAutochtone = models.IntegerField(null=True, verbose_name="3H F - Autochtone")
+    effectifEleves3HFAvecHandicap = models.IntegerField(null=True, verbose_name="3H F - Avec Handicap")
+    effectifEleves3HFDeplacesExternes = models.IntegerField(null=True, verbose_name="3H F - Déplacés Externes")
+    effectifEleves3HFDeplacesInternes = models.IntegerField(null=True, verbose_name="3H F - Déplacés Internes")
+    effectifEleves3HFEtrangers = models.IntegerField(null=True, verbose_name="3H F - Étrangers")
+    effectifEleves3HFInternat = models.IntegerField(null=True, verbose_name="3H F - Internat")
+    effectifEleves3HFOrphelins = models.IntegerField(null=True, verbose_name="3H F - Orphelins")
+    effectifEleves3HFReIntegrant = models.IntegerField(null=True, verbose_name="3H F - Réintégrant")
+    effectifEleves3HFRedoublons = models.IntegerField(null=True, verbose_name="3H F - Redoublons")
+    effectifEleves3HFRefugies = models.IntegerField(null=True, verbose_name="3H F - Réfugiés")
+
+    effectifEleves3HGAutochtone = models.IntegerField(null=True, verbose_name="3H G - Autochtone")
+    effectifEleves3HGAvecHandicap = models.IntegerField(null=True, verbose_name="3H G - Avec Handicap")
+    effectifEleves3HGDeplacesExternes = models.IntegerField(null=True, verbose_name="3H G - Déplacés Externes")
+    effectifEleves3HGDeplacesInternes = models.IntegerField(null=True, verbose_name="3H G - Déplacés Internes")
+    effectifEleves3HGEtrangers = models.IntegerField(null=True, verbose_name="3H G - Étrangers")
+    effectifEleves3HGInternat = models.IntegerField(null=True, verbose_name="3H G - Internat")
+    effectifEleves3HGOrphelins = models.IntegerField(null=True, verbose_name="3H G - Orphelins")
+    effectifEleves3HGReIntegrant = models.IntegerField(null=True, verbose_name="3H G - Réintégrant")
+    effectifEleves3HGRedoublons = models.IntegerField(null=True, verbose_name="3H G - Redoublons")
+    effectifEleves3HGRefugies = models.IntegerField(null=True, verbose_name="3H G - Réfugiés")
+
+    # --- NIVEAU 4H (Hommes) ---
+    effectifEleves4HFAutochtone = models.IntegerField(null=True, verbose_name="4H F - Autochtone")
+    effectifEleves4HFAvecHandicap = models.IntegerField(null=True, verbose_name="4H F - Avec Handicap")
+    effectifEleves4HFDeplacesExternes = models.IntegerField(null=True, verbose_name="4H F - Déplacés Externes")
+    effectifEleves4HFDeplacesInternes = models.IntegerField(null=True, verbose_name="4H F - Déplacés Internes")
+    effectifEleves4HFEtrangers = models.IntegerField(null=True, verbose_name="4H F - Étrangers")
+    effectifEleves4HFInternat = models.IntegerField(null=True, verbose_name="4H F - Internat")
+    effectifEleves4HFOrphelins = models.IntegerField(null=True, verbose_name="4H F - Orphelins")
+    effectifEleves4HFReIntegrant = models.IntegerField(null=True, verbose_name="4H F - Réintégrant")
+    effectifEleves4HFRedoublons = models.IntegerField(null=True, verbose_name="4H F - Redoublons")
+    effectifEleves4HFRefugies = models.IntegerField(null=True, verbose_name="4H F - Réfugiés")
+
+    effectifEleves4HGAutochtone = models.IntegerField(null=True, verbose_name="4H G - Autochtone")
+    effectifEleves4HGAvecHandicap = models.IntegerField(null=True, verbose_name="4H G - Avec Handicap")
+    effectifEleves4HGDeplacesExternes = models.IntegerField(null=True, verbose_name="4H G - Déplacés Externes")
+    effectifEleves4HGDeplacesInternes = models.IntegerField(null=True, verbose_name="4H G - Déplacés Internes")
+    effectifEleves4HGEtrangers = models.IntegerField(null=True, verbose_name="4H G - Étrangers")
+    effectifEleves4HGInternat = models.IntegerField(null=True, verbose_name="4H G - Internat")
+    effectifEleves4HGOrphelins = models.IntegerField(null=True, verbose_name="4H G - Orphelins")
+    effectifEleves4HGReIntegrant = models.IntegerField(null=True, verbose_name="4H G - Réintégrant")
+    effectifEleves4HGRedoublons = models.IntegerField(null=True, verbose_name="4H G - Redoublons")
+    effectifEleves4HGRefugies = models.IntegerField(null=True, verbose_name="4H G - Réfugiés")
+
+    # --- NIVEAU 5H (Hommes) ---
+    effectifEleves5HFAutochtone = models.IntegerField(null=True, verbose_name="5H F - Autochtone")
+    effectifEleves5HFAvecHandicap = models.IntegerField(null=True, verbose_name="5H F - Avec Handicap")
+    effectifEleves5HFDeplacesExternes = models.IntegerField(null=True, verbose_name="5H F - Déplacés Externes")
+    effectifEleves5HFDeplacesInternes = models.IntegerField(null=True, verbose_name="5H F - Déplacés Internes")
+    effectifEleves5HFEtrangers = models.IntegerField(null=True, verbose_name="5H F - Étrangers")
+    effectifEleves5HFInternat = models.IntegerField(null=True, verbose_name="5H F - Internat")
+    effectifEleves5HFOrphelins = models.IntegerField(null=True, verbose_name="5H F - Orphelins")
+    effectifEleves5HFReIntegrant = models.IntegerField(null=True, verbose_name="5H F - Réintégrant")
+    effectifEleves5HFRedoublons = models.IntegerField(null=True, verbose_name="5H F - Redoublons")
+    effectifEleves5HFRefugies = models.IntegerField(null=True, verbose_name="5H F - Réfugiés")
+
+    effectifEleves5HGAutochtone = models.IntegerField(null=True, verbose_name="5H G - Autochtone")
+    effectifEleves5HGAvecHandicap = models.IntegerField(null=True, verbose_name="5H G - Avec Handicap")
+    effectifEleves5HGDeplacesExternes = models.IntegerField(null=True, verbose_name="5H G - Déplacés Externes")
+    effectifEleves5HGDeplacesInternes = models.IntegerField(null=True, verbose_name="5H G - Déplacés Internes")
+    effectifEleves5HGEtrangers = models.IntegerField(null=True, verbose_name="5H G - Étrangers")
+    effectifEleves5HGInternat = models.IntegerField(null=True, verbose_name="5H G - Internat")
+    effectifEleves5HGOrphelins = models.IntegerField(null=True, verbose_name="5H G - Orphelins")
+    effectifEleves5HGReIntegrant = models.IntegerField(null=True, verbose_name="5H G - Réintégrant")
+    effectifEleves5HGRedoublons = models.IntegerField(null=True, verbose_name="5H G - Redoublons")
+    effectifEleves5HGRefugies = models.IntegerField(null=True, verbose_name="5H G - Réfugiés")
+    
+    # --- NIVEAU 6H (Hommes) ---
+    effectifEleves6HFAutochtone = models.IntegerField(null=True, verbose_name="6H F - Autochtone")
+    effectifEleves6HFAvecHandicap = models.IntegerField(null=True, verbose_name="6H F - Avec Handicap")
+    effectifEleves6HFDeplacesExternes = models.IntegerField(null=True, verbose_name="6H F - Déplacés Externes")
+    effectifEleves6HFDeplacesInternes = models.IntegerField(null=True, verbose_name="6H F - Déplacés Internes")
+    effectifEleves6HFEtrangers = models.IntegerField(null=True, verbose_name="6H F - Étrangers")
+    effectifEleves6HFInternat = models.IntegerField(null=True, verbose_name="6H F - Internat")
+    effectifEleves6HFOrphelins = models.IntegerField(null=True, verbose_name="6H F - Orphelins")
+    effectifEleves6HFReIntegrant = models.IntegerField(null=True, verbose_name="6H F - Réintégrant")
+    effectifEleves6HFRedoublons = models.IntegerField(null=True, verbose_name="6H F - Redoublons")
+    effectifEleves6HFRefugies = models.IntegerField(null=True, verbose_name="6H F - Réfugiés")
+
+    effectifEleves6HGAutochtone = models.IntegerField(null=True, verbose_name="6H G - Autochtone")
+    effectifEleves6HGAvecHandicap = models.IntegerField(null=True, verbose_name="6H G - Avec Handicap")
+    effectifEleves6HGDeplacesExternes = models.IntegerField(null=True, verbose_name="6H G - Déplacés Externes")
+    effectifEleves6HGDeplacesInternes = models.IntegerField(null=True, verbose_name="6H G - Déplacés Internes")
+    effectifEleves6HGEtrangers = models.IntegerField(null=True, verbose_name="6H G - Étrangers")
+    effectifEleves6HGInternat = models.IntegerField(null=True, verbose_name="6H G - Internat")
+    effectifEleves6HGOrphelins = models.IntegerField(null=True, verbose_name="6H G - Orphelins")
+    effectifEleves6HGReIntegrant = models.IntegerField(null=True, verbose_name="6H G - Réintégrant")
+    effectifEleves6HGRedoublons = models.IntegerField(null=True, verbose_name="6H G - Redoublons")
+    effectifEleves6HGRefugies = models.IntegerField(null=True, verbose_name="6H G - Réfugiés")
+    
+    # --- NIVEAU 7H (Hommes) ---
+    effectifEleves7HFAutochtone = models.IntegerField(null=True, verbose_name="7H F - Autochtone")
+    effectifEleves7HFAvecHandicap = models.IntegerField(null=True, verbose_name="7H F - Avec Handicap")
+    effectifEleves7HFDeplacesExternes = models.IntegerField(null=True, verbose_name="7H F - Déplacés Externes")
+    effectifEleves7HFDeplacesInternes = models.IntegerField(null=True, verbose_name="7H F - Déplacés Internes")
+    effectifEleves7HFEtrangers = models.IntegerField(null=True, verbose_name="7H F - Étrangers")
+    effectifEleves7HFInternat = models.IntegerField(null=True, verbose_name="7H F - Internat")
+    effectifEleves7HFOrphelins = models.IntegerField(null=True, verbose_name="7H F - Orphelins")
+    effectifEleves7HFReIntegrant = models.IntegerField(null=True, verbose_name="7H F - Réintégrant")
+    effectifEleves7HFRedoublons = models.IntegerField(null=True, verbose_name="7H F - Redoublons")
+    effectifEleves7HFRefugies = models.IntegerField(null=True, verbose_name="7H F - Réfugiés")
+
+    effectifEleves7HGAutochtone = models.IntegerField(null=True, verbose_name="7H G - Autochtone")
+    effectifEleves7HGAvecHandicap = models.IntegerField(null=True, verbose_name="7H G - Avec Handicap")
+    effectifEleves7HGDeplacesExternes = models.IntegerField(null=True, verbose_name="7H G - Déplacés Externes")
+    effectifEleves7HGDeplacesInternes = models.IntegerField(null=True, verbose_name="7H G - Déplacés Internes")
+    effectifEleves7HGEtrangers = models.IntegerField(null=True, verbose_name="7H G - Étrangers")
+    effectifEleves7HGInternat = models.IntegerField(null=True, verbose_name="7H G - Internat")
+    effectifEleves7HGOrphelins = models.IntegerField(null=True, verbose_name="7H G - Orphelins")
+    effectifEleves7HGReIntegrant = models.IntegerField(null=True, verbose_name="7H G - Réintégrant")
+    effectifEleves7HGRedoublons = models.IntegerField(null=True, verbose_name="7H G - Redoublons")
+    effectifEleves7HGRefugies = models.IntegerField(null=True, verbose_name="7H G - Réfugiés")
+
+    # --- NIVEAU 8H (Hommes) ---
+    effectifEleves8HFAutochtone = models.IntegerField(null=True, verbose_name="8H F - Autochtone")
+    effectifEleves8HFAvecHandicap = models.IntegerField(null=True, verbose_name="8H F - Avec Handicap")
+    effectifEleves8HFDeplacesExternes = models.IntegerField(null=True, verbose_name="8H F - Déplacés Externes")
+    effectifEleves8HFDeplacesInternes = models.IntegerField(null=True, verbose_name="8H F - Déplacés Internes")
+    effectifEleves8HFEtrangers = models.IntegerField(null=True, verbose_name="8H F - Étrangers")
+    effectifEleves8HFInternat = models.IntegerField(null=True, verbose_name="8H F - Internat")
+    effectifEleves8HFOrphelins = models.IntegerField(null=True, verbose_name="8H F - Orphelins")
+    effectifEleves8HFReIntegrant = models.IntegerField(null=True, verbose_name="8H F - Réintégrant")
+    effectifEleves8HFRedoublons = models.IntegerField(null=True, verbose_name="8H F - Redoublons")
+    effectifEleves8HFRefugies = models.IntegerField(null=True, verbose_name="8H F - Réfugiés")
+
+    effectifEleves8HGAutochtone = models.IntegerField(null=True, verbose_name="8H G - Autochtone")
+    effectifEleves8HGAvecHandicap = models.IntegerField(null=True, verbose_name="8H G - Avec Handicap")
+    effectifEleves8HGDeplacesExternes = models.IntegerField(null=True, verbose_name="8H G - Déplacés Externes")
+    effectifEleves8HGDeplacesInternes = models.IntegerField(null=True, verbose_name="8H G - Déplacés Internes")
+    effectifEleves8HGEtrangers = models.IntegerField(null=True, verbose_name="8H G - Étrangers")
+    effectifEleves8HGInternat = models.IntegerField(null=True, verbose_name="8H G - Internat")
+    effectifEleves8HGOrphelins = models.IntegerField(null=True, verbose_name="8H G - Orphelins")
+    effectifEleves8HGReIntegrant = models.IntegerField(null=True, verbose_name="8H G - Réintégrant")
+    effectifEleves8HGRedoublons = models.IntegerField(null=True, verbose_name="8H G - Redoublons")
+    effectifEleves8HGRefugies = models.IntegerField(null=True, verbose_name="8H G - Réfugiés")
+
+    def __str__(self):
+        return f"Effectif Catégorie Particulière ST3 (Formulaire ID: {self.form_st_id})"
+
+    class Meta:
+        verbose_name = "Effectif par Catégorie Particulière ST3"
+        verbose_name_plural = "Effectifs par Catégories Particulières ST3"
 
 class St3_eleve(models.Model):
     # 1. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
@@ -2672,47 +3262,875 @@ class St3_formation(models.Model):
 
 # Modèle pour 'st3_infrastructure_activites'
 class St3_infrastructure_activites(models.Model):
-    pass
+    # 4. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 5. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # 1. st3_activites_parascolaires (bit(1), Oui)
+    st3_activites_parascolaires = models.BooleanField(
+        null=True, 
+        verbose_name="Activités Parascolaires"
+    )
+
+    # 2. st3_gouvernement_eleves (bit(1), Oui)
+    st3_gouvernement_eleves = models.BooleanField(
+        null=True, 
+        verbose_name="Gouvernement des Élèves"
+    )
+
+    # 3. st3_unite_pedagogique (bit(1), Oui)
+    st3_unite_pedagogique = models.BooleanField(
+        null=True, 
+        verbose_name="Unité Pédagogique"
+    )
+
+    # 6. st3_pv_reunions (varchar(255), Oui)
+    st3_pv_reunions = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Procès-verbaux des Réunions (PV)"
+    )
+
+    def __str__(self):
+        return f"Infrastructure et Activités ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Infrastructure et Activités ST3"
+        verbose_name_plural = "Infrastructures et Activités ST3"
 
 # Modèle pour 'st3_manuel_disponible_niveau'
 class St3_manuel_disponible_niveau(models.Model):
-    pass
+    # 50. form_st_id (bigint(20), Non) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 51. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- Manuels Auto ---
+    st3_manuel_Auto_Teme_H_annee = models.IntegerField(null=True, verbose_name="Auto Teme H Année")
+    st3_manuel_Auto_2eme_H_annee = models.IntegerField(null=True, verbose_name="Auto 2eme H Année")
+    st3_manuel_Auto_3eme_H_annee = models.IntegerField(null=True, verbose_name="Auto 3eme H Année")
+    st3_manuel_Auto_4eme_H_annee = models.IntegerField(null=True, verbose_name="Auto 4eme H Année")
+    st3_manuel_Auto_7eme_H_annee = models.IntegerField(null=True, verbose_name="Auto 7eme H Année")
+    st3_manuel_Auto_8eme_H_annee = models.IntegerField(null=True, verbose_name="Auto 8eme H Année")
+
+    # --- Manuels Éducation Civique et Morale ---
+    st3_manuel_EducationCiviqueMorale_Teme_H_annee = models.IntegerField(null=True, verbose_name="Civique Teme H Année")
+    st3_manuel_EducationCiviqueMorale_2eme_H_annee = models.IntegerField(null=True, verbose_name="Civique 2eme H Année")
+    st3_manuel_EducationCiviqueMorale_3eme_H_annee = models.IntegerField(null=True, verbose_name="Civique 3eme H Année")
+    st3_manuel_EducationCiviqueMorale_4eme_H_annee = models.IntegerField(null=True, verbose_name="Civique 4eme H Année")
+    st3_manuel_EducationCiviqueMorale_7eme_H_annee = models.IntegerField(null=True, verbose_name="Civique 7eme H Année")
+    st3_manuel_EducationCiviqueMorale_8eme_H_annee = models.IntegerField(null=True, verbose_name="Civique 8eme H Année")
+
+    # --- Manuels Mathématiques ---
+    st3_manuel_Mathematique_Teme_H_annee = models.IntegerField(null=True, verbose_name="Math Teme H Année")
+    st3_manuel_Mathematique_2eme_H_annee = models.IntegerField(null=True, verbose_name="Math 2eme H Année")
+    st3_manuel_Mathematique_3eme_H_annee = models.IntegerField(null=True, verbose_name="Math 3eme H Année")
+    st3_manuel_Mathematique_4eme_H_annee = models.IntegerField(null=True, verbose_name="Math 4eme H Année")
+    st3_manuel_Mathematique_7eme_H_annee = models.IntegerField(null=True, verbose_name="Math 7eme H Année")
+    st3_manuel_Mathematique_8eme_H_annee = models.IntegerField(null=True, verbose_name="Math 8eme H Année")
+
+    # --- Manuels Pour Filière (Probablement une erreur de nommage, devrions être par genre) ---
+    st3_manuel_PourFiliere_Teme_H_annee = models.IntegerField(null=True, verbose_name="Filière Teme H Année")
+    st3_manuel_PourFiliere_2eme_H_annee = models.IntegerField(null=True, verbose_name="Filière 2eme H Année")
+    st3_manuel_PourFiliere_3eme_H_annee = models.IntegerField(null=True, verbose_name="Filière 3eme H Année")
+    st3_manuel_PourFiliere_7eme_H_annee = models.IntegerField(null=True, verbose_name="Filière 7eme H Année")
+    st3_manuel_PourFiliere_8eme_H_annee = models.IntegerField(null=True, verbose_name="Filière 8eme H Année")
+
+    # --- Manuels Pour La Paix ---
+    st3_manuel_PourLaPaix_Teme_H_annee = models.IntegerField(null=True, verbose_name="Paix Teme H Année")
+    st3_manuel_PourLaPaix_2eme_H_annee = models.IntegerField(null=True, verbose_name="Paix 2eme H Année")
+    st3_manuel_PourLaPaix_3eme_H_annee = models.IntegerField(null=True, verbose_name="Paix 3eme H Année")
+    st3_manuel_PourLaPaix_4eme_H_annee = models.IntegerField(null=True, verbose_name="Paix 4eme H Année")
+    st3_manuel_PourLaPaix_7eme_H_annee = models.IntegerField(null=True, verbose_name="Paix 7eme H Année")
+    st3_manuel_PourLaPaix_8eme_H_annee = models.IntegerField(null=True, verbose_name="Paix 8eme H Année")
+    
+    # --- Manuels Sciences ---
+    st3_manuel_Sciences_Teme_H_annee = models.IntegerField(null=True, verbose_name="Sciences Teme H Année")
+    st3_manuel_Sciences_2eme_H_annee = models.IntegerField(null=True, verbose_name="Sciences 2eme H Année")
+    st3_manuel_Sciences_3eme_H_annee = models.IntegerField(null=True, verbose_name="Sciences 3eme H Année")
+    st3_manuel_Sciences_4eme_H_annee = models.IntegerField(null=True, verbose_name="Sciences 4eme H Année")
+    st3_manuel_Sciences_7eme_H_annee = models.IntegerField(null=True, verbose_name="Sciences 7eme H Année")
+    st3_manuel_Sciences_8eme_H_annee = models.IntegerField(null=True, verbose_name="Sciences 8eme H Année")
+
+    # --- Manuels Thèmes Transversaux ---
+    st3_manuel_ThemesTransversaux_3eme_H_annee = models.IntegerField(null=True, verbose_name="Thèmes Trans. 3eme H Année")
+    st3_manuel_ThemesTransversaux_4eme_H_annee = models.IntegerField(null=True, verbose_name="Thèmes Trans. 4eme H Année")
+    st3_manuel_ThemesTransversaux_7eme_H_annee = models.IntegerField(null=True, verbose_name="Thèmes Trans. 7eme H Année")
+    st3_manuel_ThemesTransversaux_8eme_H_annee = models.IntegerField(null=True, verbose_name="Thèmes Trans. 8eme H Année")
+
+    # --- Manuels Français ---
+    st3_manuel_Francais_4eme_H_annee = models.IntegerField(null=True, verbose_name="Français 4eme H Année")
+    st3_manuel_Francais_7eme_H_annee = models.IntegerField(null=True, verbose_name="Français 7eme H Année")
+    st3_manuel_Francais_8eme_H_annee = models.IntegerField(null=True, verbose_name="Français 8eme H Année")
+    # Note: La suite de la table continue sur l'image (il y a plus de 50 champs), 
+    # mais cette structure couvre les différents types et niveaux principaux visibles.
+
+    def __str__(self):
+        return f"Manuels Disponibles ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Manuel Disponible par Niveau ST3"
+        verbose_name_plural = "Manuels Disponibles par Niveau ST3"
 
 # Modèle pour 'st3_nombre_locaux_caracteristique_etat_mur'
 class St3_nombre_locaux_caracteristique_etat_mur(models.Model):
-    pass
+    # 63. form_st_id (bigint(20), Non) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 64. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- Locaux Autre Type de Mur ---
+    st3_AutresMur_PF_BE = models.IntegerField(null=True, verbose_name="Autres Murs Paille/Feuillage Bon État")
+    st3_AutresMur_PF_ME = models.IntegerField(null=True, verbose_name="Autres Murs Paille/Feuillage Mauvais État")
+    st3_AutresMur_SD_BE = models.IntegerField(null=True, verbose_name="Autres Murs Semi-dur Bon État")
+    st3_AutresMur_SD_ME = models.IntegerField(null=True, verbose_name="Autres Murs Semi-dur Mauvais État")
+    st3_AutresMur_Terre_BE = models.IntegerField(null=True, verbose_name="Autres Murs Terre Bon État")
+    st3_AutresMur_Terre_ME = models.IntegerField(null=True, verbose_name="Autres Murs Terre Mauvais État")
+    
+    # --- Locaux Autres (non-spécifiés) ---
+    m_st3_NombreLocaux_Autres_AutreTerre_Bon_Etat = models.IntegerField(null=True, verbose_name="Autres (Non Spécifiés) Terre Bon État")
+    m_st3_NombreLocaux_Autres_AutreTerre_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Autres (Non Spécifiés) Terre Mauvais État")
+    m_st3_NombreLocaux_Autres_PailleFeuillage_Bon_Etat = models.IntegerField(null=True, verbose_name="Autres (Non Spécifiés) Paille/Feuillage Bon État")
+    m_st3_NombreLocaux_Autres_PailleFeuillage_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Autres (Non Spécifiés) Paille/Feuillage Mauvais État")
+    m_st3_NombreLocaux_Autres_Semi_dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Autres (Non Spécifiés) Semi-dur Bon État")
+    m_st3_NombreLocaux_Autres_Semi_dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Autres (Non Spécifiés) Semi-dur Mauvais État")
+
+    # --- Locaux Bureau Administratif ---
+    m_st3_NombreLocaux_BureauAdministratif_Dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Bureau Dur Bon État")
+    m_st3_NombreLocaux_BureauAdministratif_Dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Bureau Dur Mauvais État")
+    # ... (les autres types de murs pour Bureau Administratif ne sont pas visibles) ...
+    m_st3_NombreLocaux_BureauAdministratif_dontDetruits_occupes = models.IntegerField(null=True, verbose_name="Bureau Dont Détruits/Occupés")
+
+    # --- Locaux Laboratoire ---
+    m_st3_NombreLocaux_Laboratoire_Dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Dur Bon État")
+    m_st3_NombreLocaux_Laboratoire_Dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Dur Mauvais État")
+    m_st3_NombreLocaux_Laboratoire_Paille_Feuillage_Bon_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Paille/Feuillage Bon État")
+    m_st3_NombreLocaux_Laboratoire_Paille_Feuillage_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Paille/Feuillage Mauvais État")
+    m_st3_NombreLocaux_Laboratoire_Semi_dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Semi-dur Bon État")
+    m_st3_NombreLocaux_Laboratoire_Semi_dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Semi-dur Mauvais État")
+    m_st3_NombreLocaux_Laboratoire_Terre_Batu_Bon_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Terre Bon État")
+    m_st3_NombreLocaux_Laboratoire_Terre_Batu_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Laboratoire Terre Mauvais État")
+    m_st3_NombreLocaux_Laboratoire_dontDetruits_occupes = models.IntegerField(null=True, verbose_name="Laboratoire Dont Détruits/Occupés")
+
+    # --- Locaux Latrines/WC (Dur) ---
+    m_st3_NombreLocaux_LatrinesWCDur_Bon_Etat = models.IntegerField(null=True, verbose_name="Latrines/WC Dur Bon État")
+    m_st3_NombreLocaux_LatrinesWCDur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Latrines/WC Dur Mauvais État")
+    # ... (Latrines/WC Paille/Feuillage, Semi-dur, Terre, Dont Détruits/Occupés) ...
+    m_st3_NombreLocaux_LatrinesWC_Semi_dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Latrines/WC Semi-dur Bon État")
+    m_st3_NombreLocaux_LatrinesWC_Semi_dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Latrines/WC Semi-dur Mauvais État")
+    m_st3_NombreLocaux_LatrinesWC_Terre_Batu_Bon_Etat = models.IntegerField(null=True, verbose_name="Latrines/WC Terre Bon État")
+    m_st3_NombreLocaux_LatrinesWC_Terre_Batu_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Latrines/WC Terre Mauvais État")
+    m_st3_NombreLocaux_LatrinesWC_dontDetruits_occupes = models.IntegerField(null=True, verbose_name="Latrines/WC Dont Détruits/Occupés")
+
+    # --- Locaux Magasin/Entrepôt ---
+    m_st3_NombreLocaux_MagasinEntrepotDur_Bon_Etat = models.IntegerField(null=True, verbose_name="Magasin Dur Bon État")
+    m_st3_NombreLocaux_MagasinEntrepotDur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Magasin Dur Mauvais État")
+    # ... (Magasin Paille/Feuillage, Semi-dur, Terre, Dont Détruits/Occupés) ...
+    m_st3_NombreLocaux_MagasinEntrepot_Semi_dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Magasin Semi-dur Bon État")
+    m_st3_NombreLocaux_MagasinEntrepot_Semi_dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Magasin Semi-dur Mauvais État")
+    m_st3_NombreLocaux_MagasinEntrepot_Terre_Batu_Bon_Etat = models.IntegerField(null=True, verbose_name="Magasin Terre Bon État")
+    m_st3_NombreLocaux_MagasinEntrepot_Terre_Batu_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Magasin Terre Mauvais État")
+    m_st3_NombreLocaux_MagasinEntrepot_dontDetruits_occupes = models.IntegerField(null=True, verbose_name="Magasin Dont Détruits/Occupés")
+
+    # --- Locaux Salle de Cours ---
+    m_st3_NombreLocaux_salleCoursDur_Bon_Etat = models.IntegerField(null=True, verbose_name="Salle Cours Dur Bon État")
+    m_st3_NombreLocaux_salleCoursDur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Salle Cours Dur Mauvais État")
+    # ... (Salle Cours Paille/Feuillage, Semi-dur, Terre, Dont Détruits/Occupés) ...
+    m_st3_NombreLocaux_salleCours_Semi_dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Salle Cours Semi-dur Bon État")
+    m_st3_NombreLocaux_salleCours_Semi_dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Salle Cours Semi-dur Mauvais État")
+    m_st3_NombreLocaux_salleCours_Terre_Batu_Bon_Etat = models.IntegerField(null=True, verbose_name="Salle Cours Terre Bon État")
+    m_st3_NombreLocaux_salleCours_Terre_Batu_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Salle Cours Terre Mauvais État")
+    m_st3_NombreLocaux_salleCours_dontDetruits_occupes = models.IntegerField(null=True, verbose_name="Salle Cours Dont Détruits/Occupés")
+
+    # --- Locaux Spécialisés ---
+    m_st3_NombreLocaux_specialisesDur_Bon_Etat = models.IntegerField(null=True, verbose_name="Locaux Spéc. Dur Bon État")
+    m_st3_NombreLocaux_specialisesDur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Locaux Spéc. Dur Mauvais État")
+    # ... (Locaux Spécialisés Paille/Feuillage, Semi-dur, Terre, Dont Détruits/Occupés) ...
+    m_st3_NombreLocaux_specialises_Semi_dur_Bon_Etat = models.IntegerField(null=True, verbose_name="Locaux Spéc. Semi-dur Bon État")
+    m_st3_NombreLocaux_specialises_Semi_dur_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Locaux Spéc. Semi-dur Mauvais État")
+    m_st3_NombreLocaux_specialises_Terre_Batu_Bon_Etat = models.IntegerField(null=True, verbose_name="Locaux Spéc. Terre Bon État")
+    m_st3_NombreLocaux_specialises_Terre_Batu_Mauvais_Etat = models.IntegerField(null=True, verbose_name="Locaux Spéc. Terre Mauvais État")
+    m_st3_NombreLocaux_specialises_dontDetruits_occupes = models.IntegerField(null=True, verbose_name="Locaux Spéc. Dont Détruits/Occupés")
+
+
+    def __str__(self):
+        return f"Locaux Caractéristiques Mur ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Locaux Caractéristiques Mur ST3"
+        verbose_name_plural = "Locaux Caractéristiques Mur ST3"
 
 # Modèle pour 'st3_nombre_locaux_caracteristique_etat_nature_toilette'
 class St3_nombre_locaux_caracteristique_etat_nature_toilette(models.Model):
-    pass
+    # 22. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 23. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- Locaux Autres (Paille/Feuillage) ---
+    st3_NLoc_Autres_DetOcc = models.IntegerField(null=True, verbose_name="Autres Locaux Détruits/Occupés")
+    st3_NLoc_Autres_PF_Bon = models.IntegerField(null=True, verbose_name="Autres Locaux Paille/Feuillage Bon État")
+    st3_NLoc_Autres_PF_Mauv = models.IntegerField(null=True, verbose_name="Autres Locaux Paille/Feuillage Mauvais État")
+
+    # --- Locaux Bureau Administratif (Paille/Feuillage) ---
+    st3_NLoc_BurAdm_DetOcc = models.IntegerField(null=True, verbose_name="Bureau Administratif Détruits/Occupés")
+    st3_NLoc_BurAdm_PF_Bon = models.IntegerField(null=True, verbose_name="Bureau Administratif Paille/Feuillage Bon État")
+    st3_NLoc_BurAdm_PF_Mauv = models.IntegerField(null=True, verbose_name="Bureau Administratif Paille/Feuillage Mauvais État")
+    
+    # --- Locaux Salles de Cours (Paille/Feuillage) ---
+    st3_NLoc_Cours_DetOcc = models.IntegerField(null=True, verbose_name="Salles de Cours Détruits/Occupés")
+    st3_NLoc_Cours_PF_Bon = models.IntegerField(null=True, verbose_name="Salles de Cours Paille/Feuillage Bon État")
+    st3_NLoc_Cours_PF_Mauv = models.IntegerField(null=True, verbose_name="Salles de Cours Paille/Feuillage Mauvais État")
+
+    # --- Locaux Laboratoire (Paille/Feuillage) ---
+    st3_NLoc_Labo_DetOcc = models.IntegerField(null=True, verbose_name="Laboratoire Détruits/Occupés")
+    st3_NLoc_Labo_PF_Bon = models.IntegerField(null=True, verbose_name="Laboratoire Paille/Feuillage Bon État")
+    st3_NLoc_Labo_PF_Mauv = models.IntegerField(null=True, verbose_name="Laboratoire Paille/Feuillage Mauvais État")
+
+    # --- Locaux Latrines/Toilettes (Paille/Feuillage) ---
+    st3_NLoc_Latrine_DetOcc = models.IntegerField(null=True, verbose_name="Latrines Détruits/Occupés")
+    st3_NLoc_Latrine_PF_Bon = models.IntegerField(null=True, verbose_name="Latrines Paille/Feuillage Bon État")
+    st3_NLoc_Latrine_PF_Mauv = models.IntegerField(null=True, verbose_name="Latrines Paille/Feuillage Mauvais État")
+
+    # --- Locaux Magasin/Entrepôt (Paille/Feuillage) ---
+    st3_NLoc_Mag_DetOcc = models.IntegerField(null=True, verbose_name="Magasin Détruits/Occupés")
+    st3_NLoc_Mag_PF_Bon = models.IntegerField(null=True, verbose_name="Magasin Paille/Feuillage Bon État")
+    st3_NLoc_Mag_PF_Mauv = models.IntegerField(null=True, verbose_name="Magasin Paille/Feuillage Mauvais État")
+
+    # --- Locaux Spécialisés (Paille/Feuillage) ---
+    st3_NLoc_Spec_DetOcc = models.IntegerField(null=True, verbose_name="Locaux Spécialisés Détruits/Occupés")
+    st3_NLoc_Spec_PF_Bon = models.IntegerField(null=True, verbose_name="Locaux Spécialisés Paille/Feuillage Bon État")
+    st3_NLoc_Spec_PF_Mauv = models.IntegerField(null=True, verbose_name="Locaux Spécialisés Paille/Feuillage Mauvais État")
+
+    def __str__(self):
+        return f"Locaux Toilettes/Nature Murs ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Locaux Toilettes/Nature Murs ST3"
+        verbose_name_plural = "Locaux Toilettes/Nature Murs ST3"
 
 # Modèle pour 'st3_note_section'
 class St3_note_section(models.Model):
-    pass
+    # 1. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    ) #
+
+    # 2. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # 3. st3_note (varchar(255), Oui)
+    st3_note = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Note de Section ST3"
+    ) #
+
+    # 4. st3_pv_reunions (varchar(255), Oui)
+    st3_pv_reunions = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Références PV Réunions"
+    ) #
+
+    def __str__(self):
+        return f"Note de Section ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Note de Section ST3"
+        verbose_name_plural = "Notes de Section ST3"
 
 # Modèle pour 'st3_personnel_administratif_fonction_sexe'
 class St3_personnel_administratif_fonction_sexe(models.Model):
-    pass
+    # Clés de référence
+    # form_st_id (bigint(20), Oui)
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- Conseiller Pédagogique (F) ---
+    st_3_Nombre_Conseiller_PedagogiqueF_A1 = models.IntegerField(null=True, verbose_name="CP F - Qualif A1")
+    st_3_Nombre_Conseiller_PedagogiqueF_Autres = models.IntegerField(null=True, verbose_name="CP F - Autres Qualif")
+    st_3_Nombre_Conseiller_PedagogiqueF_D6 = models.IntegerField(null=True, verbose_name="CP F - Qualif D6")
+    st_3_Nombre_Conseiller_PedagogiqueF_DR = models.IntegerField(null=True, verbose_name="CP F - Qualif DR")
+    st_3_Nombre_Conseiller_PedagogiqueF_G3 = models.IntegerField(null=True, verbose_name="CP F - Qualif G3")
+    st_3_Nombre_Conseiller_PedagogiqueF_IR = models.IntegerField(null=True, verbose_name="CP F - Qualif IR")
+    st_3_Nombre_Conseiller_PedagogiqueF_L2 = models.IntegerField(null=True, verbose_name="CP F - Qualif L2")
+    st_3_Nombre_Conseiller_PedagogiqueF_L2A = models.IntegerField(null=True, verbose_name="CP F - Qualif L2A")
+    st_3_Nombre_Conseiller_PedagogiqueF_LA = models.IntegerField(null=True, verbose_name="CP F - Qualif LA")
+    st_3_Nombre_Conseiller_PedagogiqueF_MoinsD6 = models.IntegerField(null=True, verbose_name="CP F - Moins de D6")
+    st_3_Nombre_Conseiller_PedagogiqueF_P6 = models.IntegerField(null=True, verbose_name="CP F - Qualif P6")
+
+    # --- Conseiller Pédagogique (H) ---
+    st_3_Nombre_Conseiller_PedagogiqueH_A1 = models.IntegerField(null=True, verbose_name="CP H - Qualif A1")
+    st_3_Nombre_Conseiller_PedagogiqueH_Autres = models.IntegerField(null=True, verbose_name="CP H - Autres Qualif")
+    st_3_Nombre_Conseiller_PedagogiqueH_D6 = models.IntegerField(null=True, verbose_name="CP H - Qualif D6")
+    st_3_Nombre_Conseiller_PedagogiqueH_DR = models.IntegerField(null=True, verbose_name="CP H - Qualif DR")
+    st_3_Nombre_Conseiller_PedagogiqueH_G3 = models.IntegerField(null=True, verbose_name="CP H - Qualif G3")
+    st_3_Nombre_Conseiller_PedagogiqueH_IR = models.IntegerField(null=True, verbose_name="CP H - Qualif IR")
+    st_3_Nombre_Conseiller_PedagogiqueH_L2 = models.IntegerField(null=True, verbose_name="CP H - Qualif L2")
+    st_3_Nombre_Conseiller_PedagogiqueH_L2A = models.IntegerField(null=True, verbose_name="CP H - Qualif L2A")
+    st_3_Nombre_Conseiller_PedagogiqueH_LA = models.IntegerField(null=True, verbose_name="CP H - Qualif LA")
+    st_3_Nombre_Conseiller_PedagogiqueH_MoinsD6 = models.IntegerField(null=True, verbose_name="CP H - Moins de D6")
+    st_3_Nombre_Conseiller_PedagogiqueH_P6 = models.IntegerField(null=True, verbose_name="CP H - Qualif P6")
+
+    # --- Directeur de Discipline (F) ---
+    st_3_Nombre_Directeur_DisciplineF_A1 = models.IntegerField(null=True, verbose_name="DD F - Qualif A1")
+    st_3_Nombre_Directeur_DisciplineF_Autres = models.IntegerField(null=True, verbose_name="DD F - Autres Qualif")
+    st_3_Nombre_Directeur_DisciplineF_D6 = models.IntegerField(null=True, verbose_name="DD F - Qualif D6")
+    st_3_Nombre_Directeur_DisciplineF_DR = models.IntegerField(null=True, verbose_name="DD F - Qualif DR")
+    st_3_Nombre_Directeur_DisciplineF_G3 = models.IntegerField(null=True, verbose_name="DD F - Qualif G3")
+    st_3_Nombre_Directeur_DisciplineF_IR = models.IntegerField(null=True, verbose_name="DD F - Qualif IR")
+    st_3_Nombre_Directeur_DisciplineF_L2 = models.IntegerField(null=True, verbose_name="DD F - Qualif L2")
+    st_3_Nombre_Directeur_DisciplineF_L2A = models.IntegerField(null=True, verbose_name="DD F - Qualif L2A")
+    st_3_Nombre_Directeur_DisciplineF_LA = models.IntegerField(null=True, verbose_name="DD F - Qualif LA")
+    st_3_Nombre_Directeur_DisciplineF_MoinsD6 = models.IntegerField(null=True, verbose_name="DD F - Moins de D6")
+    st_3_Nombre_Directeur_DisciplineF_P6 = models.IntegerField(null=True, verbose_name="DD F - Qualif P6")
+
+    # --- Directeur de Discipline (H) ---
+    st_3_Nombre_Directeur_DisciplineH_A1 = models.IntegerField(null=True, verbose_name="DD H - Qualif A1")
+    st_3_Nombre_Directeur_DisciplineH_Autres = models.IntegerField(null=True, verbose_name="DD H - Autres Qualif")
+    st_3_Nombre_Directeur_DisciplineH_D6 = models.IntegerField(null=True, verbose_name="DD H - Qualif D6")
+    st_3_Nombre_Directeur_DisciplineH_DR = models.IntegerField(null=True, verbose_name="DD H - Qualif DR")
+    st_3_Nombre_Directeur_DisciplineH_G3 = models.IntegerField(null=True, verbose_name="DD H - Qualif G3")
+    st_3_Nombre_Directeur_DisciplineH_IR = models.IntegerField(null=True, verbose_name="DD H - Qualif IR")
+    st_3_Nombre_Directeur_DisciplineH_L2 = models.IntegerField(null=True, verbose_name="DD H - Qualif L2")
+    st_3_Nombre_Directeur_DisciplineH_L2A = models.IntegerField(null=True, verbose_name="DD H - Qualif L2A")
+    st_3_Nombre_Directeur_DisciplineH_LA = models.IntegerField(null=True, verbose_name="DD H - Qualif LA")
+    st_3_Nombre_Directeur_DisciplineH_MoinsD6 = models.IntegerField(null=True, verbose_name="DD H - Moins de D6")
+    st_3_Nombre_Directeur_DisciplineH_P6 = models.IntegerField(null=True, verbose_name="DD H - Qualif P6")
+    
+    # --- Directeur d'Études (F) ---
+    st_3_Nombre_Directeur_EtudesF_A1 = models.IntegerField(null=True, verbose_name="DE F - Qualif A1")
+    st_3_Nombre_Directeur_EtudesF_Autres = models.IntegerField(null=True, verbose_name="DE F - Autres Qualif")
+    st_3_Nombre_Directeur_EtudesF_D6 = models.IntegerField(null=True, verbose_name="DE F - Qualif D6")
+    st_3_Nombre_Directeur_EtudesF_DR = models.IntegerField(null=True, verbose_name="DE F - Qualif DR")
+    st_3_Nombre_Directeur_EtudesF_G3 = models.IntegerField(null=True, verbose_name="DE F - Qualif G3")
+    st_3_Nombre_Directeur_EtudesF_IR = models.IntegerField(null=True, verbose_name="DE F - Qualif IR")
+    st_3_Nombre_Directeur_EtudesF_L2 = models.IntegerField(null=True, verbose_name="DE F - Qualif L2")
+    st_3_Nombre_Directeur_EtudesF_L2A = models.IntegerField(null=True, verbose_name="DE F - Qualif L2A")
+    st_3_Nombre_Directeur_EtudesF_LA = models.IntegerField(null=True, verbose_name="DE F - Qualif LA")
+    st_3_Nombre_Directeur_EtudesF_MoinsD6 = models.IntegerField(null=True, verbose_name="DE F - Moins de D6")
+    st_3_Nombre_Directeur_EtudesF_P6 = models.IntegerField(null=True, verbose_name="DE F - Qualif P6")
+
+    # --- Directeur d'Études (H) ---
+    st_3_Nombre_Directeur_EtudesH_A1 = models.IntegerField(null=True, verbose_name="DE H - Qualif A1")
+    st_3_Nombre_Directeur_EtudesH_Autres = models.IntegerField(null=True, verbose_name="DE H - Autres Qualif")
+    st_3_Nombre_Directeur_EtudesH_D6 = models.IntegerField(null=True, verbose_name="DE H - Qualif D6")
+    st_3_Nombre_Directeur_EtudesH_DR = models.IntegerField(null=True, verbose_name="DE H - Qualif DR")
+    st_3_Nombre_Directeur_EtudesH_G3 = models.IntegerField(null=True, verbose_name="DE H - Qualif G3")
+    st_3_Nombre_Directeur_EtudesH_IR = models.IntegerField(null=True, verbose_name="DE H - Qualif IR")
+    st_3_Nombre_Directeur_EtudesH_L2 = models.IntegerField(null=True, verbose_name="DE H - Qualif L2")
+    st_3_Nombre_Directeur_EtudesH_L2A = models.IntegerField(null=True, verbose_name="DE H - Qualif L2A")
+    st_3_Nombre_Directeur_EtudesH_LA = models.IntegerField(null=True, verbose_name="DE H - Qualif LA")
+    st_3_Nombre_Directeur_EtudesH_MoinsD6 = models.IntegerField(null=True, verbose_name="DE H - Moins de D6")
+    st_3_Nombre_Directeur_EtudesH_P6 = models.IntegerField(null=True, verbose_name="DE H - Qualif P6")
+
+    # --- Ouvriers et Autres (F) ---
+    st_3_Nombre_Ouvriers_EtAutresF_A1 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif A1")
+    st_3_Nombre_Ouvriers_EtAutresF_Autres = models.IntegerField(null=True, verbose_name="Ouvriers F - Autres Qualif")
+    st_3_Nombre_Ouvriers_EtAutresF_D6 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif D6")
+    st_3_Nombre_Ouvriers_EtAutresF_DR = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif DR")
+    st_3_Nombre_Ouvriers_EtAutresF_G3 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif G3")
+    st_3_Nombre_Ouvriers_EtAutresF_IR = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif IR")
+    st_3_Nombre_Ouvriers_EtAutresF_L2 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif L2")
+    st_3_Nombre_Ouvriers_EtAutresF_L2A = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif L2A")
+    st_3_Nombre_Ouvriers_EtAutresF_LA = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif LA")
+    st_3_Nombre_Ouvriers_EtAutresF_MoinsD6 = models.IntegerField(null=True, verbose_name="Ouvriers F - Moins de D6")
+    st_3_Nombre_Ouvriers_EtAutresF_P6 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif P6")
+
+    # --- Ouvriers et Autres (H) ---
+    st_3_Nombre_Ouvriers_EtAutresH_A1 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif A1")
+    st_3_Nombre_Ouvriers_EtAutresH_Autres = models.IntegerField(null=True, verbose_name="Ouvriers H - Autres Qualif")
+    st_3_Nombre_Ouvriers_EtAutresH_D6 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif D6")
+    st_3_Nombre_Ouvriers_EtAutresH_DR = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif DR")
+    st_3_Nombre_Ouvriers_EtAutresH_G3 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif G3")
+    st_3_Nombre_Ouvriers_EtAutresH_IR = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif IR")
+    st_3_Nombre_Ouvriers_EtAutresH_L2 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif L2")
+    st_3_Nombre_Ouvriers_EtAutresH_L2A = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif L2A")
+    st_3_Nombre_Ouvriers_EtAutresH_LA = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif LA")
+    st_3_Nombre_Ouvriers_EtAutresH_MoinsD6 = models.IntegerField(null=True, verbose_name="Ouvriers H - Moins de D6")
+    st_3_Nombre_Ouvriers_EtAutresH_P6 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif P6")
+
+    # --- Préfet d'Études (F) ---
+    st_3_Nombre_Prefet_EtudesF_A1 = models.IntegerField(null=True, verbose_name="PE F - Qualif A1")
+    st_3_Nombre_Prefet_EtudesF_Autres = models.IntegerField(null=True, verbose_name="PE F - Autres Qualif")
+    st_3_Nombre_Prefet_EtudesF_D6 = models.IntegerField(null=True, verbose_name="PE F - Qualif D6")
+    st_3_Nombre_Prefet_EtudesF_DR = models.IntegerField(null=True, verbose_name="PE F - Qualif DR")
+    st_3_Nombre_Prefet_EtudesF_G3 = models.IntegerField(null=True, verbose_name="PE F - Qualif G3")
+    st_3_Nombre_Prefet_EtudesF_IR = models.IntegerField(null=True, verbose_name="PE F - Qualif IR")
+    st_3_Nombre_Prefet_EtudesF_L2 = models.IntegerField(null=True, verbose_name="PE F - Qualif L2")
+    st_3_Nombre_Prefet_EtudesF_L2A = models.IntegerField(null=True, verbose_name="PE F - Qualif L2A")
+    st_3_Nombre_Prefet_EtudesF_LA = models.IntegerField(null=True, verbose_name="PE F - Qualif LA")
+    st_3_Nombre_Prefet_EtudesF_MoinsD6 = models.IntegerField(null=True, verbose_name="PE F - Moins de D6")
+    st_3_Nombre_Prefet_EtudesF_P6 = models.IntegerField(null=True, verbose_name="PE F - Qualif P6")
+
+    # --- Préfet d'Études (H) ---
+    st_3_Nombre_Prefet_EtudesH_A1 = models.IntegerField(null=True, verbose_name="PE H - Qualif A1")
+    st_3_Nombre_Prefet_EtudesH_Autres = models.IntegerField(null=True, verbose_name="PE H - Autres Qualif")
+    st_3_Nombre_Prefet_EtudesH_D6 = models.IntegerField(null=True, verbose_name="PE H - Qualif D6")
+    st_3_Nombre_Prefet_EtudesH_DR = models.IntegerField(null=True, verbose_name="PE H - Qualif DR")
+    st_3_Nombre_Prefet_EtudesH_G3 = models.IntegerField(null=True, verbose_name="PE H - Qualif G3")
+    st_3_Nombre_Prefet_EtudesH_IR = models.IntegerField(null=True, verbose_name="PE H - Qualif IR")
+    st_3_Nombre_Prefet_EtudesH_L2 = models.IntegerField(null=True, verbose_name="PE H - Qualif L2")
+    st_3_Nombre_Prefet_EtudesH_L2A = models.IntegerField(null=True, verbose_name="PE H - Qualif L2A")
+    st_3_Nombre_Prefet_EtudesH_LA = models.IntegerField(null=True, verbose_name="PE H - Qualif LA")
+    st_3_Nombre_Prefet_EtudesH_MoinsD6 = models.IntegerField(null=True, verbose_name="PE H - Moins de D6")
+    st_3_Nombre_Prefet_EtudesH_P6 = models.IntegerField(null=True, verbose_name="PE H - Qualif P6")
+
+    # --- Surveillant (F) ---
+    st_3_Nombre_SurveillantF_A1 = models.IntegerField(null=True, verbose_name="Surv F - Qualif A1")
+    st_3_Nombre_SurveillantF_Autres = models.IntegerField(null=True, verbose_name="Surv F - Autres Qualif")
+    st_3_Nombre_SurveillantF_D6 = models.IntegerField(null=True, verbose_name="Surv F - Qualif D6")
+    st_3_Nombre_SurveillantF_DR = models.IntegerField(null=True, verbose_name="Surv F - Qualif DR")
+    st_3_Nombre_SurveillantF_G3 = models.IntegerField(null=True, verbose_name="Surv F - Qualif G3")
+    st_3_Nombre_SurveillantF_IR = models.IntegerField(null=True, verbose_name="Surv F - Qualif IR")
+    st_3_Nombre_SurveillantF_L2 = models.IntegerField(null=True, verbose_name="Surv F - Qualif L2")
+    st_3_Nombre_SurveillantF_L2A = models.IntegerField(null=True, verbose_name="Surv F - Qualif L2A")
+    st_3_Nombre_SurveillantF_LA = models.IntegerField(null=True, verbose_name="Surv F - Qualif LA")
+    st_3_Nombre_SurveillantF_MoinsD6 = models.IntegerField(null=True, verbose_name="Surv F - Moins de D6")
+    st_3_Nombre_SurveillantF_P6 = models.IntegerField(null=True, verbose_name="Surv F - Qualif P6")
+
+    # --- Surveillant (H) ---
+    st_3_Nombre_SurveillantH_A1 = models.IntegerField(null=True, verbose_name="Surv H - Qualif A1")
+    st_3_Nombre_SurveillantH_Autres = models.IntegerField(null=True, verbose_name="Surv H - Autres Qualif")
+    st_3_Nombre_SurveillantH_D6 = models.IntegerField(null=True, verbose_name="Surv H - Qualif D6")
+    st_3_Nombre_SurveillantH_DR = models.IntegerField(null=True, verbose_name="Surv H - Qualif DR")
+    st_3_Nombre_SurveillantH_G3 = models.IntegerField(null=True, verbose_name="Surv H - Qualif G3")
+    st_3_Nombre_SurveillantH_IR = models.IntegerField(null=True, verbose_name="Surv H - Qualif IR")
+    st_3_Nombre_SurveillantH_L2 = models.IntegerField(null=True, verbose_name="Surv H - Qualif L2")
+    st_3_Nombre_SurveillantH_L2A = models.IntegerField(null=True, verbose_name="Surv H - Qualif L2A")
+    st_3_Nombre_SurveillantH_LA = models.IntegerField(null=True, verbose_name="Surv H - Qualif LA")
+    st_3_Nombre_SurveillantH_MoinsD6 = models.IntegerField(null=True, verbose_name="Surv H - Moins de D6")
+    st_3_Nombre_SurveillantH_P6 = models.IntegerField(null=True, verbose_name="Surv H - Qualif P6")
+
+
+    def __str__(self):
+        return f"Personnel Administratif ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Personnel Administratif Fonction Sexe ST3"
+        verbose_name_plural = "Personnel Administratif Fonction Sexe ST3"
 
 # Modèle pour 'st3_personnel_enseignant'
 class St3_personnel_enseignant(models.Model):
-    pass
+    # 1. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 2. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # 3. chef_cote_positif (varchar(255), Oui)
+    chef_cote_positif = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Chef - Côté Positif"
+    )
+
+    # 4. chef_formation (varchar(255), Oui)
+    chef_formation = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Chef - Formation Reçue"
+    )
+
+    # 5. educateurs_cotes_positifs (varchar(255), Oui)
+    educateurs_cotes_positifs = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Éducateurs - Côtés Positifs"
+    )
+
+    # 6. educateurs_formes (varchar(255), Oui)
+    educateurs_formes = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Éducateurs Formés"
+    )
+
+    # 7. educateurs_inspectes (varchar(255), Oui)
+    educateurs_inspectes = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Éducateurs Inspectés"
+    )
+
+    def __str__(self):
+        return f"Personnel Enseignant ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Personnel Enseignant ST3"
+        verbose_name_plural = "Personnel Enseignant ST3"
 
 # Modèle pour 'st3_personnel_enseignant_sexe_qualification'
 class St3_personnel_enseignant_sexe_qualification(models.Model):
-    pass
+    # 23. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 24. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- Nombre Enseignants Secondaire F (Femmes) ---
+    st3_NombreEnseignantSecondaireF_A1 = models.IntegerField(null=True, verbose_name="F - Qualification A1")
+    st3_NombreEnseignantSecondaireF_Autres = models.IntegerField(null=True, verbose_name="F - Autres Qualifications")
+    st3_NombreEnseignantSecondaireF_DR = models.IntegerField(null=True, verbose_name="F - Qualification DR")
+    st3_NombreEnseignantSecondaireF_G3 = models.IntegerField(null=True, verbose_name="F - Qualification G3")
+    st3_NombreEnseignantSecondaireF_IR = models.IntegerField(null=True, verbose_name="F - Qualification IR")
+    st3_NombreEnseignantSecondaireF_L2 = models.IntegerField(null=True, verbose_name="F - Qualification L2")
+    st3_NombreEnseignantSecondaireF_L2A = models.IntegerField(null=True, verbose_name="F - Qualification L2A")
+    st3_NombreEnseignantSecondaireF_LA = models.IntegerField(null=True, verbose_name="F - Qualification LA")
+    st3_NombreEnseignantSecondaireF_MoinsD6 = models.IntegerField(null=True, verbose_name="F - Moins de D6")
+    st3_NombreEnseignantSecondaireF_P6 = models.IntegerField(null=True, verbose_name="F - Qualification P6")
+
+    # --- Nombre Enseignants Secondaire H (Hommes) ---
+    st3_NombreEnseignantSecondaireH_Autres = models.IntegerField(null=True, verbose_name="H - Autres Qualifications")
+    st3_NombreEnseignantSecondaireH_DR = models.IntegerField(null=True, verbose_name="H - Qualification DR")
+    st3_NombreEnseignantSecondaireH_G3 = models.IntegerField(null=True, verbose_name="H - Qualification G3")
+    st3_NombreEnseignantSecondaireH_IR = models.IntegerField(null=True, verbose_name="H - Qualification IR")
+    st3_NombreEnseignantSecondaireH_L2 = models.IntegerField(null=True, verbose_name="H - Qualification L2")
+    st3_NombreEnseignantSecondaireH_L2A = models.IntegerField(null=True, verbose_name="H - Qualification L2A")
+    st3_NombreEnseignantSecondaireH_LA = models.IntegerField(null=True, verbose_name="H - Qualification LA")
+    st3_NombreEnseignantSecondaireH_MoinsD6 = models.IntegerField(null=True, verbose_name="H - Moins de D6")
+    st3_NombreEnseignantSecondaireH_P6 = models.IntegerField(null=True, verbose_name="H - Qualification P6")
+
+    # --- Statut ---
+    st3_NombreEnseignantARetraite = models.IntegerField(null=True, verbose_name="Enseignants Proches Retraite")
+    st3_NombreEnseignantNonPaye = models.IntegerField(null=True, verbose_name="Enseignants Non Payés")
+
+    def __str__(self):
+        return f"Personnel Enseignant Qualification ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Personnel Enseignant Qualification ST3"
+        verbose_name_plural = "Personnel Enseignant Qualification ST3"
 
 # Modèle pour 'st3_repartition_temps_formation'
 class St3_repartition_temps_formation(models.Model):
-    pass
+    # Clé de référence (comme d'habitude pour les tables d'enquête)
+    # form_st_id (bigint(20), Oui)
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # --- Champs de Temps de Formation ---
+    
+    # st3_RepTempsFormation_ActivitesSportives_ParJour (int(11), Oui)
+    st3_RepTempsFormation_ActivitesSportives_ParJour = models.IntegerField(
+        null=True, 
+        verbose_name="Activités Sportives (heures/jour)"
+    ) #
+
+    # st3_RepTempsFormation_ActivitesSportives_ParSemaine (int(11), Oui)
+    st3_RepTempsFormation_ActivitesSportives_ParSemaine = models.IntegerField(
+        null=True, 
+        verbose_name="Activités Sportives (heures/semaine)"
+    ) #
+    
+    # st3_RepTempsFormation_ArtsPlastiques_ParJour (int(11), Oui)
+    st3_RepTempsFormation_ArtsPlastiques_ParJour = models.IntegerField(
+        null=True, 
+        verbose_name="Arts Plastiques (heures/jour)"
+    ) #
+
+    # st3_RepTempsFormation_ArtsPlastiques_ParSemaine (int(11), Oui)
+    st3_RepTempsFormation_ArtsPlastiques_ParSemaine = models.IntegerField(
+        null=True, 
+        verbose_name="Arts Plastiques (heures/semaine)"
+    ) #
+    
+    # st3_RepTempsFormation_AutresActivites_ParJour (int(11), Oui)
+    st3_RepTempsFormation_AutresActivites_ParJour = models.IntegerField(
+        null=True, 
+        verbose_name="Autres Activités (heures/jour)"
+    ) #
+
+    # st3_RepTempsFormation_AutresActivites_ParSemaine (int(11), Oui)
+    st3_RepTempsFormation_AutresActivites_ParSemaine = models.IntegerField(
+        null=True, 
+        verbose_name="Autres Activités (heures/semaine)"
+    ) #
+
+    # st3_RepTempsFormation_DisciplineTechnique_ParJour (int(11), Oui)
+    st3_RepTempsFormation_DisciplineTechnique_ParJour = models.IntegerField(
+        null=True, 
+        verbose_name="Discipline Technique (heures/jour)"
+    ) #
+
+    # st3_RepTempsFormation_DisciplineTechnique_ParSemaine (int(11), Oui)
+    st3_RepTempsFormation_DisciplineTechnique_ParSemaine = models.IntegerField(
+        null=True, 
+        verbose_name="Discipline Technique (heures/semaine)"
+    ) #
+
+    # st3_RepTempsFormation_DisciplinesGenerales_ParJour (int(11), Oui)
+    st3_RepTempsFormation_DisciplinesGenerales_ParJour = models.IntegerField(
+        null=True, 
+        verbose_name="Disciplines Générales (heures/jour)"
+    ) #
+
+    # st3_RepTempsFormation_DisciplinesGenerales_ParSemaine (int(11), Oui)
+    st3_RepTempsFormation_DisciplinesGenerales_ParSemaine = models.IntegerField(
+        null=True, 
+        verbose_name="Disciplines Générales (heures/semaine)"
+    ) #
+
+
+    def __str__(self):
+        return f"Répartition Temps Formation ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Répartition Temps Formation ST3"
+        verbose_name_plural = "Répartition Temps Formation ST3"
 
 # Modèle pour 'st3_reseaux_environnement'
 class St3_reseaux_environnement(models.Model):
-    pass
+    # 8. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 9. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # 1. st3_chef_participe_rld (bit(1), Oui)
+    st3_chef_participe_rld = models.BooleanField(
+        null=True, 
+        verbose_name="Chef participe Réseau Locaux Directeurs"
+    )
+
+    # 2. st3_coins_dechets (bit(1), Oui)
+    st3_coins_dechets = models.BooleanField(
+        null=True, 
+        verbose_name="Dispose de coins à déchets"
+    )
+
+    # 3. st3_dispose_arbres (bit(1), Oui)
+    st3_dispose_arbres = models.BooleanField(
+        null=True, 
+        verbose_name="Dispose d'arbres"
+    )
+
+    # 4. st3_nombre_arbres_plantes (int(11), Oui)
+    st3_nombre_arbres_plantes = models.IntegerField(
+        null=True, 
+        verbose_name="Nombre d'arbres plantés"
+    )
+
+    # 5. st3_nombre_enseignant_formes_sur_administration_1_soin (int(11), Oui)
+    st3_nombre_enseignant_formes_sur_administration_1_soin = models.IntegerField(
+        null=True, 
+        verbose_name="Nb enseignants formés administration/1er soin"
+    )
+
+    # 6. st3_participation_rep (bit(1), Oui)
+    st3_participation_rep = models.BooleanField(
+        null=True, 
+        verbose_name="Participation aux réunions du REP"
+    )
+
+    # 7. st3_reseaux_locaux_directeurs (bit(1), Oui)
+    st3_reseaux_locaux_directeurs = models.BooleanField(
+        null=True, 
+        verbose_name="Participation aux réseaux locaux directeurs"
+    )
+
+    def __str__(self):
+        return f"Réseaux et Environnement ST3 (ID: {self.id})"
+
+    class Meta:
+        verbose_name = "Réseaux et Environnement ST3"
+        verbose_name_plural = "Réseaux et Environnement ST3"
 
 # Modèle pour 'st3_resultat_examen_etat'
 class St3_resultat_examen_etat(models.Model):
-    pass
+    # 6. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    )
+
+    # 7. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # 1. ElevesInscritsF (int(11), Oui)
+    eleves_inscrits_f = models.IntegerField(
+        null=True, 
+        verbose_name="Élèves Filles Inscrites"
+    )
+
+    # 2. ElevesInscritsG (int(11), Oui)
+    eleves_inscrits_g = models.IntegerField(
+        null=True, 
+        verbose_name="Élèves Garçons Inscrits"
+    )
+
+    # 3. ElevesPresentesF (int(11), Oui)
+    eleves_presentes_f = models.IntegerField(
+        null=True, 
+        verbose_name="Élèves Filles Présentées"
+    )
+
+    # 4. ElevesPresentesG (int(11), Oui)
+    eleves_presentes_g = models.IntegerField(
+        null=True, 
+        verbose_name="Élèves Garçons Présentés"
+    )
+
+    # 5. equipement (int(11), Oui)
+    # Le libellé est ambigu, mais semble lié au contexte.
+    equipement = models.IntegerField(
+        null=True, 
+        verbose_name="Équipement (Code/Statut)"
+    )
+
+    # 8. NomDuFiliere (varchar(255), Oui)
+    nom_du_filiere = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Nom de la Filière"
+    )
+
+    def __str__(self):
+        return f"Résultat Examen État ST3 (Filière: {self.nom_du_filiere})"
+
+    class Meta:
+        verbose_name = "Résultat Examen État ST3"
+        verbose_name_plural = "Résultats Examens État ST3"
 
 class St3_resultat_jury_national(models.Model):
-    pass
+    # 5. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
+    form_st_id = models.BigIntegerField(
+        null=True, 
+        verbose_name="Formulaire ST ID"
+    ) #
+
+    # 6. id (bigint(20), AUTO_INCREMENT, Non)
+    # Géré automatiquement par Django.
+
+    # 1. NombreParticipantsF (int(11), Oui)
+    nombre_participants_f = models.IntegerField(
+        null=True, 
+        verbose_name="Nombre de Participantes Filles"
+    ) #
+
+    # 2. NombreParticipantsG (int(11), Oui)
+    nombre_participants_g = models.IntegerField(
+        null=True, 
+        verbose_name="Nombre de Participants Garçons"
+    ) #
+
+    # 3. NombreReussitesF (int(11), Oui)
+    nombre_reussites_f = models.IntegerField(
+        null=True, 
+        verbose_name="Nombre de Réussites Filles"
+    ) #
+
+    # 4. NombreReussitesG (int(11), Oui)
+    nombre_reussites_g = models.IntegerField(
+        null=True, 
+        verbose_name="Nombre de Réussites Garçons"
+    ) #
+
+    # 7. NomFiliere (varchar(255), Oui)
+    nom_filiere = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Nom de la Filière"
+    ) #
+
+    def __str__(self):
+        return f"Résultat Jury National ST3 ({self.nom_filiere})"
+
+    class Meta:
+        verbose_name = "Résultat Jury National ST3"
+        verbose_name_plural = "Résultats Jury National ST3"
+
+
+class Territoires(models.Model):
+    # id (int(11), AUTO_INCREMENT, Non) - Géré automatiquement par Django.
+
+    # fk_province_id (int(11), Qui)
+    # Clé étrangère vers le modèle Provinces (nécessaire pour la hiérarchie géographique).
+    fk_province_id = models.ForeignKey(
+        'core.Provinces', # Assurez-vous que l'app s'appelle 'core' et que le modèle Province est bien nommé 'Provinces'
+        on_delete=models.CASCADE, 
+        null=True, 
+        verbose_name="Province (Référence)"
+    )
+    fk_proved_id = models.ForeignKey(
+        'core.Provinces', # Assurez-vous que l'app s'appelle 'core' et que le modèle Province est bien nommé 'Provinces'
+        on_delete=models.CASCADE, 
+        null=True, 
+        verbose_name="Province (Référence)"
+    )
+
+    # code (varchar(20), Non)
+    code = models.CharField(
+        max_length=20, 
+        unique=True, 
+        verbose_name="Code Territoire"
+    ) #
+
+    # nom_territoire (varchar(255), Oui)
+    nom_territoire = models.CharField(
+        max_length=255, 
+        null=True, 
+        verbose_name="Nom du Territoire"
+    ) #
+
+    # sigle_territoire (varchar(20), Oui)
+    sigle_territoire = models.CharField(
+        max_length=20, 
+        null=True, 
+        verbose_name="Sigle Territoire"
+    ) #
+
+    # st_3_IdTerr (int(11), Qui)
+    # ID Hérité de l'ancienne enquête ST3, conservé pour la migration ou la référence.
+    st_3_IdTerr = models.IntegerField(
+        null=True, 
+        verbose_name="ID Territoire ST3 Hérité"
+    ) #
+
+
+    def __str__(self):
+        return f"{self.nom_territoire} ({self.code})"
+
+    class Meta:
+        verbose_name = "Territoire"
+        verbose_name_plural = "Territoires"
+        # Ajout d'une contrainte pour s'assurer qu'un territoire n'a qu'un code unique
+        constraints = [
+            models.UniqueConstraint(fields=['code'], name='unique_code_territoire')
+        ]
