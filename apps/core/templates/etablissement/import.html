@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+
+<style>
+    .import-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .import-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        padding: 30px;
+    }
+    
+    .import-section {
+        margin-bottom: 30px;
+        padding: 20px;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        text-align: center;
+    }
+    
+    .import-section:hover {
+        border-color: #4b6cb7;
+    }
+    
+    .file-input {
+        display: none;
+    }
+    
+    .file-label {
+        display: inline-block;
+        padding: 15px 30px;
+        background: #f8f9fa;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .file-label:hover {
+        background: #e9ecef;
+    }
+    
+    .template-download {
+        margin-top: 20px;
+    }
+    
+    .instructions {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 30px;
+    }
+</style>
+
+<div class="import-container">
+    <div class="import-card">
+        <h1><i class="fas fa-file-import"></i> Importer des Établissements</h1>
+        
+        <!-- Import Excel -->
+        <div class="import-section">
+            <h3>Importer depuis Excel</h3>
+            <p>Format supporté: .xlsx, .xls</p>
+            
+            <form method="post" action="{% url 'import_excel' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="excel_file" accept=".xlsx,.xls" class="file-input" id="excelFile">
+                <label for="excelFile" class="file-label">
+                    <i class="fas fa-file-excel"></i> Choisir un fichier Excel
+                </label>
+                <button type="submit" class="btn btn-primary" style="display: none;" id="excelSubmit">
+                    <i class="fas fa-upload"></i> Importer Excel
+                </button>
+            </form>
+            
+            <div class="template-download">
+                <a href="{% url 'download_excel_template' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-download"></i> Télécharger le modèle Excel
+                </a>
+            </div>
+        </div>
+        
+        <!-- Import CSV -->
+        <div class="import-section">
+            <h3>Importer depuis CSV</h3>
+            <p>Format supporté: .csv (séparateur: point-virgule)</p>
+            
+            <form method="post" action="{% url 'import_csv' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="file" name="csv_file" accept=".csv" class="file-input" id="csvFile">
+                <label for="csvFile" class="file-label">
+                    <i class="fas fa-file-csv"></i> Choisir un fichier CSV
+                </label>
+                <button type="submit" class="btn btn-primary" style="display: none;" id="csvSubmit">
+                    <i class="fas fa-upload"></i> Importer CSV
+                </button>
+            </form>
+            
+            <div class="template-download">
+                <a href="{% url 'download_csv_template' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-download"></i> Télécharger le modèle CSV
+                </a>
+            </div>
+        </div>
+        
+        <!-- Instructions -->
+        <div class="instructions">
+            <h4><i class="fas fa-info-circle"></i> Instructions d'importation</h4>
+            <ul>
+                <li><strong>Colonnes obligatoires:</strong> nomEtablissement, anneeId, provinceId</li>
+                <li><strong>Colonnes optionnelles:</strong> type_enseignement, NomChefEtablissement, adresseEtablissement, TelephoneEtablissement, provedId, sousProvedId, nom_norm, isActive</li>
+                <li>Les IDs des relations doivent exister dans la base de données</li>
+                <li>Le fichier doit contenir un en-tête avec les noms de colonnes</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Afficher le bouton d'importation quand un fichier est sélectionné
+    document.getElementById('excelFile').addEventListener('change', function() {
+        document.getElementById('excelSubmit').style.display = 'inline-block';
+    });
+    
+    document.getElementById('csvFile').addEventListener('change', function() {
+        document.getElementById('csvSubmit').style.display = 'inline-block';
+    });
+</script>
+
+{% endblock %}

@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
 {% block etablissement_active %} active {% endblock %}
+{% block content %}
+
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
@@ -270,97 +271,134 @@
             </h2>
         </div>
         <div class="form-body">
-            <form id="establishmentForm">
+            <form id="establishmentForm" method="post">
+                {% csrf_token %}
+                
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="name">Nom de l'établissement *</label>
-                        <input type="text" id="name" name="name" class="form-control" required>
+                        <label for="nomEtablissement">Nom de l'établissement *</label>
+                        <input type="text" id="nomEtablissement" name="nomEtablissement" class="form-control" required 
+                               value="{{ form.nomEtablissement.value|default:'' }}">
                     </div>
                     <div class="form-group">
-                        <label for="schoolYear">Année scolaire *</label>
-                        <select id="schoolYear" name="schoolYear" class="form-control" required>
+                        <label for="anneeId">Année scolaire *</label>
+                        <select id="anneeId" name="anneeId" class="form-control" required>
                             <option value="">Sélectionnez une année</option>
-                            <option value="2022-2023">2022-2023</option>
-                            <option value="2023-2024" selected>2023-2024</option>
-                            <option value="2024-2025">2024-2025</option>
+                            {% for annee in annees_scolaires %}
+                            <option value="{{ annee.id }}" {% if form.anneeId.value == annee.id %}selected{% endif %}>
+                                {{ annee.nom }}
+                            </option>
+                            {% endfor %}
                         </select>
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="provision">Provision *</label>
-                        <select id="provision" name="provision" class="form-control" required>
-                            <option value="">Sélectionnez une provision</option>
-                            <option value="Provision A">Provision A</option>
-                            <option value="Provision B">Provision B</option>
-                            <option value="Provision C">Provision C</option>
-                        </select>
+                        <label for="provinceId">Province ID *</label>
+                        <input type="number" id="provinceId" name="provinceId" class="form-control" required
+                               value="{{ form.provinceId.value|default:'' }}">
                     </div>
                     <div class="form-group">
-                        <label for="division">Division *</label>
-                        <select id="division" name="division" class="form-control" required>
-                            <option value="">Sélectionnez une division</option>
-                            <option value="Division Nord">Division Nord</option>
-                            <option value="Division Sud">Division Sud</option>
-                            <option value="Division Est">Division Est</option>
-                            <option value="Division Ouest">Division Ouest</option>
-                        </select>
+                        <label for="provedId">Proved ID *</label>
+                        <input type="number" id="provedId" name="provedId" class="form-control" required
+                               value="{{ form.provedId.value|default:'' }}">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="subdivision">Sous-division *</label>
-                        <select id="subdivision" name="subdivision" class="form-control" required>
-                            <option value="">Sélectionnez une sous-division</option>
-                            <option value="Sous-division 1">Sous-division 1</option>
-                            <option value="Sous-division 2">Sous-division 2</option>
-                            <option value="Sous-division 3">Sous-division 3</option>
-                            <option value="Sous-division 4">Sous-division 4</option>
-                        </select>
+                        <label for="sousProvedId">Sous-Proved ID *</label>
+                        <input type="number" id="sousProvedId" name="sousProvedId" class="form-control" required
+                               value="{{ form.sousProvedId.value|default:'' }}">
                     </div>
                     <div class="form-group">
-                        <label for="principal">Chef d'établissement *</label>
-                        <input type="text" id="principal" name="principal" class="form-control" required>
+                        <label for="type_enseignement">Type d'enseignement</label>
+                        <input type="text" id="type_enseignement" name="type_enseignement" class="form-control"
+                               value="{{ form.type_enseignement.value|default:'' }}">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="phone">Téléphone *</label>
-                        <input type="tel" id="phone" name="phone" class="form-control" required>
+                        <label for="NomChefEtablissement">Chef d'établissement</label>
+                        <input type="text" id="NomChefEtablissement" name="NomChefEtablissement" class="form-control"
+                               value="{{ form.NomChefEtablissement.value|default:'' }}">
                     </div>
                     <div class="form-group">
-                        <label for="createdDate">Créé le</label>
-                        <input type="date" id="createdDate" name="createdDate" class="form-control">
+                        <label for="TelephoneEtablissement">Téléphone</label>
+                        <input type="tel" id="TelephoneEtablissement" name="TelephoneEtablissement" class="form-control"
+                               value="{{ form.TelephoneEtablissement.value|default:'' }}">
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="form-group">
-                        <label>Statut *</label>
+                        <label for="nom_norm">Nom normalisé</label>
+                        <input type="text" id="nom_norm" name="nom_norm" class="form-control"
+                               value="{{ form.nom_norm.value|default:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label>Statut</label>
                         <div class="radio-group">
                             <div class="radio-option">
-                                <input type="radio" id="statusActive" name="status" value="active" checked>
-                                <label for="statusActive"><span class="status status-active">Actif</span></label>
+                                <input type="radio" id="isActive_true" name="isActive" value="true" 
+                                       {% if form.isActive.value %}checked{% endif %}>
+                                <label for="isActive_true"><span class="status status-active">Actif</span></label>
                             </div>
                             <div class="radio-option">
-                                <input type="radio" id="statusInactive" name="status" value="inactive">
-                                <label for="statusInactive"><span class="status status-inactive">Inactif</span></label>
-                            </div>
-                            <div class="radio-option">
-                                <input type="radio" id="statusPending" name="status" value="pending">
-                                <label for="statusPending"><span class="status status-pending">En attente</span></label>
+                                <input type="radio" id="isActive_false" name="isActive" value="false"
+                                       {% if not form.isActive.value %}checked{% endif %}>
+                                <label for="isActive_false"><span class="status status-inactive">Inactif</span></label>
                             </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Champs optionnels pour les IDs de relations -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="informations_generale_id">Informations Générales ID</label>
+                        <input type="number" id="informations_generale_id" name="informations_generale_id" class="form-control"
+                               value="{{ form.informations_generale_id.value|default:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="localisation_administrative_id">Localisation Administrative ID</label>
+                        <input type="number" id="localisation_administrative_id" name="localisation_administrative_id" class="form-control"
+                               value="{{ form.localisation_administrative_id.value|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="localisation_scolaire_id">Localisation Scolaire ID</label>
+                        <input type="number" id="localisation_scolaire_id" name="localisation_scolaire_id" class="form-control"
+                               value="{{ form.localisation_scolaire_id.value|default:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="territoireId">Territoire ID</label>
+                        <input type="number" id="territoireId" name="territoireId" class="form-control"
+                               value="{{ form.territoireId.value|default:'' }}">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reference_juridique_id">Référence Juridique ID</label>
+                        <input type="number" id="reference_juridique_id" name="reference_juridique_id" class="form-control"
+                               value="{{ form.reference_juridique_id.value|default:'' }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="identification_id">Identification ID</label>
+                        <input type="number" id="identification_id" name="identification_id" class="form-control"
+                               value="{{ form.identification_id.value|default:'' }}">
+                    </div>
+                </div>
+
                 <div class="form-row">
                     <div class="form-group form-group-full">
-                        <label for="address">Adresse *</label>
-                        <textarea id="address" name="address" class="form-control" required></textarea>
+                        <label for="adresseEtablissement">Adresse</label>
+                        <textarea id="adresseEtablissement" name="adresseEtablissement" class="form-control">{{ form.adresseEtablissement.value|default:'' }}</textarea>
                     </div>
                 </div>
 
@@ -394,10 +432,8 @@
         // Affichage d'un message de succès
         alert('Établissement enregistré avec succès!');
 
-        // Redirection vers la liste (simulée)
-        setTimeout(() => {
-            window.location.href = 'table.html'; // Remplacez par l'URL de votre page de table
-        }, 1500);
+        // Soumission réelle du formulaire
+        this.submit();
     });
 
     // Bouton de réinitialisation
@@ -410,32 +446,52 @@
     // Bouton de retour
     document.getElementById('backButton').addEventListener('click', function () {
         if (confirm('Les modifications non enregistrées seront perdues. Voulez-vous vraiment quitter?')) {
-            window.location.href = 'table.html'; // Remplacez par l'URL de votre page de table
+            window.location.href = "{% url 'etablissement' %}";
         }
     });
 
     // Fonction pour remplir le formulaire en mode édition
     function fillFormForEdit(establishmentData) {
         document.getElementById('formTitle').textContent = 'Modifier un établissement';
-        document.getElementById('name').value = establishmentData.name || '';
-        document.getElementById('schoolYear').value = establishmentData.schoolYear || '';
-        document.getElementById('provision').value = establishmentData.provision || '';
-        document.getElementById('division').value = establishmentData.division || '';
-        document.getElementById('subdivision').value = establishmentData.subdivision || '';
-        document.getElementById('principal').value = establishmentData.principal || '';
-        document.getElementById('phone').value = establishmentData.phone || '';
-        document.getElementById('address').value = establishmentData.address || '';
-        document.getElementById('createdDate').value = establishmentData.createdDate || '';
+        document.getElementById('nomEtablissement').value = establishmentData.nomEtablissement || '';
+        document.getElementById('anneeId').value = establishmentData.anneeId || '';
+        document.getElementById('provinceId').value = establishmentData.provinceId || '';
+        document.getElementById('provedId').value = establishmentData.provedId || '';
+        document.getElementById('sousProvedId').value = establishmentData.sousProvedId || '';
+        document.getElementById('type_enseignement').value = establishmentData.type_enseignement || '';
+        document.getElementById('NomChefEtablissement').value = establishmentData.NomChefEtablissement || '';
+        document.getElementById('TelephoneEtablissement').value = establishmentData.TelephoneEtablissement || '';
+        document.getElementById('nom_norm').value = establishmentData.nom_norm || '';
+        document.getElementById('adresseEtablissement').value = establishmentData.adresseEtablissement || '';
+        document.getElementById('informations_generale_id').value = establishmentData.informations_generale_id || '';
+        document.getElementById('localisation_administrative_id').value = establishmentData.localisation_administrative_id || '';
+        document.getElementById('localisation_scolaire_id').value = establishmentData.localisation_scolaire_id || '';
+        document.getElementById('territoireId').value = establishmentData.territoireId || '';
+        document.getElementById('reference_juridique_id').value = establishmentData.reference_juridique_id || '';
+        document.getElementById('identification_id').value = establishmentData.identification_id || '';
 
         // Sélection du statut
-        if (establishmentData.status) {
-            document.querySelector(`input[name="status"][value="${establishmentData.status}"]`).checked = true;
+        if (establishmentData.isActive) {
+            document.getElementById('isActive_true').checked = true;
+        } else {
+            document.getElementById('isActive_false').checked = true;
         }
     }
 
+    // Génération automatique du nom normalisé
+    document.getElementById('nomEtablissement').addEventListener('blur', function() {
+        const nomInput = this;
+        const nomNormInput = document.getElementById('nom_norm');
+        
+        // Si le champ nom_norm est vide, on le remplit automatiquement
+        if (!nomNormInput.value && nomInput.value) {
+            nomNormInput.value = nomInput.value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase();
+        }
+    });
+
     // Simulation de données pour l'édition (à supprimer en production)
     // Décommentez la ligne suivante pour tester le mode édition
-    // fillFormForEdit({name: "Lycée Victor Hugo", schoolYear: "2023-2024", provision: "Provision A", division: "Division Nord", subdivision: "Sous-division 1", principal: "M. Dupont", phone: "01 23 45 67 89", address: "123 Rue de l'Éducation, Paris", status: "active"});
+    // fillFormForEdit({nomEtablissement: "Lycée Victor Hugo", anneeId: "1", provinceId: "1", provedId: "1", sousProvedId: "1", type_enseignement: "Secondaire", NomChefEtablissement: "M. Dupont", TelephoneEtablissement: "01 23 45 67 89", adresseEtablissement: "123 Rue de l'Éducation, Paris", isActive: true});
 </script>
 
 {% endblock content %}

@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+{% block etablissement_active %} active {% endblock %}
+
+    <title>Détails de {{ etablissement.nomEtablissement }}</title>
+    <style>
+        .detail-container { max-width: 800px; margin: 0 auto; }
+        .detail-section { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        .detail-row { display: flex; margin: 10px 0; }
+        .detail-label { font-weight: bold; width: 200px; }
+        .detail-value { flex: 1; }
+    </style>
+
+    <div class="detail-container">
+        <h1>{{ etablissement.nomEtablissement }}</h1>
+        
+        <a href="{% url 'liste_etablissements' %}">← Retour à la liste</a>
+        
+        <div class="detail-section">
+            <h2>Informations générales</h2>
+            <div class="detail-row">
+                <div class="detail-label">Nom:</div>
+                <div class="detail-value">{{ etablissement.nomEtablissement }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Type d'enseignement:</div>
+                <div class="detail-value">{{ etablissement.type_enseignement|default:"-" }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Chef d'établissement:</div>
+                <div class="detail-value">{{ etablissement.NomChefEtablissement|default:"-" }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Nom normalisé:</div>
+                <div class="detail-value">{{ etablissement.nom_norm|default:"-" }}</div>
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h2>Coordonnées</h2>
+            <div class="detail-row">
+                <div class="detail-label">Adresse:</div>
+                <div class="detail-value">{{ etablissement.adresseEtablissement|default:"-" }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Téléphone:</div>
+                <div class="detail-value">{{ etablissement.TelephoneEtablissement|default:"-" }}</div>
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h2>Localisation</h2>
+            <div class="detail-row">
+                <div class="detail-label">Province:</div>
+                <div class="detail-value">{{ etablissement.provinceId.nom }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Proved:</div>
+                <div class="detail-value">{{ etablissement.provedId.nom }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Sous-proved:</div>
+                <div class="detail-value">{{ etablissement.sousProvedId.nom }}</div>
+            </div>
+        </div>
+        
+        <div class="detail-section">
+            <h2>Informations techniques</h2>
+            <div class="detail-row">
+                <div class="detail-label">Année scolaire:</div>
+                <div class="detail-value">{{ etablissement.anneeId.nom }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Date de création:</div>
+                <div class="detail-value">{{ etablissement.createdAt|date:"d/m/Y H:i" }}</div>
+            </div>
+            <div class="detail-row">
+                <div class="detail-label">Statut:</div>
+                <div class="detail-value">
+                    {% if etablissement.isActive %}
+                        <span style="color: green;">Actif</span>
+                    {% else %}
+                        <span style="color: red;">Inactif</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <a href="{% url 'modifier_etablissement' etablissement.id %}" style="background: #007bff; color: white; padding: 10px 15px; text-decoration: none;">Modifier</a>
+            <a href="{% url 'liste_etablissements' %}" style="background: #6c757d; color: white; padding: 10px 15px; text-decoration: none;">Retour</a>
+        </div>
+    </div>
+{% endblock content %}

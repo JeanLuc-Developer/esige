@@ -2,7 +2,9 @@ import os
 from pathlib import Path
 from decouple import config
 
+
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
 
 
 
@@ -17,6 +19,7 @@ SECRET_KEY = config('SECRET_KEY', default='cle-par-defaut-pour-dev' if DEBUG els
 
 # Applications installées
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -63,6 +66,21 @@ TEMPLATES = [
         },
     },
 ]
+
+# JAZZMIN SETTINGS
+JAZZMIN_SETTINGS = {
+    "site_title": "Mon Admin",
+    "site_header": "Administration du projet",
+    "welcome_sign": "Bienvenue dans le tableau de bord",
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "flatly",
+    "navbar": "navbar-dark navbar-primary",
+    "sidebar": "sidebar-dark-primary",
+    "brand_color": "navbar-primary",
+}
+
 
 WSGI_APPLICATION = 'config.wsgi.application'
 

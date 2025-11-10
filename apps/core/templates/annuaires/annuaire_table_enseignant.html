@@ -1,7 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
 {% block annuaire_active %} active {% endblock %}
+{% block content %}
+
 <style>
     .container {
         width: 100%;
@@ -663,24 +664,40 @@
 
 <div class="container">
 
-    <div class="header-card">
+        <div class="header-card">
         <div class="header-title">
-            <h1>Annuaires enseignants</h1>
-           
+            <h3>Filtres</h3>
+            <p>Affinez votre recherche avec les filtres ci-dessous</p>
         </div>
-        <div class="export-buttons">
-            <button class="export-btn excel-btn">
-                <i class="fas fa-file-excel"></i>
-                 Excel
-            </button>
-            <button class="export-btn csv-btn">
-                <i class="fas fa-file"></i>
-                 CSV
-            </button>
+        
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="annee-scolaire">Année scolaire</label>
+                <select class="filter-select" id="annee-scolaire">
+                    <option value="">Toutes les années</option>
+                    <option value="2023-2024">2023-2024</option>
+                    <option value="2022-2023">2022-2023</option>
+                    <option value="2021-2022">2021-2022</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="type-enseignement">Type enseignement</label>
+                <select class="filter-select" id="type-enseignement">
+                    <option value="">Tous les types</option>
+                    <option value="primaire">Primaire</option>
+                    <option value="secondaire">Secondaire</option>
+                    <option value="superieur">Supérieur</option>
+                </select>
+            </div>
+        </div>
 
-            <button class="export-btn csv-btn">
-                <i class="fas fa-window-maximize"></i>
-                Ajouter 
+        <div class="export-buttons">
+            <button class="export-btn excel-btn" onclick="exportToExcel()">
+                <i class="fas fa-file-excel"></i> Exporter en Excel
+            </button>
+            <button class="export-btn pdf-btn" onclick="exportToPDF()">
+                <i class="fas fa-file-pdf"></i> Exporter en PDF
             </button>
         </div>
     </div>

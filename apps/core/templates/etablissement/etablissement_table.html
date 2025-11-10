@@ -1,292 +1,8 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
 {% block etablissement_active %} active {% endblock %}
+{% block content %}
 
-<style>
-    .container {
-        width: 100%;
-        max-width: 1200px;
-    }
-
-    .card-block {
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    .card-header {
-        background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-        color: white;
-        padding: 20px 25px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .card-header h2 {
-        font-weight: 600;
-        font-size: 1.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .card-header h2 i {
-        margin-right: 10px;
-    }
-
-    .search-box {
-        display: flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 30px;
-        padding: 5px 15px;
-    }
-
-    .search-box input {
-        background: transparent;
-        border: none;
-        color: white;
-        padding: 8px;
-        width: 200px;
-        outline: none;
-    }
-
-    .search-box input::placeholder {
-        color: rgba(255, 255, 255, 0.7);
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-        padding: 0 10px;
-        max-height: 600px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        min-width: 1000px;
-    }
-
-    thead {
-        background-color: #f8f9fa;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    th {
-        padding: 15px 12px;
-        text-align: left;
-        font-weight: 600;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
-        position: relative;
-    }
-
-    th:after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: #4b6cb7;
-        transition: width 0.3s ease;
-    }
-
-    th:hover:after {
-        width: 100%;
-    }
-
-    td,
-    tbody th {
-        padding: 14px 12px;
-        border-bottom: 1px solid #e9ecef;
-        color: #495057;
-    }
-
-    tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    tbody tr:hover {
-        background-color: #f1f3f5;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    tbody tr:last-child {
-        border-bottom: none;
-    }
-
-    /* Style pour les lignes impaires */
-    tbody tr:nth-child(odd) {
-        background-color: #fafbfc;
-    }
-
-    tbody tr:nth-child(odd):hover {
-        background-color: #f1f3f5;
-    }
-
-    /* Style pour la première colonne */
-    tbody th {
-        color: #4b6cb7;
-        font-weight: 600;
-    }
-
-    /* Style pour les statuts */
-    .status {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        display: inline-block;
-    }
-
-    .status-active {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .status-inactive {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    .status-pending {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-
-    /* Style pour les boutons d'action */
-    .action-buttons {
-        display: flex;
-        gap: 8px;
-    }
-
-    .btn {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-edit {
-        background-color: #17a2b8;
-        color: white;
-    }
-
-    .btn-delete {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .btn-view {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .btn:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-    }
-
-    /* Style pour la pagination */
-    .card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        border-top: 1px solid #e9ecef;
-    }
-
-    .pagination {
-        display: flex;
-        gap: 8px;
-    }
-
-    .page-item {
-        list-style: none;
-    }
-
-    .page-link {
-        display: block;
-        padding: 8px 16px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        color: #4b6cb7;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .page-link:hover {
-        background-color: #e9ecef;
-    }
-
-    .page-item.active .page-link {
-        background-color: #4b6cb7;
-        color: white;
-        border-color: #4b6cb7;
-    }
-
-    .entries-info {
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .card-header {
-            flex-direction: column;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
-        .search-box {
-            width: 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-        }
-
-        th,
-        td {
-            padding: 10px 8px;
-            font-size: 0.9rem;
-        }
-
-        .card-header h2 {
-            font-size: 1.3rem;
-        }
-
-        .btn {
-            padding: 5px 8px;
-            font-size: 0.7rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .action-buttons {
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .card-footer {
-            flex-direction: column;
-            gap: 15px;
-            align-items: flex-start;
-        }
-    }
-</style>
 
 <style>
     .container {
@@ -340,6 +56,7 @@
         cursor: pointer;
         transition: all 0.3s ease;
         font-size: 0.95rem;
+        text-decoration: none;
     }
 
     .excel-btn {
@@ -349,6 +66,11 @@
 
     .csv-btn {
         background: linear-gradient(135deg, #6c5ce7 0%, #4a3fcf 100%);
+        color: white;
+    }
+
+    .add-btn {
+        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
         color: white;
     }
 
@@ -530,6 +252,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
+        text-decoration: none;
     }
 
     .btn-edit {
@@ -593,6 +316,19 @@
     .entries-info {
         color: #6c757d;
         font-size: 0.9rem;
+    }
+
+    /* Style pour les données vides */
+    .no-data {
+        text-align: center;
+        padding: 40px;
+        color: #6c757d;
+    }
+
+    .no-data i {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #dee2e6;
     }
 
     /* Responsive */
@@ -660,38 +396,70 @@
         }
     }
 </style>
+<div class="container mt-4">
+    <h3>Importer des établissements</h3>
+    <p>Choisissez le type de fichier à importer :</p>
 
+    <!-- Formulaire pour import Excel -->
+    <form method="POST" action="{% url 'import_excel' %}" enctype="multipart/form-data" class="mb-3">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="file" name="excel_file" accept=".xlsx,.xls" class="form-control" required>
+            <button type="submit" class="btn btn-success">
+                📊 Importer Excel
+            </button>
+        </div>
+    </form>
+
+    <!-- Formulaire pour import CSV -->
+    <form method="POST" action="{% url 'import_csv' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="input-group">
+            <input type="file" name="csv_file" accept=".csv" class="form-control" required>
+            <button type="submit" class="btn btn-primary">
+                📄 Importer CSV
+            </button>
+        </div>
+    </form>
+
+    <!-- Messages Django -->
+    {% if messages %}
+        <div class="mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
 
 <div class="container">
-
     <div class="header-card">
         <div class="header-title">
             <h1>Gestion des Établissements Scolaires</h1>
             <p>Interface d'administration et de gestion des établissements</p>
         </div>
         <div class="export-buttons">
-            <button class="export-btn excel-btn">
+            <button class="export-btn excel-btn" onclick="exportToExcel()">
                 <i class="fas fa-file-excel"></i>
-                 Excel
+                Excel
             </button>
-            <button class="export-btn csv-btn">
-                <i class="fas fa-file"></i>
-                 CSV
+            <button class="export-btn csv-btn" onclick="exportToCSV()">
+                <i class="fas fa-file-csv"></i>
+                CSV
             </button>
-
-            <a class="export-btn csv-btn" href="{% url 'forms_etablissement' %}">
-                <i class="fas fa-window-maximize"></i>
-                Ajouter 
+            <a class="export-btn add-btn" href="{% url 'forms_etablissement' %}">
+                <i class="fas fa-plus"></i>
+                Ajouter
             </a>
         </div>
     </div>
 
     <div class="card-block">
         <div class="card-header">
-            <h2><i class="fas fa-school"></i> Gestion des Établissements Scolaires</h2>
+            <h2><i class="fas fa-school"></i> Liste des Établissements</h2>
             <div class="search-box">
                 <i class="fas fa-search"></i>
-                <input type="text" placeholder="Rechercher...">
+                <input type="text" id="searchInput" placeholder="Rechercher...">
             </div>
         </div>
         <div class="table-responsive">
@@ -701,9 +469,9 @@
                         <th>#</th>
                         <th>Nom</th>
                         <th>Année Scolaire</th>
-                        <th>Provision</th>
-                        <th>Division</th>
-                        <th>Sous-division</th>
+                        <th>Province</th>
+                        <th>Proved</th>
+                        <th>Sous-proved</th>
                         <th>Adresse</th>
                         <th>Chef d'établissement</th>
                         <th>Téléphone</th>
@@ -712,166 +480,160 @@
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Lycée Victor Hugo</td>
-                        <td>2023-2024</td>
-                        <td>Provision A</td>
-                        <td>Division Nord</td>
-                        <td>Sous-division 1</td>
-                        <td>123 Rue de l'Éducation, Paris</td>
-                        <td>M. Dupont</td>
-                        <td>01 23 45 67 89</td>
-                        <td><span class="status status-active">Actif</span></td>
-                        <td>15/08/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Collège Marie Curie</td>
-                        <td>2023-2024</td>
-                        <td>Provision B</td>
-                        <td>Division Sud</td>
-                        <td>Sous-division 2</td>
-                        <td>456 Avenue des Sciences, Lyon</td>
-                        <td>Mme. Martin</td>
-                        <td>04 56 78 90 12</td>
-                        <td><span class="status status-active">Actif</span></td>
-                        <td>20/08/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>École Primaire Jules Ferry</td>
-                        <td>2023-2024</td>
-                        <td>Provision C</td>
-                        <td>Division Est</td>
-                        <td>Sous-division 3</td>
-                        <td>789 Boulevard de la République, Marseille</td>
-                        <td>M. Leroy</td>
-                        <td>04 91 23 45 67</td>
-                        <td><span class="status status-inactive">Inactif</span></td>
-                        <td>10/09/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td>Lycée Technique Descartes</td>
-                        <td>2023-2024</td>
-                        <td>Provision A</td>
-                        <td>Division Ouest</td>
-                        <td>Sous-division 4</td>
-                        <td>321 Rue des Arts, Toulouse</td>
-                        <td>Mme. Bernard</td>
-                        <td>05 34 56 78 90</td>
-                        <td><span class="status status-pending">En attente</span></td>
-                        <td>05/09/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">5</th>
-                        <td>Collège International</td>
-                        <td>2023-2024</td>
-                        <td>Provision B</td>
-                        <td>Division Nord</td>
-                        <td>Sous-division 1</td>
-                        <td>654 Allée des Langues, Lille</td>
-                        <td>M. Petit</td>
-                        <td>03 21 43 65 87</td>
-                        <td><span class="status status-active">Actif</span></td>
-                        <td>12/08/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
+                <tbody id="tableBody">
+                    {% if etablissements %}
+                        {% for etablissement in etablissements %}
+                        <tr>
+                            <th scope="row">{{ forloop.counter }}</th>
+                            <td>{{ etablissement.nomEtablissement }}</td>
+                            <td>{{ etablissement.anneeId.nom|default:"-" }}</td>
+                            <td>{{ etablissement.provinceId.nom|default:"-" }}</td>
+                            <td>{{ etablissement.provedId.nom|default:"-" }}</td>
+                            <td>{{ etablissement.sousProvedId.nom|default:"-" }}</td>
+                            <td>{{ etablissement.adresseEtablissement|default:"-"|truncatewords:5 }}</td>
+                            <td>{{ etablissement.NomChefEtablissement|default:"-" }}</td>
+                            <td>{{ etablissement.TelephoneEtablissement|default:"-" }}</td>
+                            <td>
+                                {% if etablissement.isActive %}
+                                    <span class="status status-active">Actif</span>
+                                {% else %}
+                                    <span class="status status-inactive">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ etablissement.createdAt|date:"d/m/Y" }}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a href="" class="btn btn-view" title="Voir">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="" class="btn btn-edit" title="Modifier">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                   
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="12" class="no-data">
+                                <i class="fas fa-inbox"></i>
+                                <h3>Aucun établissement trouvé</h3>
+                                <p>Commencez par ajouter un nouvel établissement</p>
+                            </td>
+                        </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
+        
+        {% if etablissements %}
         <div class="card-footer">
             <div class="entries-info">
-                Affichage de 1 à 5 sur 12 entrées
+                Affichage de {{ etablissements.start_index }} à {{ etablissements.end_index }} sur {{ etablissements.paginator.count }} entrées
             </div>
             <ul class="pagination">
-                <li class="page-item active"><a href="#" class="page-link">1</a></li>
-                <li class="page-item"><a href="#" class="page-link">2</a></li>
-                <li class="page-item"><a href="#" class="page-link">3</a></li>
-                <li class="page-item"><a href="#" class="page-link">Suivant</a></li>
+                {% if etablissements.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">&laquo; Première</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ etablissements.previous_page_number }}">Précédente</a>
+                    </li>
+                {% endif %}
+
+                {% for num in etablissements.paginator.page_range %}
+                    {% if etablissements.number == num %}
+                        <li class="page-item active">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% elif num > etablissements.number|add:'-3' and num < etablissements.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if etablissements.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ etablissements.next_page_number }}">Suivante</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ etablissements.paginator.num_pages }}">Dernière &raquo;</a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
+        {% endif %}
     </div>
 </div>
 
 <script>
-    // Ajout d'interactivité pour les boutons
-    document.querySelectorAll('.btn-view').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = this.closest('tr');
-            const nom = row.cells[1].textContent;
-            alert(`Voir les détails de: ${nom}`);
-        });
-    });
-
-    document.querySelectorAll('.btn-edit').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = this.closest('tr');
-            const nom = row.cells[1].textContent;
-            alert(`Modifier: ${nom}`);
-        });
-    });
-
-    document.querySelectorAll('.btn-delete').forEach(button => {
-        button.addEventListener('click', function () {
-            const row = this.closest('tr');
-            const nom = row.cells[1].textContent;
-            if (confirm(`Êtes-vous sûr de vouloir supprimer: ${nom}?`)) {
-                row.style.opacity = '0.5';
-                setTimeout(() => {
-                    row.remove();
-                }, 500);
-            }
-        });
-    });
-
-    // Fonction de recherche
-    document.querySelector('.search-box input').addEventListener('input', function () {
+    // Fonction de recherche en temps réel
+    document.getElementById('searchInput').addEventListener('input', function() {
         const searchTerm = this.value.toLowerCase();
-        const rows = document.querySelectorAll('tbody tr');
+        const rows = document.querySelectorAll('#tableBody tr');
+        let visibleCount = 0;
 
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
             if (text.includes(searchTerm)) {
                 row.style.display = '';
+                visibleCount++;
             } else {
                 row.style.display = 'none';
+            }
+        });
+
+        // Mettre à jour le compteur d'entrées
+        const entriesInfo = document.querySelector('.entries-info');
+        if (entriesInfo) {
+            entriesInfo.textContent = `Affichage de 1 à ${visibleCount} sur ${visibleCount} entrées filtrées`;
+        }
+    });
+
+    // Fonction de confirmation de suppression
+    function confirmDelete(id, nom) {
+        if (confirm(`Êtes-vous sûr de vouloir supprimer l'établissement "${nom}" ?`)) {
+            // Ici vous pouvez ajouter une requête AJAX pour la suppression
+            fetch(`/etablissement/supprimer/${id}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'Content-Type': 'application/json',
+                },
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert('Erreur lors de la suppression');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Erreur lors de la suppression');
+            });
+        }
+    }
+
+    // Fonctions d'export (exemple)
+    function exportToExcel() {
+        alert('Fonction d\'export Excel à implémenter');
+        // Implémentez l'export Excel ici
+    }
+
+    function exportToCSV() {
+        alert('Fonction d\'export CSV à implémenter');
+        // Implémentez l'export CSV ici
+    }
+
+    // Tri des colonnes (optionnel)
+    document.querySelectorAll('th').forEach((th, index) => {
+        th.addEventListener('click', () => {
+            if (index !== 0 && index !== 11) { // Exclure colonne # et Actions
+                alert(`Tri de la colonne ${th.textContent} à implémenter`);
             }
         });
     });

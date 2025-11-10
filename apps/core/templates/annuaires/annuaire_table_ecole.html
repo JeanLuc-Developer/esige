@@ -1,291 +1,7 @@
 {% extends "base.html" %}
 {% load static %}
-{% block content %}
 {% block annuaire_active %} active {% endblock %}
-<style>
-    .container {
-        width: 100%;
-        max-width: 1200px;
-    }
-
-    .card-block {
-        background-color: white;
-        border-radius: 12px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        overflow: hidden;
-    }
-
-    .card-header {
-        background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
-        color: white;
-        padding: 20px 25px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .card-header h2 {
-        font-weight: 600;
-        font-size: 1.5rem;
-        display: flex;
-        align-items: center;
-    }
-
-    .card-header h2 i {
-        margin-right: 10px;
-    }
-
-    .search-box {
-        display: flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 30px;
-        padding: 5px 15px;
-    }
-
-    .search-box input {
-        background: transparent;
-        border: none;
-        color: white;
-        padding: 8px;
-        width: 200px;
-        outline: none;
-    }
-
-    .search-box input::placeholder {
-        color: rgba(255, 255, 255, 0.7);
-    }
-
-    .table-responsive {
-        overflow-x: auto;
-        padding: 0 10px;
-        max-height: 600px;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin: 20px 0;
-        min-width: 1000px;
-    }
-
-    thead {
-        background-color: #f8f9fa;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    th {
-        padding: 15px 12px;
-        text-align: left;
-        font-weight: 600;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
-        position: relative;
-    }
-
-    th:after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: #4b6cb7;
-        transition: width 0.3s ease;
-    }
-
-    th:hover:after {
-        width: 100%;
-    }
-
-    td,
-    tbody th {
-        padding: 14px 12px;
-        border-bottom: 1px solid #e9ecef;
-        color: #495057;
-    }
-
-    tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    tbody tr:hover {
-        background-color: #f1f3f5;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    tbody tr:last-child {
-        border-bottom: none;
-    }
-
-    /* Style pour les lignes impaires */
-    tbody tr:nth-child(odd) {
-        background-color: #fafbfc;
-    }
-
-    tbody tr:nth-child(odd):hover {
-        background-color: #f1f3f5;
-    }
-
-    /* Style pour la première colonne */
-    tbody th {
-        color: #4b6cb7;
-        font-weight: 600;
-    }
-
-    /* Style pour les statuts */
-    .status {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        display: inline-block;
-    }
-
-    .status-active {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .status-inactive {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    .status-pending {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-
-    /* Style pour les boutons d'action */
-    .action-buttons {
-        display: flex;
-        gap: 8px;
-    }
-
-    .btn {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-edit {
-        background-color: #17a2b8;
-        color: white;
-    }
-
-    .btn-delete {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .btn-view {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .btn:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-    }
-
-    /* Style pour la pagination */
-    .card-footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 20px;
-        border-top: 1px solid #e9ecef;
-    }
-
-    .pagination {
-        display: flex;
-        gap: 8px;
-    }
-
-    .page-item {
-        list-style: none;
-    }
-
-    .page-link {
-        display: block;
-        padding: 8px 16px;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        color: #4b6cb7;
-        text-decoration: none;
-        transition: all 0.2s ease;
-    }
-
-    .page-link:hover {
-        background-color: #e9ecef;
-    }
-
-    .page-item.active .page-link {
-        background-color: #4b6cb7;
-        color: white;
-        border-color: #4b6cb7;
-    }
-
-    .entries-info {
-        color: #6c757d;
-        font-size: 0.9rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .card-header {
-            flex-direction: column;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
-        .search-box {
-            width: 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-        }
-
-        th,
-        td {
-            padding: 10px 8px;
-            font-size: 0.9rem;
-        }
-
-        .card-header h2 {
-            font-size: 1.3rem;
-        }
-
-        .btn {
-            padding: 5px 8px;
-            font-size: 0.7rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .action-buttons {
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .card-footer {
-            flex-direction: column;
-            gap: 15px;
-            align-items: flex-start;
-        }
-    }
-</style>
+{% block content %}
 
 <style>
     .container {
@@ -301,14 +17,12 @@
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         padding: 25px 30px;
         margin-bottom: 25px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
     }
 
     .header-title {
         display: flex;
         flex-direction: column;
+        margin-bottom: 20px;
     }
 
     .header-title h1 {
@@ -323,9 +37,54 @@
         font-size: 1rem;
     }
 
+    /* Styles pour les champs de filtre */
+    .filter-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .filter-select, .filter-combo {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: white;
+        font-size: 0.9rem;
+        color: #495057;
+        transition: all 0.3s ease;
+    }
+
+    .filter-select:focus, .filter-combo:focus {
+        outline: none;
+        border-color: #4b6cb7;
+        box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.2);
+    }
+
+    .combo-container {
+        grid-column: 1 / -1;
+    }
+
+    .combo-container .filter-combo {
+        width: 100%;
+    }
+
     .export-buttons {
         display: flex;
         gap: 15px;
+        margin-top: 20px;
     }
 
     .export-btn {
@@ -346,8 +105,8 @@
         color: white;
     }
 
-    .csv-btn {
-        background: linear-gradient(135deg, #6c5ce7 0%, #4a3fcf 100%);
+    .pdf-btn {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
         color: white;
     }
 
@@ -375,6 +134,14 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .card-header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
     .card-header h2 {
@@ -382,10 +149,17 @@
         font-size: 1.5rem;
         display: flex;
         align-items: center;
+        margin: 0;
     }
 
     .card-header h2 i {
         margin-right: 10px;
+    }
+
+    .card-header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
     }
 
     .search-box {
@@ -409,6 +183,32 @@
         color: rgba(255, 255, 255, 0.7);
     }
 
+    .table-export-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .table-export-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .table-export-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
     .table-responsive {
         overflow-x: auto;
         padding: 0 10px;
@@ -419,7 +219,6 @@
         width: 100%;
         border-collapse: collapse;
         margin: 20px 0;
-        min-width: 1000px;
     }
 
     thead {
@@ -487,6 +286,26 @@
     tbody th {
         color: #4b6cb7;
         font-weight: 600;
+    }
+
+    /* Style pour les lignes de total */
+    .total-row {
+        background-color: #e8f4fd !important;
+        font-weight: 600;
+    }
+
+    .sector-row {
+        background-color: #f0f8ff !important;
+        font-weight: 700;
+    }
+
+    .regime-row {
+        background-color: #fafbfc;
+    }
+
+    .header-row {
+        background-color: #e3f2fd;
+        font-weight: 700;
     }
 
     /* Style pour les statuts */
@@ -594,28 +413,67 @@
         font-size: 0.9rem;
     }
 
+    /* Styles spécifiques pour les différents tableaux */
+    .regime-table {
+        min-width: 600px;
+    }
+
+    .regime-table th,
+    .regime-table td {
+        text-align: center;
+    }
+
+    .regime-table .text-left {
+        text-align: left;
+    }
+
+    .number-col {
+        width: 60px;
+        text-align: center;
+    }
+
+    .proved-col {
+        width: 150px;
+        text-align: left;
+    }
+
+    .total-col {
+        background-color: #e8f5e8;
+        font-weight: 700;
+    }
+
+    .grand-total {
+        background-color: #d4edda;
+        font-weight: 800;
+        font-size: 1.1rem;
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .header-card {
-            flex-direction: column;
-            gap: 20px;
-            align-items: flex-start;
+            padding: 20px;
+        }
+
+        .filter-container {
+            grid-template-columns: 1fr;
+        }
+
+        .combo-container {
+            grid-column: 1;
         }
 
         .export-buttons {
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .export-btn {
-            flex: 1;
-            justify-content: center;
+            flex-direction: column;
         }
 
         .card-header {
             flex-direction: column;
-            gap: 15px;
             align-items: flex-start;
+        }
+
+        .card-header-left, .card-header-right {
+            width: 100%;
+            justify-content: space-between;
         }
 
         .search-box {
@@ -623,6 +481,11 @@
         }
 
         .search-box input {
+            width: 100%;
+        }
+
+        .table-export-buttons {
+            justify-content: flex-end;
             width: 100%;
         }
 
@@ -654,47 +517,117 @@
             align-items: flex-start;
         }
 
-        .export-buttons {
+        .table-export-buttons {
             flex-direction: column;
         }
     }
 </style>
 
-
 <div class="container">
 
+    <!-- Première carte avec le champ combo -->
     <div class="header-card">
         <div class="header-title">
             <h1>Annuaires ecole</h1>
-           
+            <p>Gestion des annuaires des établissements scolaires</p>
         </div>
-        <div class="export-buttons">
-            <button class="export-btn excel-btn">
-                <i class="fas fa-file-excel"></i>
-                 Excel
-            </button>
-            <button class="export-btn csv-btn">
-                <i class="fas fa-file"></i>
-                 CSV
-            </button>
-
-            <button class="export-btn csv-btn">
-                <i class="fas fa-window-maximize"></i>
-                Ajouter 
-            </button>
+        
+        <div class="filter-container">
+            <div class="filter-group combo-container">
+                <label for="regime-combo">Régime</label>
+                <select class="filter-combo" id="regime-combo">
+                    <option value="">Sélectionnez un régime</option>
+                    <option value="regime_national">Régime National</option>
+                    <option value="regimes_proved">Régimes par proved</option>
+                    <option value="milieu_proved">Milieu par proved</option>
+                    <option value="public_proved">Public par proved</option>
+                    <option value="milieu_public">Milieu public</option>
+                </select>
+            </div>
         </div>
     </div>
 
+    <!-- Deuxième carte avec les filtres -->
+    <div class="header-card">
+        <div class="header-title">
+            <h3>Filtres</h3>
+            <p>Affinez votre recherche avec les filtres ci-dessous</p>
+        </div>
+        
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="annee-scolaire">Année scolaire</label>
+                <select class="filter-select" id="annee-scolaire">
+                    <option value="">Toutes les années</option>
+                    <option value="2023-2024">2023-2024</option>
+                    <option value="2022-2023">2022-2023</option>
+                    <option value="2021-2022">2021-2022</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="type-enseignement">Type enseignement</label>
+                <select class="filter-select" id="type-enseignement">
+                    <option value="">Tous les types</option>
+                    <option value="primaire">Primaire</option>
+                    <option value="secondaire">Secondaire</option>
+                    <option value="superieur">Supérieur</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="proved">Proved</label>
+                <select class="filter-select" id="proved">
+                    <option value="">Tous les proved</option>
+                    <option value="proved_a">Proved A</option>
+                    <option value="proved_b">Proved B</option>
+                    <option value="proved_c">Proved C</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="milieu">Milieu</label>
+                <select class="filter-select" id="milieu">
+                    <option value="">Tous les milieux</option>
+                    <option value="urbain">Urbain</option>
+                    <option value="rural">Rural</option>
+                    <option value="semi_urbain">Semi-urbain</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="secteur">Secteur</label>
+                <select class="filter-select" id="secteur">
+                    <option value="">Tous les secteurs</option>
+                    <option value="public">Public</option>
+                    <option value="prive">Privé</option>
+                    <option value="mixte">Mixte</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carte principale avec les tableaux -->
     <div class="card-block">
         <div class="card-header">
-            <h2><i class="fas fa-school"></i> Annuaires </h2>
-            <div class="search-box">
-                <i class="fas fa-search"></i>
-                <input type="text" placeholder="Rechercher...">
+            <div class="card-header-left">
+                <h4><i class="fas fa-school"></i> <span id="table-title">Annuaires</span> </h4>
+            </div>
+            <div class="card-header-right">
+                <div class="table-export-buttons">
+                    <button class="table-export-btn excel-btn" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    <button class="table-export-btn pdf-btn" onclick="exportToPDF()">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                </div>
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table">
+            
+            <!-- Tableau normal (par défaut) -->
+            <table class="table" id="normal-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -708,7 +641,6 @@
                         <th>Téléphone</th>
                         <th>Statut</th>
                         <th>Créé le</th>
-                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -724,13 +656,6 @@
                         <td>01 23 45 67 89</td>
                         <td><span class="status status-active">Actif</span></td>
                         <td>15/08/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
                     </tr>
                     <tr>
                         <th scope="row">2</th>
@@ -744,80 +669,303 @@
                         <td>04 56 78 90 12</td>
                         <td><span class="status status-active">Actif</span></td>
                         <td>20/08/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">3</th>
-                        <td>École Primaire Jules Ferry</td>
-                        <td>2023-2024</td>
-                        <td>Provision C</td>
-                        <td>Division Est</td>
-                        <td>Sous-division 3</td>
-                        <td>789 Boulevard de la République, Marseille</td>
-                        <td>M. Leroy</td>
-                        <td>04 91 23 45 67</td>
-                        <td><span class="status status-inactive">Inactif</span></td>
-                        <td>10/09/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">4</th>
-                        <td>Lycée Technique Descartes</td>
-                        <td>2023-2024</td>
-                        <td>Provision A</td>
-                        <td>Division Ouest</td>
-                        <td>Sous-division 4</td>
-                        <td>321 Rue des Arts, Toulouse</td>
-                        <td>Mme. Bernard</td>
-                        <td>05 34 56 78 90</td>
-                        <td><span class="status status-pending">En attente</span></td>
-                        <td>05/09/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row">5</th>
-                        <td>Collège International</td>
-                        <td>2023-2024</td>
-                        <td>Provision B</td>
-                        <td>Division Nord</td>
-                        <td>Sous-division 1</td>
-                        <td>654 Allée des Langues, Lille</td>
-                        <td>M. Petit</td>
-                        <td>03 21 43 65 87</td>
-                        <td><span class="status status-active">Actif</span></td>
-                        <td>12/08/2023</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn btn-view" title="Voir"><i class="fas fa-eye"></i></button>
-                                <button class="btn btn-edit" title="Modifier"><i class="fas fa-edit"></i></button>
-                                <button class="btn btn-delete" title="Supprimer"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </td>
                     </tr>
                 </tbody>
             </table>
+
+            <!-- Tableau pour Régime National -->
+            <table class="table regime-table" id="regime-national-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Secteur</th>
+                        <th>Régime</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Secteur A -->
+                    <tr class="sector-row">
+                        <td><strong>Secteur A</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="regime-row">
+                        <td></td>
+                        <td>Régime Public</td>
+                        <td>1,250</td>
+                    </tr>
+                    <tr class="regime-row">
+                        <td></td>
+                        <td>Régime Privé</td>
+                        <td>850</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>Total Secteur A</strong></td>
+                        <td></td>
+                        <td><strong>2,100</strong></td>
+                    </tr>
+                    
+                    <!-- Secteur B -->
+                    <tr class="sector-row">
+                        <td><strong>Secteur B</strong></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr class="regime-row">
+                        <td></td>
+                        <td>Régime Public</td>
+                        <td>980</td>
+                    </tr>
+                    <tr class="regime-row">
+                        <td></td>
+                        <td>Régime Privé</td>
+                        <td>1,120</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td><strong>Total Secteur B</strong></td>
+                        <td></td>
+                        <td><strong>2,100</strong></td>
+                    </tr>
+                    
+                    <!-- Total Général -->
+                    <tr class="grand-total">
+                        <td><strong>TOTAL GÉNÉRAL</strong></td>
+                        <td></td>
+                        <td><strong>4,200</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Régimes par Proved -->
+            <table class="table regime-table" id="regimes-proved-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="number-col">N°</th>
+                        <th class="proved-col">PROVED</th>
+                        <th>A1</th>
+                        <th>A2</th>
+                        <th>A3</th>
+                        <th>A4</th>
+                        <th>A5</th>
+                        <th>A6</th>
+                        <th>A7</th>
+                        <th>A8</th>
+                        <th>AUTRES</th>
+                        <th>TOTAL PUBLIC</th>
+                        <th>TOTAL GENERAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="text-left">Proved Nord</td>
+                        <td>150</td>
+                        <td>120</td>
+                        <td>95</td>
+                        <td>110</td>
+                        <td>85</td>
+                        <td>75</td>
+                        <td>60</td>
+                        <td>45</td>
+                        <td>30</td>
+                        <td>770</td>
+                        <td>850</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="text-left">Proved Sud</td>
+                        <td>140</td>
+                        <td>115</td>
+                        <td>90</td>
+                        <td>105</td>
+                        <td>80</td>
+                        <td>70</td>
+                        <td>55</td>
+                        <td>40</td>
+                        <td>25</td>
+                        <td>720</td>
+                        <td>800</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="text-left">Proved Est</td>
+                        <td>130</td>
+                        <td>110</td>
+                        <td>85</td>
+                        <td>100</td>
+                        <td>75</td>
+                        <td>65</td>
+                        <td>50</td>
+                        <td>35</td>
+                        <td>20</td>
+                        <td>670</td>
+                        <td>750</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td></td>
+                        <td class="text-left"><strong>TOTAL</strong></td>
+                        <td><strong>420</strong></td>
+                        <td><strong>345</strong></td>
+                        <td><strong>270</strong></td>
+                        <td><strong>315</strong></td>
+                        <td><strong>240</strong></td>
+                        <td><strong>210</strong></td>
+                        <td><strong>165</strong></td>
+                        <td><strong>120</strong></td>
+                        <td><strong>75</strong></td>
+                        <td><strong>2,160</strong></td>
+                        <td><strong>2,400</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Milieu par Proved -->
+            <table class="table regime-table" id="milieu-proved-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="number-col">N°</th>
+                        <th class="proved-col">PROVED</th>
+                        <th>URBAIN</th>
+                        <th>RURAL</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="text-left">Proved Nord</td>
+                        <td>650</td>
+                        <td>200</td>
+                        <td>850</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="text-left">Proved Sud</td>
+                        <td>550</td>
+                        <td>250</td>
+                        <td>800</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="text-left">Proved Est</td>
+                        <td>500</td>
+                        <td>250</td>
+                        <td>750</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="text-left">Proved Ouest</td>
+                        <td>450</td>
+                        <td>300</td>
+                        <td>750</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td></td>
+                        <td class="text-left"><strong>TOTAL</strong></td>
+                        <td><strong>2,150</strong></td>
+                        <td><strong>1,000</strong></td>
+                        <td><strong>3,150</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Public par Proved -->
+            <table class="table regime-table" id="public-proved-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="number-col">N°</th>
+                        <th class="proved-col">PROVED</th>
+                        <th>TOTAL PUBLIC</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="text-left">Proved Nord</td>
+                        <td>770</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="text-left">Proved Sud</td>
+                        <td>720</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="text-left">Proved Est</td>
+                        <td>670</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="text-left">Proved Ouest</td>
+                        <td>620</td>
+                    </tr>
+                    <tr>
+                        <td>5</td>
+                        <td class="text-left">Proved Centre</td>
+                        <td>580</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td></td>
+                        <td class="text-left"><strong>TOTAL GÉNÉRAL</strong></td>
+                        <td><strong>3,360</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Milieu Public -->
+            <table class="table regime-table" id="milieu-public-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="number-col">N°</th>
+                        <th class="proved-col">PROVED</th>
+                        <th>URBAIN</th>
+                        <th>RURAL</th>
+                        <th>TOTAL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="text-left">Proved Nord</td>
+                        <td>520</td>
+                        <td>250</td>
+                        <td>770</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="text-left">Proved Sud</td>
+                        <td>480</td>
+                        <td>240</td>
+                        <td>720</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="text-left">Proved Est</td>
+                        <td>450</td>
+                        <td>220</td>
+                        <td>670</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="text-left">Proved Ouest</td>
+                        <td>420</td>
+                        <td>200</td>
+                        <td>620</td>
+                    </tr>
+                    <tr class="total-row">
+                        <td></td>
+                        <td class="text-left"><strong>TOTAL</strong></td>
+                        <td><strong>1,870</strong></td>
+                        <td><strong>910</strong></td>
+                        <td><strong>2,780</strong></td>
+                    </tr>
+                </tbody>
+            </table>
+
         </div>
         <div class="card-footer">
-            <div class="entries-info">
-                Affichage de 1 à 5 sur 12 entrées
+            <div class="entries-info" id="entries-info">
+                Affichage de 1 à 2 sur 12 entrées
             </div>
             <ul class="pagination">
                 <li class="page-item active"><a href="#" class="page-link">1</a></li>
@@ -828,4 +976,83 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const regimeCombo = document.getElementById('regime-combo');
+        const normalTable = document.getElementById('normal-table');
+        const regimeNationalTable = document.getElementById('regime-national-table');
+        const regimesProvedTable = document.getElementById('regimes-proved-table');
+        const milieuProvedTable = document.getElementById('milieu-proved-table');
+        const publicProvedTable = document.getElementById('public-proved-table');
+        const milieuPublicTable = document.getElementById('milieu-public-table');
+        const tableTitle = document.getElementById('table-title');
+        const entriesInfo = document.getElementById('entries-info');
+
+        // Fonction pour cacher tous les tableaux
+        function hideAllTables() {
+            normalTable.style.display = 'none';
+            regimeNationalTable.style.display = 'none';
+            regimesProvedTable.style.display = 'none';
+            milieuProvedTable.style.display = 'none';
+            publicProvedTable.style.display = 'none';
+            milieuPublicTable.style.display = 'none';
+        }
+
+        regimeCombo.addEventListener('change', function() {
+            hideAllTables();
+            
+            switch(this.value) {
+                case 'regime_national':
+                    regimeNationalTable.style.display = 'table';
+                    tableTitle.textContent = 'Régime National - Statistiques par Secteur';
+                    entriesInfo.textContent = 'Affichage des statistiques par secteur et régime';
+                    break;
+                    
+                case 'regimes_proved':
+                    regimesProvedTable.style.display = 'table';
+                    tableTitle.textContent = 'Régimes par Proved - Détail par catégorie';
+                    entriesInfo.textContent = 'Affichage des régimes par proved avec détail des catégories A1 à A8';
+                    break;
+                    
+                case 'milieu_proved':
+                    milieuProvedTable.style.display = 'table';
+                    tableTitle.textContent = 'Milieu par Proved - Répartition Urbain/Rural';
+                    entriesInfo.textContent = 'Affichage de la répartition par milieu urbain et rural';
+                    break;
+                    
+                case 'public_proved':
+                    publicProvedTable.style.display = 'table';
+                    tableTitle.textContent = 'Public par Proved - Total des établissements publics';
+                    entriesInfo.textContent = 'Affichage du total des établissements publics par proved';
+                    break;
+                    
+                case 'milieu_public':
+                    milieuPublicTable.style.display = 'table';
+                    tableTitle.textContent = 'Milieu Public - Répartition Urbain/Rural du Public';
+                    entriesInfo.textContent = 'Affichage de la répartition du public par milieu urbain et rural';
+                    break;
+                    
+                default:
+                    normalTable.style.display = 'table';
+                    tableTitle.textContent = 'Annuaires';
+                    entriesInfo.textContent = 'Affichage de 1 à 2 sur 12 entrées';
+                    break;
+            }
+        });
+    });
+
+    function exportToExcel() {
+        const regimeCombo = document.getElementById('regime-combo');
+        const tableTitle = document.getElementById('table-title').textContent;
+        alert('Exportation en Excel: ' + tableTitle);
+    }
+
+    function exportToPDF() {
+        const regimeCombo = document.getElementById('regime-combo');
+        const tableTitle = document.getElementById('table-title').textContent;
+        alert('Exportation en PDF: ' + tableTitle);
+    }
+</script>
+
 {% endblock content %}
