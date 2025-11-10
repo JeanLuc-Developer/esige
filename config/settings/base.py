@@ -19,7 +19,7 @@ SECRET_KEY = config('SECRET_KEY', default='cle-par-defaut-pour-dev' if DEBUG els
 
 # Applications installées
 INSTALLED_APPS = [
-    'jazzmin',
+    'import_export',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -68,18 +68,7 @@ TEMPLATES = [
 ]
 
 # JAZZMIN SETTINGS
-JAZZMIN_SETTINGS = {
-    "site_title": "Mon Admin",
-    "site_header": "Administration du projet",
-    "welcome_sign": "Bienvenue dans le tableau de bord",
-}
 
-JAZZMIN_UI_TWEAKS = {
-    "theme": "flatly",
-    "navbar": "navbar-dark navbar-primary",
-    "sidebar": "sidebar-dark-primary",
-    "brand_color": "navbar-primary",
-}
 
 
 WSGI_APPLICATION = 'config.wsgi.application'
@@ -87,10 +76,22 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # ne pas changer
+        'NAME': 'dige_database',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',  # ou localhost
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'isolation_level': None,
+        },
     }
 }
+
+
+
+
 
 # Internationalization
 LANGUAGE_CODE = 'fr-fr'

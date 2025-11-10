@@ -13,6 +13,8 @@ urlpatterns = [
     path('annuaires/ecole/', annuaire.annuaire_table_ecole, name='annuaire_ecole'),
     path('annuaires/eleve/', annuaire.annuaire_table_eleve, name='annuaire_eleve'),
     path('annuaires/enseignant/', annuaire.annuaire_table_enseignant, name='annuaire_enseignant'),
+    path('annuaires/api/table-data/', annuaire.get_table_data, name='get_table_data'),
+
     path('forms_annuaire/', annuaire.annuaire_form, name='forms_annuaire'),
 
     #Etablissement URLs

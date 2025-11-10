@@ -448,6 +448,28 @@
         font-size: 1.1rem;
     }
 
+    /* Loading spinner */
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4b6cb7;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: 0 auto;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .header-card {
@@ -528,7 +550,7 @@
     <!-- Première carte avec le champ combo -->
     <div class="header-card">
         <div class="header-title">
-            <h1>Annuaires ecole</h1>
+            <h1>Annuaires des écoles</h1>
             <p>Gestion des annuaires des établissements scolaires</p>
         </div>
         
@@ -559,9 +581,9 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    <option value="2023-2024">2023-2024</option>
-                    <option value="2022-2023">2022-2023</option>
-                    <option value="2021-2022">2021-2022</option>
+                    {% for annee in annees_scolaires %}
+                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% endfor %}
                 </select>
             </div>
             
@@ -569,19 +591,19 @@
                 <label for="type-enseignement">Type enseignement</label>
                 <select class="filter-select" id="type-enseignement">
                     <option value="">Tous les types</option>
-                    <option value="primaire">Primaire</option>
-                    <option value="secondaire">Secondaire</option>
-                    <option value="superieur">Supérieur</option>
+                    {% for type in types_enseignement %}
+                    <option value="{{ type }}">{{ type }}</option>
+                    {% endfor %}
                 </select>
             </div>
             
             <div class="filter-group">
-                <label for="proved">Proved</label>
+                <label for="proved">Province</label>
                 <select class="filter-select" id="proved">
-                    <option value="">Tous les proved</option>
-                    <option value="proved_a">Proved A</option>
-                    <option value="proved_b">Proved B</option>
-                    <option value="proved_c">Proved C</option>
+                    <option value="">Toutes les provinces</option>
+                    {% for province in provinces %}
+                    <option value="{{ province.id }}">{{ province.libelle }}</option>
+                    {% endfor %}
                 </select>
             </div>
             
@@ -591,7 +613,6 @@
                     <option value="">Tous les milieux</option>
                     <option value="urbain">Urbain</option>
                     <option value="rural">Rural</option>
-                    <option value="semi_urbain">Semi-urbain</option>
                 </select>
             </div>
             
@@ -601,7 +622,6 @@
                     <option value="">Tous les secteurs</option>
                     <option value="public">Public</option>
                     <option value="prive">Privé</option>
-                    <option value="mixte">Mixte</option>
                 </select>
             </div>
         </div>
@@ -624,7 +644,13 @@
                 </div>
             </div>
         </div>
-        <div class="table-responsive">
+        
+        <div class="loading-spinner" id="loading-spinner">
+            <div class="spinner"></div>
+            <p>Chargement des données...</p>
+        </div>
+        
+        <div class="table-responsive" id="table-container">
             
             <!-- Tableau normal (par défaut) -->
             <table class="table" id="normal-table">
@@ -633,9 +659,7 @@
                         <th>#</th>
                         <th>Nom</th>
                         <th>Année Scolaire</th>
-                        <th>Provision</th>
-                        <th>Division</th>
-                        <th>Sous-division</th>
+                        <th>Province</th>
                         <th>Adresse</th>
                         <th>Chef d'établissement</th>
                         <th>Téléphone</th>
@@ -643,33 +667,8 @@
                         <th>Créé le</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <th scope="row">1</th>
-                        <td>Lycée Victor Hugo</td>
-                        <td>2023-2024</td>
-                        <td>Provision A</td>
-                        <td>Division Nord</td>
-                        <td>Sous-division 1</td>
-                        <td>123 Rue de l'Éducation, Paris</td>
-                        <td>M. Dupont</td>
-                        <td>01 23 45 67 89</td>
-                        <td><span class="status status-active">Actif</span></td>
-                        <td>15/08/2023</td>
-                    </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>Collège Marie Curie</td>
-                        <td>2023-2024</td>
-                        <td>Provision B</td>
-                        <td>Division Sud</td>
-                        <td>Sous-division 2</td>
-                        <td>456 Avenue des Sciences, Lyon</td>
-                        <td>Mme. Martin</td>
-                        <td>04 56 78 90 12</td>
-                        <td><span class="status status-active">Actif</span></td>
-                        <td>20/08/2023</td>
-                    </tr>
+                <tbody id="normal-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
@@ -679,60 +678,13 @@
                     <tr>
                         <th>Secteur</th>
                         <th>Régime</th>
-                        <th>Total</th>
+                        <th>Total Établissements</th>
+                        <th>Total Public</th>
+                        <th>Total Privé</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <!-- Secteur A -->
-                    <tr class="sector-row">
-                        <td><strong>Secteur A</strong></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="regime-row">
-                        <td></td>
-                        <td>Régime Public</td>
-                        <td>1,250</td>
-                    </tr>
-                    <tr class="regime-row">
-                        <td></td>
-                        <td>Régime Privé</td>
-                        <td>850</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td><strong>Total Secteur A</strong></td>
-                        <td></td>
-                        <td><strong>2,100</strong></td>
-                    </tr>
-                    
-                    <!-- Secteur B -->
-                    <tr class="sector-row">
-                        <td><strong>Secteur B</strong></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
-                    <tr class="regime-row">
-                        <td></td>
-                        <td>Régime Public</td>
-                        <td>980</td>
-                    </tr>
-                    <tr class="regime-row">
-                        <td></td>
-                        <td>Régime Privé</td>
-                        <td>1,120</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td><strong>Total Secteur B</strong></td>
-                        <td></td>
-                        <td><strong>2,100</strong></td>
-                    </tr>
-                    
-                    <!-- Total Général -->
-                    <tr class="grand-total">
-                        <td><strong>TOTAL GÉNÉRAL</strong></td>
-                        <td></td>
-                        <td><strong>4,200</strong></td>
-                    </tr>
+                <tbody id="regime-national-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
@@ -741,81 +693,23 @@
                 <thead>
                     <tr>
                         <th class="number-col">N°</th>
-                        <th class="proved-col">PROVED</th>
-                        <th>A1</th>
-                        <th>A2</th>
-                        <th>A3</th>
-                        <th>A4</th>
-                        <th>A5</th>
-                        <th>A6</th>
-                        <th>A7</th>
-                        <th>A8</th>
-                        <th>AUTRES</th>
+                        <th class="proved-col">PROVINCE</th>
+                        <th>ECC</th>
+                        <th>ECF</th>
+                        <th>ECI</th>
+                        <th>ECK</th>
+                        <th>ECP</th>
+                        <th>ECS</th>
+                        <th>ENC</th>
+                        <th>EPR</th>
+                        <th>NR</th>
                         <th>TOTAL PUBLIC</th>
-                        <th>TOTAL GENERAL</th>
+                        <th>TOTAL PRIVÉ</th>
+                        <th>TOTAL GÉNÉRAL</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td class="text-left">Proved Nord</td>
-                        <td>150</td>
-                        <td>120</td>
-                        <td>95</td>
-                        <td>110</td>
-                        <td>85</td>
-                        <td>75</td>
-                        <td>60</td>
-                        <td>45</td>
-                        <td>30</td>
-                        <td>770</td>
-                        <td>850</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td class="text-left">Proved Sud</td>
-                        <td>140</td>
-                        <td>115</td>
-                        <td>90</td>
-                        <td>105</td>
-                        <td>80</td>
-                        <td>70</td>
-                        <td>55</td>
-                        <td>40</td>
-                        <td>25</td>
-                        <td>720</td>
-                        <td>800</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td class="text-left">Proved Est</td>
-                        <td>130</td>
-                        <td>110</td>
-                        <td>85</td>
-                        <td>100</td>
-                        <td>75</td>
-                        <td>65</td>
-                        <td>50</td>
-                        <td>35</td>
-                        <td>20</td>
-                        <td>670</td>
-                        <td>750</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td></td>
-                        <td class="text-left"><strong>TOTAL</strong></td>
-                        <td><strong>420</strong></td>
-                        <td><strong>345</strong></td>
-                        <td><strong>270</strong></td>
-                        <td><strong>315</strong></td>
-                        <td><strong>240</strong></td>
-                        <td><strong>210</strong></td>
-                        <td><strong>165</strong></td>
-                        <td><strong>120</strong></td>
-                        <td><strong>75</strong></td>
-                        <td><strong>2,160</strong></td>
-                        <td><strong>2,400</strong></td>
-                    </tr>
+                <tbody id="regimes-proved-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
@@ -824,48 +718,17 @@
                 <thead>
                     <tr>
                         <th class="number-col">N°</th>
-                        <th class="proved-col">PROVED</th>
+                        <th class="proved-col">PROVINCE</th>
+                        <th>Année</th>
+                        <th>Type</th>
                         <th>URBAIN</th>
                         <th>RURAL</th>
+                        <th>NR</th>
                         <th>TOTAL</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td class="text-left">Proved Nord</td>
-                        <td>650</td>
-                        <td>200</td>
-                        <td>850</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td class="text-left">Proved Sud</td>
-                        <td>550</td>
-                        <td>250</td>
-                        <td>800</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td class="text-left">Proved Est</td>
-                        <td>500</td>
-                        <td>250</td>
-                        <td>750</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td class="text-left">Proved Ouest</td>
-                        <td>450</td>
-                        <td>300</td>
-                        <td>750</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td></td>
-                        <td class="text-left"><strong>TOTAL</strong></td>
-                        <td><strong>2,150</strong></td>
-                        <td><strong>1,000</strong></td>
-                        <td><strong>3,150</strong></td>
-                    </tr>
+                <tbody id="milieu-proved-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
@@ -874,41 +737,14 @@
                 <thead>
                     <tr>
                         <th class="number-col">N°</th>
-                        <th class="proved-col">PROVED</th>
+                        <th class="proved-col">PROVINCE</th>
+                        <th>Année</th>
+                        <th>Type</th>
                         <th>TOTAL PUBLIC</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td class="text-left">Proved Nord</td>
-                        <td>770</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td class="text-left">Proved Sud</td>
-                        <td>720</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td class="text-left">Proved Est</td>
-                        <td>670</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td class="text-left">Proved Ouest</td>
-                        <td>620</td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td class="text-left">Proved Centre</td>
-                        <td>580</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td></td>
-                        <td class="text-left"><strong>TOTAL GÉNÉRAL</strong></td>
-                        <td><strong>3,360</strong></td>
-                    </tr>
+                <tbody id="public-proved-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
@@ -917,142 +753,498 @@
                 <thead>
                     <tr>
                         <th class="number-col">N°</th>
-                        <th class="proved-col">PROVED</th>
+                        <th class="proved-col">PROVINCE</th>
+                        <th>Année</th>
+                        <th>Type</th>
                         <th>URBAIN</th>
                         <th>RURAL</th>
-                        <th>TOTAL</th>
+                        <th>NR</th>
+                        <th>TOTAL PUBLIC</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td class="text-left">Proved Nord</td>
-                        <td>520</td>
-                        <td>250</td>
-                        <td>770</td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td class="text-left">Proved Sud</td>
-                        <td>480</td>
-                        <td>240</td>
-                        <td>720</td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td class="text-left">Proved Est</td>
-                        <td>450</td>
-                        <td>220</td>
-                        <td>670</td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td class="text-left">Proved Ouest</td>
-                        <td>420</td>
-                        <td>200</td>
-                        <td>620</td>
-                    </tr>
-                    <tr class="total-row">
-                        <td></td>
-                        <td class="text-left"><strong>TOTAL</strong></td>
-                        <td><strong>1,870</strong></td>
-                        <td><strong>910</strong></td>
-                        <td><strong>2,780</strong></td>
-                    </tr>
+                <tbody id="milieu-public-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
         </div>
         <div class="card-footer">
             <div class="entries-info" id="entries-info">
-                Affichage de 1 à 2 sur 12 entrées
+                Sélectionnez un régime pour afficher les données
             </div>
-            <ul class="pagination">
-                <li class="page-item active"><a href="#" class="page-link">1</a></li>
-                <li class="page-item"><a href="#" class="page-link">2</a></li>
-                <li class="page-item"><a href="#" class="page-link">3</a></li>
-                <li class="page-item"><a href="#" class="page-link">Suivant</a></li>
+            <ul class="pagination" id="pagination">
+                <!-- La pagination sera gérée dynamiquement -->
             </ul>
         </div>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const regimeCombo = document.getElementById('regime-combo');
-        const normalTable = document.getElementById('normal-table');
-        const regimeNationalTable = document.getElementById('regime-national-table');
-        const regimesProvedTable = document.getElementById('regimes-proved-table');
-        const milieuProvedTable = document.getElementById('milieu-proved-table');
-        const publicProvedTable = document.getElementById('public-proved-table');
-        const milieuPublicTable = document.getElementById('milieu-public-table');
-        const tableTitle = document.getElementById('table-title');
-        const entriesInfo = document.getElementById('entries-info');
-
-        // Fonction pour cacher tous les tableaux
-        function hideAllTables() {
-            normalTable.style.display = 'none';
-            regimeNationalTable.style.display = 'none';
-            regimesProvedTable.style.display = 'none';
-            milieuProvedTable.style.display = 'none';
-            publicProvedTable.style.display = 'none';
-            milieuPublicTable.style.display = 'none';
-        }
-
-        regimeCombo.addEventListener('change', function() {
-            hideAllTables();
-            
-            switch(this.value) {
-                case 'regime_national':
-                    regimeNationalTable.style.display = 'table';
-                    tableTitle.textContent = 'Régime National - Statistiques par Secteur';
-                    entriesInfo.textContent = 'Affichage des statistiques par secteur et régime';
-                    break;
-                    
-                case 'regimes_proved':
-                    regimesProvedTable.style.display = 'table';
-                    tableTitle.textContent = 'Régimes par Proved - Détail par catégorie';
-                    entriesInfo.textContent = 'Affichage des régimes par proved avec détail des catégories A1 à A8';
-                    break;
-                    
-                case 'milieu_proved':
-                    milieuProvedTable.style.display = 'table';
-                    tableTitle.textContent = 'Milieu par Proved - Répartition Urbain/Rural';
-                    entriesInfo.textContent = 'Affichage de la répartition par milieu urbain et rural';
-                    break;
-                    
-                case 'public_proved':
-                    publicProvedTable.style.display = 'table';
-                    tableTitle.textContent = 'Public par Proved - Total des établissements publics';
-                    entriesInfo.textContent = 'Affichage du total des établissements publics par proved';
-                    break;
-                    
-                case 'milieu_public':
-                    milieuPublicTable.style.display = 'table';
-                    tableTitle.textContent = 'Milieu Public - Répartition Urbain/Rural du Public';
-                    entriesInfo.textContent = 'Affichage de la répartition du public par milieu urbain et rural';
-                    break;
-                    
-                default:
-                    normalTable.style.display = 'table';
-                    tableTitle.textContent = 'Annuaires';
-                    entriesInfo.textContent = 'Affichage de 1 à 2 sur 12 entrées';
-                    break;
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    const regimeCombo = document.getElementById('regime-combo');
+    const anneeSelect = document.getElementById('annee-scolaire');
+    const typeSelect = document.getElementById('type-enseignement');
+    const provinceSelect = document.getElementById('proved');
+    const milieuSelect = document.getElementById('milieu');
+    const secteurSelect = document.getElementById('secteur');
+    
+    const filters = [anneeSelect, typeSelect, provinceSelect, milieuSelect, secteurSelect];
+    
+    // Charger les données initiales
+    loadTableData('normal');
+    
+    // Écouter les changements de filtre
+    regimeCombo.addEventListener('change', function() {
+        loadTableData(this.value);
+    });
+    
+    filters.forEach(filter => {
+        filter.addEventListener('change', function() {
+            const currentRegime = regimeCombo.value || 'normal';
+            loadTableData(currentRegime);
         });
     });
+});
 
-    function exportToExcel() {
-        const regimeCombo = document.getElementById('regime-combo');
-        const tableTitle = document.getElementById('table-title').textContent;
-        alert('Exportation en Excel: ' + tableTitle);
-    }
+function showLoading() {
+    document.getElementById('loading-spinner').style.display = 'block';
+    document.getElementById('table-container').style.display = 'none';
+}
 
-    function exportToPDF() {
-        const regimeCombo = document.getElementById('regime-combo');
-        const tableTitle = document.getElementById('table-title').textContent;
-        alert('Exportation en PDF: ' + tableTitle);
+function hideLoading() {
+    document.getElementById('loading-spinner').style.display = 'none';
+    document.getElementById('table-container').style.display = 'block';
+}
+
+function loadTableData(regimeType) {
+    showLoading();
+    
+    const filters = {
+        annee: document.getElementById('annee-scolaire').value,
+        type_enseignement: document.getElementById('type-enseignement').value,
+        province: document.getElementById('proved').value,
+        milieu: document.getElementById('milieu').value,
+        secteur: document.getElementById('secteur').value
+    };
+    
+    fetch('{% url "get_table_data" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': getCsrfToken()
+        },
+        body: JSON.stringify({
+            regime_type: regimeType,
+            filters: filters
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            updateTableDisplay(regimeType, data.data);
+        } else {
+            console.error('Erreur:', data.error);
+            alert('Erreur lors du chargement des données: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Erreur:', error);
+        alert('Erreur lors du chargement des données');
+    })
+    .finally(() => {
+        hideLoading();
+    });
+}
+
+function updateTableDisplay(regimeType, data) {
+    // Cacher tous les tableaux
+    hideAllTables();
+    
+    const tableTitle = document.getElementById('table-title');
+    const entriesInfo = document.getElementById('entries-info');
+    
+    switch(regimeType) {
+        case 'regime_national':
+            displayRegimeNational(data);
+            tableTitle.textContent = 'Régime National - Statistiques par Secteur';
+            entriesInfo.textContent = `Affichage de ${data.length} secteurs`;
+            break;
+            
+        case 'regimes_proved':
+            displayRegimesProved(data);
+            tableTitle.textContent = 'Régimes par Province - Détail par catégorie';
+            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
+            break;
+            
+        case 'milieu_proved':
+            displayMilieuProved(data);
+            tableTitle.textContent = 'Milieu par Province - Répartition Urbain/Rural';
+            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
+            break;
+            
+        case 'public_proved':
+            displayPublicProved(data);
+            tableTitle.textContent = 'Public par Province - Total des établissements publics';
+            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
+            break;
+            
+        case 'milieu_public':
+            displayMilieuPublic(data);
+            tableTitle.textContent = 'Milieu Public - Répartition Urbain/Rural du Public';
+            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
+            break;
+            
+        default:
+            displayNormalTable(data);
+            tableTitle.textContent = 'Annuaires - Liste des établissements';
+            entriesInfo.textContent = `Affichage de ${data.length} établissements`;
+            break;
     }
+}
+
+function hideAllTables() {
+    const tables = [
+        'normal-table', 'regime-national-table', 'regimes-proved-table',
+        'milieu-proved-table', 'public-proved-table', 'milieu-public-table'
+    ];
+    
+    tables.forEach(tableId => {
+        document.getElementById(tableId).style.display = 'none';
+    });
+}
+
+// Fonctions d'affichage pour chaque type de tableau
+function displayNormalTable(data) {
+    const table = document.getElementById('normal-table');
+    const tbody = document.getElementById('normal-table-body');
+    tbody.innerHTML = '';
+    
+    data.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <th scope="row">${index + 1}</th>
+            <td>${row.nom_etablissement || 'N/A'}</td>
+            <td>${row.annee_scolaire || 'N/A'}</td>
+            <td>${row.province || 'N/A'}</td>
+            <td>${row.adresse || 'N/A'}</td>
+            <td>${row.chef_etablissement || 'N/A'}</td>
+            <td>${row.telephone || 'N/A'}</td>
+            <td><span class="status status-active">${row.statut || 'Actif'}</span></td>
+            <td>${row.created_at ? new Date(row.created_at).toLocaleDateString() : 'N/A'}</td>
+        `;
+        tbody.appendChild(tr);
+    });
+    
+    table.style.display = 'table';
+}
+
+function displayRegimeNational(data) {
+    const table = document.getElementById('regime-national-table');
+    const tbody = document.getElementById('regime-national-table-body');
+    tbody.innerHTML = '';
+    
+    let secteurActuel = '';
+    let totalSecteurEtablissements = 0;
+    let totalSecteurPublic = 0;
+    let totalSecteurPrive = 0;
+    let totalGeneralEtablissements = 0;
+    let totalGeneralPublic = 0;
+    let totalGeneralPrive = 0;
+    
+    data.forEach((row, index) => {
+        if (row.secteur !== secteurActuel) {
+            // Ajouter le total du secteur précédent
+            if (secteurActuel !== '') {
+                addTotalRowRegimeNational(tbody, `Total ${secteurActuel}`, totalSecteurEtablissements, totalSecteurPublic, totalSecteurPrive);
+                totalSecteurEtablissements = 0;
+                totalSecteurPublic = 0;
+                totalSecteurPrive = 0;
+            }
+            
+            // Nouveau secteur
+            secteurActuel = row.secteur;
+            addSectorRow(tbody, secteurActuel);
+        }
+        
+        addRegimeRowRegimeNational(tbody, row.regime_gestion, row.total_etablissements, row.total_public, row.total_prive);
+        totalSecteurEtablissements += parseInt(row.total_etablissements) || 0;
+        totalSecteurPublic += parseInt(row.total_public) || 0;
+        totalSecteurPrive += parseInt(row.total_prive) || 0;
+        totalGeneralEtablissements += parseInt(row.total_etablissements) || 0;
+        totalGeneralPublic += parseInt(row.total_public) || 0;
+        totalGeneralPrive += parseInt(row.total_prive) || 0;
+    });
+    
+    // Dernier total de secteur
+    if (secteurActuel !== '') {
+        addTotalRowRegimeNational(tbody, `Total ${secteurActuel}`, totalSecteurEtablissements, totalSecteurPublic, totalSecteurPrive);
+    }
+    
+    // Total général
+    addGrandTotalRowRegimeNational(tbody, totalGeneralEtablissements, totalGeneralPublic, totalGeneralPrive);
+    
+    table.style.display = 'table';
+}
+
+function displayRegimesProved(data) {
+    const table = document.getElementById('regimes-proved-table');
+    const tbody = document.getElementById('regimes-proved-table-body');
+    tbody.innerHTML = '';
+    
+    let totals = {
+        ECC: 0, ECF: 0, ECI: 0, ECK: 0, 
+        ECP: 0, ECS: 0, ENC: 0, EPR: 0, NR: 0,
+        Total_Public: 0, Total_Prive: 0, Total_General: 0
+    };
+    
+    data.forEach((row, index) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index + 1}</td>
+            <td class="text-left">${row.province}</td>
+            <td>${row.ECC || 0}</td>
+            <td>${row.ECF || 0}</td>
+            <td>${row.ECI || 0}</td>
+            <td>${row.ECK || 0}</td>
+            <td>${row.ECP || 0}</td>
+            <td>${row.ECS || 0}</td>
+            <td>${row.ENC || 0}</td>
+            <td>${row.EPR || 0}</td>
+            <td>${row.NR || 0}</td>
+            <td>${row.Total_Public || 0}</td>
+            <td>${row.Total_Prive || 0}</td>
+            <td>${row.Total_General || 0}</td>
+        `;
+        tbody.appendChild(tr);
+        
+        // Calcul des totaux
+        Object.keys(totals).forEach(key => {
+            totals[key] += parseInt(row[key]) || 0;
+        });
+    });
+    
+    // Ligne de total
+    addTotalRowRegimes(tbody, totals);
+    table.style.display = 'table';
+}
+
+function displayMilieuProved(data) {
+    const table = document.getElementById('milieu-proved-table');
+    const tbody = document.getElementById('milieu-proved-table-body');
+    tbody.innerHTML = '';
+    
+    let totals = { Urbain: 0, Rural: 0, NR: 0, Total_General: 0 };
+    let index = 1;
+    
+    data.forEach((row) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index++}</td>
+            <td class="text-left">${row.province}</td>
+            <td>${row.idannee}</td>
+            <td>${row.type}</td>
+            <td>${row.Urbain || 0}</td>
+            <td>${row.Rural || 0}</td>
+            <td>${row.NR || 0}</td>
+            <td>${row.Total_General || 0}</td>
+        `;
+        tbody.appendChild(tr);
+        
+        totals.Urbain += parseInt(row.Urbain) || 0;
+        totals.Rural += parseInt(row.Rural) || 0;
+        totals.NR += parseInt(row.NR) || 0;
+        totals.Total_General += parseInt(row.Total_General) || 0;
+    });
+    
+    // Ligne de total
+    const totalTr = document.createElement('tr');
+    totalTr.className = 'total-row';
+    totalTr.innerHTML = `
+        <td></td>
+        <td class="text-left"><strong>TOTAL</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>${totals.Urbain}</strong></td>
+        <td><strong>${totals.Rural}</strong></td>
+        <td><strong>${totals.NR}</strong></td>
+        <td><strong>${totals.Total_General}</strong></td>
+    `;
+    tbody.appendChild(totalTr);
+    
+    table.style.display = 'table';
+}
+
+function displayPublicProved(data) {
+    const table = document.getElementById('public-proved-table');
+    const tbody = document.getElementById('public-proved-table-body');
+    tbody.innerHTML = '';
+    
+    let totalPublic = 0;
+    let index = 1;
+    
+    data.forEach((row) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index++}</td>
+            <td class="text-left">${row.province}</td>
+            <td>${row.idannee}</td>
+            <td>${row.type}</td>
+            <td>${row.nombre_ecoles_public || 0}</td>
+        `;
+        tbody.appendChild(tr);
+        
+        totalPublic += parseInt(row.nombre_ecoles_public) || 0;
+    });
+    
+    // Ligne de total
+    const totalTr = document.createElement('tr');
+    totalTr.className = 'total-row';
+    totalTr.innerHTML = `
+        <td></td>
+        <td class="text-left"><strong>TOTAL GÉNÉRAL</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>${totalPublic}</strong></td>
+    `;
+    tbody.appendChild(totalTr);
+    
+    table.style.display = 'table';
+}
+
+function displayMilieuPublic(data) {
+    const table = document.getElementById('milieu-public-table');
+    const tbody = document.getElementById('milieu-public-table-body');
+    tbody.innerHTML = '';
+    
+    let totals = { Urbain: 0, Rural: 0, NR: 0, Total_Public: 0 };
+    let index = 1;
+    
+    data.forEach((row) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${index++}</td>
+            <td class="text-left">${row.province}</td>
+            <td>${row.idannee}</td>
+            <td>${row.type}</td>
+            <td>${row.Urbain || 0}</td>
+            <td>${row.Rural || 0}</td>
+            <td>${row.NR || 0}</td>
+            <td>${row.Total_Public || 0}</td>
+        `;
+        tbody.appendChild(tr);
+        
+        totals.Urbain += parseInt(row.Urbain) || 0;
+        totals.Rural += parseInt(row.Rural) || 0;
+        totals.NR += parseInt(row.NR) || 0;
+        totals.Total_Public += parseInt(row.Total_Public) || 0;
+    });
+    
+    // Ligne de total
+    const totalTr = document.createElement('tr');
+    totalTr.className = 'total-row';
+    totalTr.innerHTML = `
+        <td></td>
+        <td class="text-left"><strong>TOTAL</strong></td>
+        <td></td>
+        <td></td>
+        <td><strong>${totals.Urbain}</strong></td>
+        <td><strong>${totals.Rural}</strong></td>
+        <td><strong>${totals.NR}</strong></td>
+        <td><strong>${totals.Total_Public}</strong></td>
+    `;
+    tbody.appendChild(totalTr);
+    
+    table.style.display = 'table';
+}
+
+// Fonctions utilitaires pour créer les lignes
+function addSectorRow(tbody, secteur) {
+    const tr = document.createElement('tr');
+    tr.className = 'sector-row';
+    tr.innerHTML = `<td><strong>${secteur}</strong></td><td></td><td></td><td></td><td></td>`;
+    tbody.appendChild(tr);
+}
+
+function addRegimeRowRegimeNational(tbody, regime, totalEtablissements, totalPublic, totalPrive) {
+    const tr = document.createElement('tr');
+    tr.className = 'regime-row';
+    tr.innerHTML = `
+        <td></td>
+        <td>${regime}</td>
+        <td>${totalEtablissements}</td>
+        <td>${totalPublic}</td>
+        <td>${totalPrive}</td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function addTotalRowRegimeNational(tbody, label, totalEtablissements, totalPublic, totalPrive) {
+    const tr = document.createElement('tr');
+    tr.className = 'total-row';
+    tr.innerHTML = `
+        <td><strong>${label}</strong></td>
+        <td></td>
+        <td><strong>${totalEtablissements}</strong></td>
+        <td><strong>${totalPublic}</strong></td>
+        <td><strong>${totalPrive}</strong></td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function addGrandTotalRowRegimeNational(tbody, totalEtablissements, totalPublic, totalPrive) {
+    const tr = document.createElement('tr');
+    tr.className = 'grand-total';
+    tr.innerHTML = `
+        <td><strong>TOTAL GÉNÉRAL</strong></td>
+        <td></td>
+        <td><strong>${totalEtablissements}</strong></td>
+        <td><strong>${totalPublic}</strong></td>
+        <td><strong>${totalPrive}</strong></td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function addTotalRowRegimes(tbody, totals) {
+    const tr = document.createElement('tr');
+    tr.className = 'total-row';
+    tr.innerHTML = `
+        <td></td>
+        <td class="text-left"><strong>TOTAL</strong></td>
+        <td><strong>${totals.ECC}</strong></td>
+        <td><strong>${totals.ECF}</strong></td>
+        <td><strong>${totals.ECI}</strong></td>
+        <td><strong>${totals.ECK}</strong></td>
+        <td><strong>${totals.ECP}</strong></td>
+        <td><strong>${totals.ECS}</strong></td>
+        <td><strong>${totals.ENC}</strong></td>
+        <td><strong>${totals.EPR}</strong></td>
+        <td><strong>${totals.NR}</strong></td>
+        <td><strong>${totals.Total_Public}</strong></td>
+        <td><strong>${totals.Total_Prive}</strong></td>
+        <td><strong>${totals.Total_General}</strong></td>
+    `;
+    tbody.appendChild(tr);
+}
+
+function getCsrfToken() {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+    return csrfToken ? csrfToken.value : '';
+}
+
+// Fonctions d'export
+function exportToExcel() {
+    const regimeCombo = document.getElementById('regime-combo');
+    const tableTitle = document.getElementById('table-title').textContent;
+    alert('Exportation en Excel: ' + tableTitle);
+    // Implémentez l'export Excel ici
+}
+
+function exportToPDF() {
+    const regimeCombo = document.getElementById('regime-combo');
+    const tableTitle = document.getElementById('table-title').textContent;
+    alert('Exportation en PDF: ' + tableTitle);
+    // Implémentez l'export PDF ici
+}
 </script>
 
 {% endblock content %}

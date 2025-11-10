@@ -1,4411 +1,3485 @@
+# This is an auto-generated Django model module.
+# You'll have to do the following manually to clean this up:
+#   * Rearrange models' order
+#   * Make sure each model has one field with primary_key=True
+#   * Make sure each ForeignKey and OneToOneField has `on_delete` set to the desired behavior
+#   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
+# Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-import uuid
 
-class BaseModel(models.Model):
-    id = models.CharField(
-        primary_key=True,
-        max_length=50,
-        editable=False,
-        unique=True,
-        default="",  # on le génère dans save()
-        
-    )
+
+class AnneeScolaire(models.Model):
+    active = models.TextField(blank=True, null=True)  # This field type is a guess.
+    generate = models.TextField(blank=True, null=True)  # This field type is a guess.
+    open = models.TextField(blank=True, null=True)  # This field type is a guess.
+    valid = models.TextField(blank=True, null=True)  # This field type is a guess.
+    id = models.BigIntegerField(primary_key=True)
+    lib_annee_scolaire = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        abstract = True  # ne crée pas de table pour cette classe
+        managed = False
+        db_table = 'annee_scolaire'
 
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.id = str(uuid.uuid4())  # génère un UUID unique
-        super().save(*args, **kwargs)
-# ok
-class Annee_scolaire(BaseModel):
 
-    # Colonne 'active' : Représente probablement un état actif (0 ou 1).
-    active = models.BooleanField(
-        default=False,
-        verbose_name="Actif"
-    )
-    # Colonne 'generate' : Représente probablement un état booléen (1 pour générer, 0 sinon).
-    generate = models.BooleanField(
-        default=False,
-        verbose_name="Générer"
-    )
-
-    # Colonne 'open' : Représente probablement un état d'ouverture (1 pour ouvert, 0 sinon).
-    open = models.BooleanField(
-        default=False,
-        verbose_name="Ouvert"
-    )
-
-    # Colonne 'valid' : Représente probablement un état de validité (1 pour valide, 0 sinon).
-    valid = models.BooleanField(
-        default=False,
-        verbose_name="Valide"
-    )
-
-    # Colonne 'lib_annee_scolaire' : Contient la description de l'année scolaire (ex: '2022-2023').
-    lib_annee_scolaire = models.CharField(
-        max_length=50,  # Une taille de 50 caractères est largement suffisante pour '2022-2023'
-        verbose_name="Libellé Année Scolaire"
-    )
-    
-    # Vous pouvez ajouter une méthode __str__ pour une meilleure représentation dans l'administration Django
-    def __str__(self):
-        return self.lib_annee_scolaire
+class AnneeScolaireSeq(models.Model):
+    next_val = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
-        # Met le nom de la table en minuscule et avec underscore
-        verbose_name = "Année Scolaire"
-        verbose_name_plural = "Années Scolaires"
-        # Si vous voulez forcer le nom de la table dans la base de données à "annee_scolaire" (sans le préfixe de l'appli),
-        # vous pouvez utiliser: db_table = 'annee_scolaire'
-# ok
-
-class Etablissement(BaseModel):
-
-    anneeId = models.ForeignKey(
-        'Annee_scolaire', 
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Année ID"
-    )
-
-    nomEtablissement = models.CharField(
-        max_length=255,
-        null=False,
-        verbose_name="Nom de l'Établissement"
-    )
-
-    type_enseignement = models.CharField(
-        max_length=50,
-        null=True, blank=True,
-        verbose_name="Type d'Enseignement"
-    )
-
-    NomChefEtablissement = models.CharField(
-        max_length=255,
-        null=True, blank=True,
-        verbose_name="Nom du Chef d'Établissement"
-    )
-
-    adresseEtablissement = models.CharField(
-        max_length=500,
-        null=True, blank=True,
-        verbose_name="Adresse de l'Établissement"
-    )
-
-    TelephoneEtablissement = models.CharField(
-        max_length=50,
-        null=True, blank=True,
-        verbose_name="Téléphone de l'Établissement"
-    )
-
-    provinceId = models.ForeignKey(
-        'Provinces',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Provinces ID"
-    )
-
-    provedId = models.ForeignKey(
-        'Proveds',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Proveds ID"
-    )
-
-    sousProvedId = models.ForeignKey(
-        'Sous_proved',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Sous_proved ID"
-    )
-
-    informations_generale_id = models.ForeignKey(
-        'Informations_generale',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Informations_generale ID"
-    )
-
-    localisation_administrative_id = models.ForeignKey(
-        'Localisation_administrative',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Localisation_administrative ID"
-    )
-
-    localisation_scolaire_id = models.ForeignKey(
-        'Localisation_scolaire',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Localisation_scolaire ID"
-    )
-
-    territoireId = models.ForeignKey(
-        'Territoires',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="Territoires ID"
-    )
-
-    reference_juridique_id = models.ForeignKey(
-        'reference_juridique',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="reference_juridique ID"
-    )
-
-    identification_id = models.ForeignKey(
-        'Identifications',
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        verbose_name="identification_id"
-    )
-
-    isActive = models.BooleanField(
-        default=True,
-        verbose_name="Est Actif"
-    )
-
-    isDeleted = models.BooleanField(
-        default=False,
-        verbose_name="Est Supprimé"
-    )
-
-    createdAt = models.DateTimeField(
-        auto_now_add=True,
-        null=True,
-        verbose_name="Date de Création"
-    )
-
-    nom_norm = models.CharField(
-        max_length=255,
-        null=True, blank=True,
-        verbose_name="Nom Normalisé"
-    )
-
-    def __str__(self):
-        return self.nomEtablissement
-
-    class Meta:
-        verbose_name = "Établissement"
-        verbose_name_plural = "Établissements"
-        # db_table = 'Etablissement'  # Décommente si tu veux un nom de table fixe
+        managed = False
+        db_table = 'annee_scolaire_seq'
 
 
-# ok
-class Formulaires(BaseModel):
-    # Géré automatiquement par Django comme Primary Key (AutoField).
-
-    # 2. updated_at (datetime(6), Non, Défaut: current_timestamp(6), Extra: ON UPDATE CURRENT_TIMESTAMP(6))
-    updated_at = models.DateTimeField(
-        auto_now=True,  # Met à jour automatiquement à chaque sauvegarde (correspond à ON UPDATE CURRENT_TIMESTAMP)
-        null=False,
-        verbose_name="Date de Dernière Mise à Jour"
-    )
-
-    # 3. responded (tinyint(1), Non, Défaut: 0)
-    responded = models.BooleanField(
-        default=False,  # 0 en tinyint(1) -> False en BooleanField
-        null=False,
-        verbose_name="A Répondu"
-    )
-
-    # 4. nomEtab (varchar(255), Oui)
-    nomEtab = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom Établissement (Saisie)"
-    )
-
-    # 5. etablissement_id (bigint(20), Oui)
-    # Supposé être une clé étrangère vers le modèle Etablissement
-    etablissement_id = models.ForeignKey(
-        'Etablissement', 
-        on_delete=models.SET_NULL, # On choisit SET_NULL car null=True
-        null=True, 
-        verbose_name="ID Établissement (Lien)"
-    )
-
-    # 6. idannee (bigint(20), Oui)
-    # Supposé être une clé étrangère vers le modèle Annee_scolaire
-    idAnnee = models.ForeignKey(
-        'Annee_scolaire', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        verbose_name="ID Année Scolaire"
-    )
-
-    # 7-9. IDs de localisation (bigint(20), Oui)
-    # On utilise BigIntegerField car les modèles cibles ne sont pas encore définis.
-    provinceId = models.BigIntegerField(null=True, verbose_name="Province ID")
-    provedId = models.BigIntegerField(null=True, verbose_name="Proved ID")
-    sousProvedId = models.BigIntegerField(null=True, verbose_name="Sous-Proved ID")
-
-    # 10. type (varchar(255), Oui)
-    type = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Type de Formulaire"
-    )
-
-    # 11. idUtilisateur (bigint(20), Oui)
-    # Clé étrangère vers le modèle User de Django (ou un modèle personnalisé)
-    idUtilisateur = models.BigIntegerField(null=True, verbose_name="ID Utilisateur")
-
-    # 12. validated (tinyint(1), Non, Défaut: 0)
-    validated = models.BooleanField(
-        default=False, 
-        null=False,
-        verbose_name="Validé"
-    )
-
-    # 13. validatedBy (bigint(20), Oui)
-    # ID de l'utilisateur qui a validé
-    validatedBy = models.BigIntegerField(null=True, verbose_name="Validé Par ID")
-
-    # 14. created_at (datetime(6), Non, Défaut: current_timestamp(6))
-    created_at = models.DateTimeField(
-        auto_now_add=True, # Ajoute la date/heure à la création de l'objet (correspond à current_timestamp)
-        null=False, 
-        verbose_name="Date de Création"
-    )
-
-    # 15. idetablissement (bigint(20), Oui)
-    # Ce champ est un doublon potentiel de 'etablissement_id', je le garde mais notez le conflit.
-    idEtablissement = models.BigIntegerField(null=True, verbose_name="ID Établissement (Duplicata)")
-
-    # 16. date (varchar(255), Oui)
-    # Utiliser CharField car le type est 'varchar' (si c'était une vraie date, on utiliserait DateField ou DateTimeField).
-    date = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Champ Date"
-    )
-    
-    # 17. identification_id (bigint(20), Oui)
-    identification_id = models.BigIntegerField(null=True, verbose_name="Identification ID")
-
-    # 18. nom_norm (varchar(255), Oui)
-    nom_norm = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom Normalisé"
-    )
-
-    def __str__(self):
-        # Une bonne chaîne de représentation
-        return f"Formulaire pour {self.nomEtab or 'Inconnu'} ({self.id})"
-
-    class Meta:
-        verbose_name = "Formulaire"
-        verbose_name_plural = "Formulaires"
-# ok
-
-class reference_juridique(BaseModel):
-    # form_et_id bigint(20), Oui Null
-    form_et_id = models.BigIntegerField(null=True, blank=True)  #
-    # identification_id bigint(20), Oui Null
-    identification_id = models.ForeignKey('Identifications', 
-        on_delete=models.CASCADE,  # Ou models.PROTECT selon votre logique
-        null=False, 
-        verbose_name="Année ID")  #
-
-    # Champs de type chaîne de caractères (varchar(255))
-    # Tous sont Oui Null
-    center = models.CharField(max_length=255, null=True, blank=True)  #
-    code_ref_juridique = models.CharField(max_length=255, null=True, blank=True)  #
-    denomination_ref_juridique = models.CharField(max_length=255, null=True, blank=True)  #
-    libelle_ref_juridique = models.CharField(max_length=255, null=True, blank=True)  #
+class Annuaires(models.Model):
+    nouveauentrantpremieragerevolumoins6 = models.IntegerField(db_column='nouveauEntrantPremierAgeRevoluMoins6')  # Field name made lowercase.
+    nouveauentrantpremieragerevolumoins7 = models.IntegerField(db_column='nouveauEntrantPremierAgeRevoluMoins7')  # Field name made lowercase.
+    nouveauentrantpremieragerevolumoins8 = models.IntegerField(db_column='nouveauEntrantPremierAgeRevoluMoins8')  # Field name made lowercase.
+    nouveauentrantpremieragerevolumoins9 = models.IntegerField(db_column='nouveauEntrantPremierAgeRevoluMoins9')  # Field name made lowercase.
+    nouveauentrantpremieragerevoluplus9 = models.IntegerField(db_column='nouveauEntrantPremierAgeRevoluPlus9')  # Field name made lowercase.
+    nouveauinscritpremierautre = models.IntegerField(db_column='nouveauInscritPremierAUTRE')  # Field name made lowercase.
+    nouveauinscritpremierecc = models.IntegerField(db_column='nouveauInscritPremierECC')  # Field name made lowercase.
+    nouveauinscritpremierecf = models.IntegerField(db_column='nouveauInscritPremierECF')  # Field name made lowercase.
+    nouveauinscritpremiereci = models.IntegerField(db_column='nouveauInscritPremierECI')  # Field name made lowercase.
+    nouveauinscritpremiereck = models.IntegerField(db_column='nouveauInscritPremierECK')  # Field name made lowercase.
+    nouveauinscritpremierecp = models.IntegerField(db_column='nouveauInscritPremierECP')  # Field name made lowercase.
+    nouveauinscritpremierecs = models.IntegerField(db_column='nouveauInscritPremierECS')  # Field name made lowercase.
+    nouveauinscritpremierenc = models.IntegerField(db_column='nouveauInscritPremierENC')  # Field name made lowercase.
+    nouveauinscritpremierprive = models.IntegerField(db_column='nouveauInscritPremierPRIVE')  # Field name made lowercase.
+    participationpersonnelfemmeautre = models.IntegerField(db_column='participationpersonnelFemmeAUTRE')  # Field name made lowercase.
+    participationpersonnelfemmeenc = models.IntegerField(db_column='participationpersonnelFemmeENC')  # Field name made lowercase.
+    participationpersonnelfemmeepr = models.IntegerField(db_column='participationpersonnelFemmeEPR')  # Field name made lowercase.
+    participationpersonnelfemmefemmeecc = models.IntegerField(db_column='participationpersonnelFemmeFemmeECC')  # Field name made lowercase.
+    participationpersonnelfemmefemmeecf = models.IntegerField(db_column='participationpersonnelFemmeFemmeECF')  # Field name made lowercase.
+    participationpersonnelfemmefemmeeci = models.IntegerField(db_column='participationpersonnelFemmeFemmeECI')  # Field name made lowercase.
+    participationpersonnelfemmefemmeeck = models.IntegerField(db_column='participationpersonnelFemmeFemmeECK')  # Field name made lowercase.
+    participationpersonnelfemmefemmeecp = models.IntegerField(db_column='participationpersonnelFemmeFemmeECP')  # Field name made lowercase.
+    participationpersonnelfemmefemmeecs = models.IntegerField(db_column='participationpersonnelFemmeFemmeECS')  # Field name made lowercase.
+    participationpersonnelfemmefemmesecondaireecc = models.IntegerField(db_column='participationpersonnelFemmeFemmeSecondaireECC')  # Field name made lowercase.
+    participationpersonnelfemmefemmesecondaireecf = models.IntegerField(db_column='participationpersonnelFemmeFemmeSecondaireECF')  # Field name made lowercase.
+    participationpersonnelfemmefemmesecondaireeci = models.IntegerField(db_column='participationpersonnelFemmeFemmeSecondaireECI')  # Field name made lowercase.
+    participationpersonnelfemmefemmesecondaireeck = models.IntegerField(db_column='participationpersonnelFemmeFemmeSecondaireECK')  # Field name made lowercase.
+    participationpersonnelfemmefemmesecondaireecp = models.IntegerField(db_column='participationpersonnelFemmeFemmeSecondaireECP')  # Field name made lowercase.
+    participationpersonnelfemmefemmesecondaireecs = models.IntegerField(db_column='participationpersonnelFemmeFemmeSecondaireECS')  # Field name made lowercase.
+    participationpersonnelfemmeprive = models.IntegerField(db_column='participationpersonnelFemmePRIVE')  # Field name made lowercase.
+    participationpersonnelfemmesecondaireautre = models.IntegerField(db_column='participationpersonnelFemmeSecondaireAUTRE')  # Field name made lowercase.
+    participationpersonnelfemmesecondaireenc = models.IntegerField(db_column='participationpersonnelFemmeSecondaireENC')  # Field name made lowercase.
+    proportionsaleactivite = models.IntegerField(db_column='proportionSaleActivite')  # Field name made lowercase.
+    proportionsaleactivitebonetat = models.IntegerField(db_column='proportionSaleActiviteBonEtat')  # Field name made lowercase.
+    proportionsaleactiviteendure = models.IntegerField(db_column='proportionSaleActiviteEnDure')  # Field name made lowercase.
+    proportionsaleactiviteenpaillefeuillage = models.IntegerField(db_column='proportionSaleActiviteEnPailleFeuillage')  # Field name made lowercase.
+    proportionsaleactiviteenterrebattu = models.IntegerField(db_column='proportionSaleActiviteEnTerreBattu')  # Field name made lowercase.
+    proportionsaleactivitesemidure = models.IntegerField(db_column='proportionSaleActiviteSemiDure')  # Field name made lowercase.
+    proportionsallecoursecondaire = models.IntegerField(db_column='proportionSallecourSecondaire')  # Field name made lowercase.
+    proportionsallecoursecondairecourbonetat = models.IntegerField(db_column='proportionSallecourSecondairecourbonetat')  # Field name made lowercase.
+    proportionsallecoursecondairecourendur = models.IntegerField(db_column='proportionSallecourSecondairecourendur')  # Field name made lowercase.
+    proportionsallecoursecondairecourpaillefeuillage = models.IntegerField(db_column='proportionSallecourSecondairecourpaillefeuillage')  # Field name made lowercase.
+    proportionsallecoursecondairecoursemidur = models.IntegerField(db_column='proportionSallecourSecondairecoursemidur')  # Field name made lowercase.
+    proportionsallecoursecondairecourterrebattue = models.IntegerField(db_column='proportionSallecourSecondairecourterrebattue')  # Field name made lowercase.
+    proportioncour = models.IntegerField()
+    proportioncourbonetat = models.IntegerField()
+    proportioncourendur = models.IntegerField()
+    proportioncourpaillefeuillage = models.IntegerField()
+    proportioncoursemidur = models.IntegerField()
+    proportioncourterrebattue = models.IntegerField()
+    repartitionclassematernelautre = models.IntegerField(db_column='repartitionClasseMaternelAUTRE')  # Field name made lowercase.
+    repartitionclassematernelecc = models.IntegerField(db_column='repartitionClasseMaternelECC')  # Field name made lowercase.
+    repartitionclassematernelecf = models.IntegerField(db_column='repartitionClasseMaternelECF')  # Field name made lowercase.
+    repartitionclassematerneleci = models.IntegerField(db_column='repartitionClasseMaternelECI')  # Field name made lowercase.
+    repartitionclassematerneleck = models.IntegerField(db_column='repartitionClasseMaternelECK')  # Field name made lowercase.
+    repartitionclassematernelecp = models.IntegerField(db_column='repartitionClasseMaternelECP')  # Field name made lowercase.
+    repartitionclassematernelecs = models.IntegerField(db_column='repartitionClasseMaternelECS')  # Field name made lowercase.
+    repartitionclassematernelenc = models.IntegerField(db_column='repartitionClasseMaternelENC')  # Field name made lowercase.
+    repartitionclassematernelprive = models.IntegerField(db_column='repartitionClasseMaternelPRIVE')  # Field name made lowercase.
+    repartitionclasseprimaireautre = models.IntegerField(db_column='repartitionClassePrimaireAUTRE')  # Field name made lowercase.
+    repartitionclasseprimaireecc = models.IntegerField(db_column='repartitionClassePrimaireECC')  # Field name made lowercase.
+    repartitionclasseprimaireecf = models.IntegerField(db_column='repartitionClassePrimaireECF')  # Field name made lowercase.
+    repartitionclasseprimaireeci = models.IntegerField(db_column='repartitionClassePrimaireECI')  # Field name made lowercase.
+    repartitionclasseprimaireeck = models.IntegerField(db_column='repartitionClassePrimaireECK')  # Field name made lowercase.
+    repartitionclasseprimaireecp = models.IntegerField(db_column='repartitionClassePrimaireECP')  # Field name made lowercase.
+    repartitionclasseprimaireecs = models.IntegerField(db_column='repartitionClassePrimaireECS')  # Field name made lowercase.
+    repartitionclasseprimaireenc = models.IntegerField(db_column='repartitionClassePrimaireENC')  # Field name made lowercase.
+    repartitionclasseprimaireprive = models.IntegerField(db_column='repartitionClassePrimairePRIVE')  # Field name made lowercase.
+    repartitionclassesecondaireautre = models.IntegerField(db_column='repartitionClasseSecondaireAUTRE')  # Field name made lowercase.
+    repartitionclassesecondaireecc = models.IntegerField(db_column='repartitionClasseSecondaireECC')  # Field name made lowercase.
+    repartitionclassesecondaireecf = models.IntegerField(db_column='repartitionClasseSecondaireECF')  # Field name made lowercase.
+    repartitionclassesecondaireeci = models.IntegerField(db_column='repartitionClasseSecondaireECI')  # Field name made lowercase.
+    repartitionclassesecondaireeck = models.IntegerField(db_column='repartitionClasseSecondaireECK')  # Field name made lowercase.
+    repartitionclassesecondaireecp = models.IntegerField(db_column='repartitionClasseSecondaireECP')  # Field name made lowercase.
+    repartitionclassesecondaireecs = models.IntegerField(db_column='repartitionClasseSecondaireECS')  # Field name made lowercase.
+    repartitionclassesecondaireenc = models.IntegerField(db_column='repartitionClasseSecondaireENC')  # Field name made lowercase.
+    repartitionecolematernelautre = models.IntegerField(db_column='repartitionEcoleMaternelAUTRE')  # Field name made lowercase.
+    repartitionecolematernelecc = models.IntegerField(db_column='repartitionEcoleMaternelECC')  # Field name made lowercase.
+    repartitionecolematernelecf = models.IntegerField(db_column='repartitionEcoleMaternelECF')  # Field name made lowercase.
+    repartitionecolematerneleci = models.IntegerField(db_column='repartitionEcoleMaternelECI')  # Field name made lowercase.
+    repartitionecolematerneleck = models.IntegerField(db_column='repartitionEcoleMaternelECK')  # Field name made lowercase.
+    repartitionecolematernelecp = models.IntegerField(db_column='repartitionEcoleMaternelECP')  # Field name made lowercase.
+    repartitionecolematernelecs = models.IntegerField(db_column='repartitionEcoleMaternelECS')  # Field name made lowercase.
+    repartitionecolematernelenc = models.IntegerField(db_column='repartitionEcoleMaternelENC')  # Field name made lowercase.
+    repartitionecolematernelprive = models.IntegerField(db_column='repartitionEcoleMaternelPRIVE')  # Field name made lowercase.
+    repartitionecoleprimaireautre = models.IntegerField(db_column='repartitionEcolePrimaireAUTRE')  # Field name made lowercase.
+    repartitionecoleprimaireecc = models.IntegerField(db_column='repartitionEcolePrimaireECC')  # Field name made lowercase.
+    repartitionecoleprimaireecf = models.IntegerField(db_column='repartitionEcolePrimaireECF')  # Field name made lowercase.
+    repartitionecoleprimaireeci = models.IntegerField(db_column='repartitionEcolePrimaireECI')  # Field name made lowercase.
+    repartitionecoleprimaireeck = models.IntegerField(db_column='repartitionEcolePrimaireECK')  # Field name made lowercase.
+    repartitionecoleprimaireecp = models.IntegerField(db_column='repartitionEcolePrimaireECP')  # Field name made lowercase.
+    repartitionecoleprimaireecs = models.IntegerField(db_column='repartitionEcolePrimaireECS')  # Field name made lowercase.
+    repartitionecoleprimaireprive = models.IntegerField(db_column='repartitionEcolePrimairePRIVE')  # Field name made lowercase.
+    repartitionecoleprimairelenc = models.IntegerField(db_column='repartitionEcolePrimairelENC')  # Field name made lowercase.
+    repartitionecolesecondaireautre = models.IntegerField(db_column='repartitionEcoleSecondaireAUTRE')  # Field name made lowercase.
+    repartitionecolesecondaireecc = models.IntegerField(db_column='repartitionEcoleSecondaireECC')  # Field name made lowercase.
+    repartitionecolesecondaireecf = models.IntegerField(db_column='repartitionEcoleSecondaireECF')  # Field name made lowercase.
+    repartitionecolesecondaireeci = models.IntegerField(db_column='repartitionEcoleSecondaireECI')  # Field name made lowercase.
+    repartitionecolesecondaireeck = models.IntegerField(db_column='repartitionEcoleSecondaireECK')  # Field name made lowercase.
+    repartitionecolesecondaireecp = models.IntegerField(db_column='repartitionEcoleSecondaireECP')  # Field name made lowercase.
+    repartitionecolesecondaireecs = models.IntegerField(db_column='repartitionEcoleSecondaireECS')  # Field name made lowercase.
+    repartitionecolesecondaireenc = models.IntegerField(db_column='repartitionEcoleSecondaireENC')  # Field name made lowercase.
+    repartitioneducateurautre = models.IntegerField(db_column='repartitionEducateurAUTRE')  # Field name made lowercase.
+    repartitioneducateurfemmematernelautre = models.IntegerField(db_column='repartitionEducateurFemmeMaternelAUTRE')  # Field name made lowercase.
+    repartitioneducateurfemmematernelecc = models.IntegerField(db_column='repartitionEducateurFemmeMaternelECC')  # Field name made lowercase.
+    repartitioneducateurfemmematernelecf = models.IntegerField(db_column='repartitionEducateurFemmeMaternelECF')  # Field name made lowercase.
+    repartitioneducateurfemmematerneleci = models.IntegerField(db_column='repartitionEducateurFemmeMaternelECI')  # Field name made lowercase.
+    repartitioneducateurfemmematerneleck = models.IntegerField(db_column='repartitionEducateurFemmeMaternelECK')  # Field name made lowercase.
+    repartitioneducateurfemmematernelecp = models.IntegerField(db_column='repartitionEducateurFemmeMaternelECP')  # Field name made lowercase.
+    repartitioneducateurfemmematernelecs = models.IntegerField(db_column='repartitionEducateurFemmeMaternelECS')  # Field name made lowercase.
+    repartitioneducateurfemmematernelenc = models.IntegerField(db_column='repartitionEducateurFemmeMaternelENC')  # Field name made lowercase.
+    repartitioneducateurfemmematernelprive = models.IntegerField(db_column='repartitionEducateurFemmeMaternelPRIVE')  # Field name made lowercase.
+    repartitioneducateurfemmequalificationd6 = models.IntegerField(db_column='repartitionEducateurFemmeQualificationD6')  # Field name made lowercase.
+    repartitioneducateurmaternelautre = models.IntegerField(db_column='repartitionEducateurMaternelAUTRE')  # Field name made lowercase.
+    repartitioneducateurmaternelecc = models.IntegerField(db_column='repartitionEducateurMaternelECC')  # Field name made lowercase.
+    repartitioneducateurmaternelecf = models.IntegerField(db_column='repartitionEducateurMaternelECF')  # Field name made lowercase.
+    repartitioneducateurmaterneleci = models.IntegerField(db_column='repartitionEducateurMaternelECI')  # Field name made lowercase.
+    repartitioneducateurmaterneleck = models.IntegerField(db_column='repartitionEducateurMaternelECK')  # Field name made lowercase.
+    repartitioneducateurmaternelecp = models.IntegerField(db_column='repartitionEducateurMaternelECP')  # Field name made lowercase.
+    repartitioneducateurmaternelecs = models.IntegerField(db_column='repartitionEducateurMaternelECS')  # Field name made lowercase.
+    repartitioneducateurmaternelenc = models.IntegerField(db_column='repartitionEducateurMaternelENC')  # Field name made lowercase.
+    repartitioneducateurmaternelprive = models.IntegerField(db_column='repartitionEducateurMaternelPRIVE')  # Field name made lowercase.
+    repartitioneducateurprive = models.IntegerField(db_column='repartitionEducateurPRIVE')  # Field name made lowercase.
+    repartitioneducateurqualificationd4 = models.IntegerField(db_column='repartitionEducateurQualificationD4')  # Field name made lowercase.
+    repartitioneducateurqualificationem = models.IntegerField(db_column='repartitionEducateurQualificationEM')  # Field name made lowercase.
+    repartitioneducateurqualificationg3a1 = models.IntegerField(db_column='repartitionEducateurQualificationG3A1')  # Field name made lowercase.
+    repartitioneducateurqualificationmoind4 = models.IntegerField(db_column='repartitionEducateurQualificationMoinD4')  # Field name made lowercase.
+    repartitioneducateurqualificationp6 = models.IntegerField(db_column='repartitionEducateurQualificationP6')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireautre = models.IntegerField(db_column='repartitionEleveinscritSecondaireAUTRE')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireecc = models.IntegerField(db_column='repartitionEleveinscritSecondaireECC')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireecf = models.IntegerField(db_column='repartitionEleveinscritSecondaireECF')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireeci = models.IntegerField(db_column='repartitionEleveinscritSecondaireECI')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireeck = models.IntegerField(db_column='repartitionEleveinscritSecondaireECK')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireecp = models.IntegerField(db_column='repartitionEleveinscritSecondaireECP')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireecs = models.IntegerField(db_column='repartitionEleveinscritSecondaireECS')  # Field name made lowercase.
+    repartitioneleveinscritsecondaireenc = models.IntegerField(db_column='repartitionEleveinscritSecondaireENC')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleautre = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleAUTRE')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleecc = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleECC')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleecf = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleECF')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleeci = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleECI')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleeck = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleECK')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleecp = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleECP')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleecs = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleECS')  # Field name made lowercase.
+    repartitioneleveinscritsecondairefilleenc = models.IntegerField(db_column='repartitionEleveinscritSecondaireFilleENC')  # Field name made lowercase.
+    repartitioneleveinscrittypenseignementechnique = models.IntegerField(db_column='repartitionEleveinscritTypenseignemenTechnique')  # Field name made lowercase.
+    repartitioneleveinscrittypenseignementartmetier = models.IntegerField(db_column='repartitionEleveinscritTypenseignementArtMetier')  # Field name made lowercase.
+    repartitioneleveinscrittypenseignementgeneral = models.IntegerField(db_column='repartitionEleveinscritTypenseignementGeneral')  # Field name made lowercase.
+    repartitioneleveinscrittypenseignementnormal = models.IntegerField(db_column='repartitionEleveinscritTypenseignementNormal')  # Field name made lowercase.
+    repartitioneleveinscrittypenseignementprofessionel = models.IntegerField(db_column='repartitionEleveinscritTypenseignementProfessionel')  # Field name made lowercase.
+    repartitionenfantfillematernelautre = models.IntegerField(db_column='repartitionEnfantFilleMaternelAUTRE')  # Field name made lowercase.
+    repartitionenfantfillematernelecc = models.IntegerField(db_column='repartitionEnfantFilleMaternelECC')  # Field name made lowercase.
+    repartitionenfantfillematernelecf = models.IntegerField(db_column='repartitionEnfantFilleMaternelECF')  # Field name made lowercase.
+    repartitionenfantfillematerneleci = models.IntegerField(db_column='repartitionEnfantFilleMaternelECI')  # Field name made lowercase.
+    repartitionenfantfillematerneleck = models.IntegerField(db_column='repartitionEnfantFilleMaternelECK')  # Field name made lowercase.
+    repartitionenfantfillematernelecp = models.IntegerField(db_column='repartitionEnfantFilleMaternelECP')  # Field name made lowercase.
+    repartitionenfantfillematernelecs = models.IntegerField(db_column='repartitionEnfantFilleMaternelECS')  # Field name made lowercase.
+    repartitionenfantfillematernelenc = models.IntegerField(db_column='repartitionEnfantFilleMaternelENC')  # Field name made lowercase.
+    repartitionenfantfillematernelprive = models.IntegerField(db_column='repartitionEnfantFilleMaternelPRIVE')  # Field name made lowercase.
+    repartitionenfantmaternelautre = models.IntegerField(db_column='repartitionEnfantMaternelAUTRE')  # Field name made lowercase.
+    repartitionenfantmaternelecc = models.IntegerField(db_column='repartitionEnfantMaternelECC')  # Field name made lowercase.
+    repartitionenfantmaternelecf = models.IntegerField(db_column='repartitionEnfantMaternelECF')  # Field name made lowercase.
+    repartitionenfantmaterneleci = models.IntegerField(db_column='repartitionEnfantMaternelECI')  # Field name made lowercase.
+    repartitionenfantmaterneleck = models.IntegerField(db_column='repartitionEnfantMaternelECK')  # Field name made lowercase.
+    repartitionenfantmaternelecp = models.IntegerField(db_column='repartitionEnfantMaternelECP')  # Field name made lowercase.
+    repartitionenfantmaternelecs = models.IntegerField(db_column='repartitionEnfantMaternelECS')  # Field name made lowercase.
+    repartitionenfantmaternelenc = models.IntegerField(db_column='repartitionEnfantMaternelENC')  # Field name made lowercase.
+    repartitionenfantmaternelprive = models.IntegerField(db_column='repartitionEnfantMaternelPRIVE')  # Field name made lowercase.
+    repartitionenfantprimaireautre = models.IntegerField(db_column='repartitionEnfantPrimaireAUTRE')  # Field name made lowercase.
+    repartitionenfantprimaireecc = models.IntegerField(db_column='repartitionEnfantPrimaireECC')  # Field name made lowercase.
+    repartitionenfantprimaireecf = models.IntegerField(db_column='repartitionEnfantPrimaireECF')  # Field name made lowercase.
+    repartitionenfantprimaireeci = models.IntegerField(db_column='repartitionEnfantPrimaireECI')  # Field name made lowercase.
+    repartitionenfantprimaireeck = models.IntegerField(db_column='repartitionEnfantPrimaireECK')  # Field name made lowercase.
+    repartitionenfantprimaireecp = models.IntegerField(db_column='repartitionEnfantPrimaireECP')  # Field name made lowercase.
+    repartitionenfantprimaireecs = models.IntegerField(db_column='repartitionEnfantPrimaireECS')  # Field name made lowercase.
+    repartitionenfantprimaireenc = models.IntegerField(db_column='repartitionEnfantPrimaireENC')  # Field name made lowercase.
+    repartitionenfantprimaireprive = models.IntegerField(db_column='repartitionEnfantPrimairePRIVE')  # Field name made lowercase.
+    repartitionfilleinscritautre = models.IntegerField(db_column='repartitionFilleinscritAUTRE')  # Field name made lowercase.
+    repartitionfilleinscritecc = models.IntegerField(db_column='repartitionFilleinscritECC')  # Field name made lowercase.
+    repartitionfilleinscritecf = models.IntegerField(db_column='repartitionFilleinscritECF')  # Field name made lowercase.
+    repartitionfilleinscriteci = models.IntegerField(db_column='repartitionFilleinscritECI')  # Field name made lowercase.
+    repartitionfilleinscriteck = models.IntegerField(db_column='repartitionFilleinscritECK')  # Field name made lowercase.
+    repartitionfilleinscritecp = models.IntegerField(db_column='repartitionFilleinscritECP')  # Field name made lowercase.
+    repartitionfilleinscritecs = models.IntegerField(db_column='repartitionFilleinscritECS')  # Field name made lowercase.
+    repartitionfilleinscritenc = models.IntegerField(db_column='repartitionFilleinscritENC')  # Field name made lowercase.
+    repartitionfilleinscritepr = models.IntegerField(db_column='repartitionFilleinscritEPR')  # Field name made lowercase.
+    repartitionfilleinscritprive = models.IntegerField(db_column='repartitionFilleinscritPRIVE')  # Field name made lowercase.
+    repartitioninscriteleveautre = models.IntegerField(db_column='repartitionInscritEleveAUTRE')  # Field name made lowercase.
+    repartitioninscriteleveecc = models.IntegerField(db_column='repartitionInscritEleveECC')  # Field name made lowercase.
+    repartitioninscriteleveecf = models.IntegerField(db_column='repartitionInscritEleveECF')  # Field name made lowercase.
+    repartitioninscriteleveeci = models.IntegerField(db_column='repartitionInscritEleveECI')  # Field name made lowercase.
+    repartitioninscriteleveeck = models.IntegerField(db_column='repartitionInscritEleveECK')  # Field name made lowercase.
+    repartitioninscriteleveecp = models.IntegerField(db_column='repartitionInscritEleveECP')  # Field name made lowercase.
+    repartitioninscriteleveecs = models.IntegerField(db_column='repartitionInscritEleveECS')  # Field name made lowercase.
+    repartitioninscriteleveenc = models.IntegerField(db_column='repartitionInscritEleveENC')  # Field name made lowercase.
+    repartitioninscriteleveprive = models.IntegerField(db_column='repartitionInscritElevePRIVE')  # Field name made lowercase.
+    repartitiontitulaireenseignaautre = models.IntegerField(db_column='repartitionTitulaireEnseignaAUTRE')  # Field name made lowercase.
+    repartitiontitulaireenseignand4 = models.IntegerField(db_column='repartitionTitulaireEnseignanD4')  # Field name made lowercase.
+    repartitiontitulaireenseignand6 = models.IntegerField(db_column='repartitionTitulaireEnseignanD6')  # Field name made lowercase.
+    repartitiontitulaireenseignanmoind4 = models.IntegerField(db_column='repartitionTitulaireEnseignanMoinD4')  # Field name made lowercase.
+    repartitiontitulaireenseignanp6 = models.IntegerField(db_column='repartitionTitulaireEnseignanP6')  # Field name made lowercase.
+    repartitionpersonnelenseignanautre = models.IntegerField(db_column='repartitionpersonnelEnseignanAUTRE')  # Field name made lowercase.
+    repartitionpersonnelenseignanecc = models.IntegerField(db_column='repartitionpersonnelEnseignanECC')  # Field name made lowercase.
+    repartitionpersonnelenseignanecf = models.IntegerField(db_column='repartitionpersonnelEnseignanECF')  # Field name made lowercase.
+    repartitionpersonnelenseignaneci = models.IntegerField(db_column='repartitionpersonnelEnseignanECI')  # Field name made lowercase.
+    repartitionpersonnelenseignaneck = models.IntegerField(db_column='repartitionpersonnelEnseignanECK')  # Field name made lowercase.
+    repartitionpersonnelenseignanecp = models.IntegerField(db_column='repartitionpersonnelEnseignanECP')  # Field name made lowercase.
+    repartitionpersonnelenseignanecs = models.IntegerField(db_column='repartitionpersonnelEnseignanECS')  # Field name made lowercase.
+    repartitionpersonnelenseignanenc = models.IntegerField(db_column='repartitionpersonnelEnseignanENC')  # Field name made lowercase.
+    repartitionpersonnelenseignanprive = models.IntegerField(db_column='repartitionpersonnelEnseignanPRIVE')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireautre = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireAUTRE')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireecc = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireECC')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireecf = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireECF')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireeci = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireECI')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireeck = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireECK')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireecp = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireECP')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireecs = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireECS')  # Field name made lowercase.
+    repartitionpersonnelenseignansecondaireenc = models.IntegerField(db_column='repartitionpersonnelEnseignanSecondaireENC')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationa1 = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationA1')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationautre = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationAUTRE')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationd6 = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationD6')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationdr = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationDR')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationg3 = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationG3')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationir = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationIR')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationl2 = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationL2')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationl2a = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationL2A')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationla = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationLA')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationmoind6p6 = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationMoinD6P6')  # Field name made lowercase.
+    repartitionpersonnelenseignantqualificationp6 = models.IntegerField(db_column='repartitionpersonnelenseignantqualificationP6')  # Field name made lowercase.
+    tauxcouverture = models.FloatField(db_column='tauxCouverture')  # Field name made lowercase.
+    etablissementid = models.BigIntegerField(db_column='etablissementId', blank=True, null=True)  # Field name made lowercase.
+    id = models.BigAutoField(primary_key=True)
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId', blank=True, null=True)  # Field name made lowercase.
+    etablissement = models.CharField(max_length=255, blank=True, null=True)
+    proved = models.CharField(max_length=255, blank=True, null=True)
+    province = models.CharField(max_length=255, blank=True, null=True)
+    regimegestion = models.CharField(db_column='regimeGestion', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sousproved = models.CharField(db_column='sousProved', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    typeenseignement = models.CharField(db_column='typeEnseignement', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        indexes = [
-            models.Index(fields=['form_et_id'], name='idx_ref_jur_form'),
-            models.Index(fields=['identification_id'], name='idx_ref_jur_ident'),
-        ]
-        # L'interclassement (collation) de la table est utf8mb4_general_ci
-        # Vous pourriez spécifier db_collation si nécessaire, mais ce n'est souvent pas requis pour le fonctionnement de base.
-        
-    def __str__(self):
-        return f"Référence Juridique ID: {self.id}"
+        managed = False
+        db_table = 'annuaires'
 
-class Localisation_administrative(BaseModel):
-    
-    # form_st_id bigint(20), Oui Null
-    form_st_id = models.BigIntegerField(null=True, blank=True)  #
-    # identification_id bigint(20), Oui Null
-    identification_id = models.ForeignKey('Identifications', 
-        on_delete=models.CASCADE,  # Ou models.PROTECT selon votre logique
-        null=False, 
-        verbose_name="Année ID")  #
 
-    # Champs de type chaîne de caractères (varchar(255))
-    # Tous sont Oui Null
-    annee = models.CharField(max_length=255, null=True, blank=True)  #
-    code_adm_ets = models.CharField(max_length=255, null=True, blank=True)  #
-    code_adm_ets_auto = models.CharField(max_length=255, null=True, blank=True)  #
-    province = models.CharField(max_length=255, null=True, blank=True)  #
-    province_educationnelle = models.CharField(max_length=255, null=True, blank=True)  #
-    secteur = models.CharField(max_length=255, null=True, blank=True)  #
-    sous_division = models.CharField(max_length=255, null=True, blank=True)  #
-    territoire = models.CharField(max_length=255, null=True, blank=True)  #
-    territoire_commune = models.CharField(max_length=255, null=True, blank=True)  #
-    village = models.CharField(max_length=255, null=True, blank=True)  #
-    ville = models.CharField(max_length=255, null=True, blank=True)  #
+class CelluleOrientationFormation(models.Model):
+    cellule_orientation_evf = models.TextField(blank=True, null=True)  # This field type is a guess.
+    enseignants_evf_formes = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.ForeignKey('Formulaires', models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        indexes = [
-            models.Index(fields=['form_st_id'], name='idx_loc_admin_form'),
-            models.Index(fields=['identification_id'], name='idx_loc_admin_ident'),
-        ] #
-        
-        # L'interclassement (collation) de la table est utf8mb4_general_ci
-        # Vous pourriez spécifier db_collation si nécessaire, mais ce n'est souvent pas requis pour le fonctionnement de base.
-        
-    def __str__(self):
-        return f"Localisation ID: {self.id}"
+        managed = False
+        db_table = 'cellule_orientation_formation'
 
-# Assurez-vous que 'BaseModel' hérite de 'models.Model' et est importée correctement
-class Localisation_scolaire(BaseModel):
 
-    form_st_id = models.BigIntegerField(
-        null=True,     # Autorise les valeurs NULL dans la base de données
-        blank=True     # Autorise le champ à être vide dans les formulaires
-    )
-    # identification_id bigint(20), Oui Null [cite: 19]
-    identification_id = models.ForeignKey('Identifications',on_delete=models.CASCADE,null=False)
-
-    altitude = models.CharField(
-        max_length=255, # Taille maximale pour le varchar(255)
-        null=True,
-        blank=True
-    )
-    centre_regroupement = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True
-    )
-    latitude = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True
-    )
-    longitude = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True
-    )
-    milieu = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True
-    )
+class Cycle(models.Model):
+    duree_annees = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField()
+    id = models.BigAutoField(primary_key=True)
+    niveau = models.ForeignKey('NiveauEnseignement', models.DO_NOTHING, blank=True, null=True)
+    updated_at = models.DateTimeField()
+    nom = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
-        indexes = [
-            models.Index(fields=['form_st_id'], name='idx_loc_scol_form'),
-            models.Index(fields=['identification_id'], name='idx_loc_scol_ident'),
-        ]
-        
-    def __str__(self):
-        return f"Localisation Scolaire ID: {self.id}"
-
-class Identifications(BaseModel):
-
-    # bit(1) est généralement un BooleanField en Django.
-    download = models.BooleanField(
-        default=False, 
-        verbose_name="Téléchargé"
-    )
-
-    # 2. finished (bit(1), Non)
-    finished = models.BooleanField(
-        default=False, 
-        verbose_name="Terminé"
-    )
-
-    # 3. remplissage (int(11), Oui)
-    # On utilise IntegerField pour int(11).
-    remplissage = models.IntegerField(
-        null=True, 
-        verbose_name="Remplissage (%)"
-    )
-
-    # 4. submit (bit(1), Oui)
-    submit = models.BooleanField(
-        null=True, 
-        verbose_name="Soumis"
-    )
-
-    # 5. fk_annee_id (bigint(20), Oui)
-    # Clé étrangère vers Annee_scolaire
-    fk_annee_id = models.ForeignKey(
-        'Annee_scolaire', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        verbose_name="Année Scolaire ID"
-    )
-
-    # 6-11. Clés étrangères de localisation et autres (bigint(20), Oui)
-    # On utilise BigIntegerField comme placeholder pour les FK qui seront probablement définies plus tard.
-    fk_centre_reg_id = models.BigIntegerField(null=True, verbose_name="Centre Régional ID")
-    fk_etab_id = models.BigIntegerField(null=True, verbose_name="Établissement ID")
-    fk_proved_id = models.BigIntegerField(null=True, verbose_name="Proved ID")
-    fk_province_id = models.BigIntegerField(null=True, verbose_name="Province ID")
-    fk_territoire_id = models.BigIntegerField(null=True, verbose_name="Territoire ID")
-    fk_ville_id = models.BigIntegerField(null=True, verbose_name="Ville ID")
-
-    # 12. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 13. released_at (datetime(6), Oui)
-    released_at = models.DateTimeField(
-        null=True, 
-        verbose_name="Date de Publication"
-    )
-
-    # 14. sous_proved_id (bigint(20), Oui)
-    sous_proved_id = models.BigIntegerField(null=True, verbose_name="Sous-Proved ID")
-
-    # 15. updated_at (datetime(6), Oui)
-    updated_at = models.DateTimeField(
-        auto_now=True,  # Met à jour à chaque sauvegarde
-        null=True, 
-        verbose_name="Date de Modification"
-    )
-
-    # 16. user_id (bigint(20), Oui)
-    user_id = models.BigIntegerField(null=True, verbose_name="Utilisateur ID")
-
-    # 17-33. Champs Varchar
-    
-    # 17. secteur_enseignement (varchar(150), Oui)
-    secteur_enseignement = models.CharField(max_length=150, null=True, verbose_name="Secteur Enseignement")
-
-    # 18. tel_chef_etab (varchar(150), Oui)
-    tel_chef_etab = models.CharField(max_length=150, null=True, verbose_name="Téléphone Chef Établissement")
-
-    # 19. adresse (varchar(191), Oui)
-    adresse = models.CharField(max_length=191, null=True, verbose_name="Adresse")
-
-    # 20. etab_est (varchar(191), Oui)
-    etab_est = models.CharField(max_length=191, null=True, verbose_name="Établissement Est...")
-
-    # 21. milieu (varchar(191), Oui)
-    milieu = models.CharField(max_length=191, null=True, verbose_name="Milieu (Urbain/Rural)")
-
-    # 22. nom_chef_etab (varchar(191), Oui)
-    nom_chef_etab = models.CharField(max_length=191, null=True, verbose_name="Nom Chef Établissement")
-
-    # 23. num_secope (varchar(191), Oui)
-    num_secope = models.CharField(max_length=191, null=True, verbose_name="Numéro SECOPE")
-
-    # 24. ref_juridique (varchar(191), Oui)
-    ref_juridique = models.CharField(max_length=191, null=True, verbose_name="Référence Juridique")
-
-    # 25. stat_occup_parcel (varchar(191), Oui)
-    stat_occup_parcel = models.CharField(max_length=191, null=True, verbose_name="Statut Occupation Parcelle")
-
-    # 26. center (varchar(255), Oui)
-    center = models.CharField(max_length=255, null=True, verbose_name="Centre")
-
-    # 27. code_centre_reg (varchar(255), Oui)
-    code_centre_reg = models.CharField(max_length=255, null=True, verbose_name="Code Centre Régional")
-
-    # 28. denomination (varchar(255), Oui)
-    denomination = models.CharField(max_length=255, null=True, verbose_name="Dénomination")
-
-    # 29. latitude (varchar(255), Oui)
-    latitude = models.CharField(max_length=255, null=True, verbose_name="Latitude")
-
-    # 30. longitude (varchar(255), Oui)
-    longitude = models.CharField(max_length=255, null=True, verbose_name="Longitude")
-
-    # 31. regime_gestion (varchar(255), Oui)
-    regime_gestion = models.CharField(max_length=255, null=True, verbose_name="Régime de Gestion")
-
-    # 32. slug (varchar(255), Oui)
-    slug = models.CharField(max_length=255, null=True, verbose_name="Slug")
-
-    # 33. type_enseignement (varchar(255), Oui)
-    type_enseignement = models.CharField(max_length=255, null=True, verbose_name="Type d'Enseignement")
+        managed = False
+        db_table = 'cycle'
 
 
-    def __str__(self):
-        return f"Identification {self.id} - {self.denomination or 'Sans nom'}"
+class DoublonsFormulaires(models.Model):
+    id_a_garder = models.BigIntegerField(blank=True, null=True)
+    ids_doublons = models.TextField(blank=True, null=True)
+    nombre_doublons = models.BigIntegerField()
+    idutilisateur = models.BigIntegerField(db_column='idUtilisateur', blank=True, null=True)  # Field name made lowercase.
+    idannee = models.BigIntegerField(blank=True, null=True)
+    idetablissement = models.BigIntegerField(blank=True, null=True)
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId', blank=True, null=True)  # Field name made lowercase.
+    date = models.CharField(max_length=255, blank=True, null=True)
+    nometab = models.CharField(db_column='nomEtab', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    type = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Identification"
-        verbose_name_plural = "Identifications"
-# ok
-class Informations_generale(BaseModel):
-    # 1. form_et_id (bigint(20), Oui)
-    # Supposé être une clé étrangère vers le modèle Etablissement (via Formulaires ou Identifications)
-    form_et_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire Établissement ID"
-    )
-    
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
+        managed = False
+        db_table = 'doublons_formulaires'
 
-    # 3. identification_id (bigint(20), Oui)
-    # Clé étrangère vers le modèle Identifications
-    identification_id = models.ForeignKey(
-        'Identifications', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        verbose_name="Identification ID"
-    )
 
-    # 4. cloture (varchar(255), Oui)
-    cloture = models.CharField(max_length=255, null=True, verbose_name="Clôture")
-
-    # 5. coges (varchar(255), Oui)
-    coges = models.CharField(max_length=255, null=True, verbose_name="CoGES")
-
-    # 6. coges_operationnel (varchar(255), Oui)
-    coges_operationnel = models.CharField(max_length=255, null=True, verbose_name="CoGES Opérationnel")
-
-    # 7. compartiments_filles (varchar(255), Oui)
-    compartiments_filles = models.CharField(max_length=255, null=True, verbose_name="Compartiments Filles")
-
-    # 8. copa (varchar(255), Oui)
-    copa = models.CharField(max_length=255, null=True, verbose_name="COPA")
-
-    # 9. copa_operationnel (varchar(255), Oui)
-    copa_operationnel = models.CharField(max_length=255, null=True, verbose_name="COPA Opérationnel")
-
-    # 10. cour_recreation (varchar(255), Oui)
-    cour_recreation = models.CharField(max_length=255, null=True, verbose_name="Cour de Récréation")
-
-    # 11. etablissement_pris_en_charge_programme_refugies (varchar(255), Oui)
-    etablissement_pris_en_charge_programme_refugies = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Établissement Programme Réfugiés"
-    )
-
-    # 12. internet (varchar(255), Oui)
-    internet = models.CharField(max_length=255, null=True, verbose_name="Internet")
-
-    # 13. latrines (varchar(255), Oui)
-    latrines = models.CharField(max_length=255, null=True, verbose_name="Latrines")
-
-    # 14. locaux_utilises (varchar(255), Oui)
-    locaux_utilises = models.CharField(max_length=255, null=True, verbose_name="Locaux Utilisés")
-
-    # 15. nature_cloture (varchar(255), Oui)
-    nature_cloture = models.CharField(max_length=255, null=True, verbose_name="Nature Clôture")
-
-    # 16. nbr_femmes_dans_copa (varchar(255), Oui)
-    nbr_femmes_dans_copa = models.CharField(max_length=255, null=True, verbose_name="Nombre de Femmes dans COPA")
-
-    # 17. nbr_femmes_dans_coges (varchar(255), Oui, Défaut: 0)
-    nbr_femmes_dans_coges = models.CharField(
-        max_length=255, 
-        null=True, 
-        default='0',
-        verbose_name="Nombre de Femmes dans CoGES"
-    )
-    
-    # 18. nom_second_etablissement (varchar(255), Oui)
-    nom_second_etablissement = models.CharField(max_length=255, null=True, verbose_name="Nom Second Établissement")
-
-    # 19. nombre_compartiments (varchar(255), Oui)
-    nombre_compartiments = models.CharField(max_length=255, null=True, verbose_name="Nombre de Compartiments")
-
-    # 20. organisme_projet (varchar(255), Oui)
-    organisme_projet = models.CharField(max_length=255, null=True, verbose_name="Organisme / Projet")
-
-    # 21. par_quel_organisme (varchar(255), Oui)
-    par_quel_organisme = models.CharField(max_length=255, null=True, verbose_name="Par Quel Organisme")
-
-    # 22. plan_action (varchar(255), Oui)
-    plan_action = models.CharField(max_length=255, null=True, verbose_name="Plan d'Action")
-
-    # 23. point_eau (varchar(255), Oui)
-    point_eau = models.CharField(max_length=255, null=True, verbose_name="Point d'Eau")
-
-    # 24. prevision_budgetaire (varchar(255), Oui)
-    prevision_budgetaire = models.CharField(max_length=255, null=True, verbose_name="Prévision Budgétaire")
-
-    # 25. programmes_officiels (varchar(255), Oui)
-    programmes_officiels = models.CharField(max_length=255, null=True, verbose_name="Programmes Officiels")
-
-    # 26. projet_etablissement (varchar(255), Oui)
-    projet_etablissement = models.CharField(max_length=255, null=True, verbose_name="Projet d'Établissement")
-
-    # 27. reunions_pv (varchar(255), Oui)
-    reunions_pv = models.CharField(max_length=255, null=True, verbose_name="PV Réunions")
-
-    # 28. reunions_rapport (varchar(255), Oui)
-    reunions_rapport = models.CharField(max_length=255, null=True, verbose_name="Rapport Réunions")
-
-    # 29. revue_performance (varchar(255), Oui)
-    revue_performance = models.CharField(max_length=255, null=True, verbose_name="Revue Performance")
-
-    # 30. sources_energie (varchar(255), Oui)
-    sources_energie = models.CharField(max_length=255, null=True, verbose_name="Sources Énergie")
-
-    # 31. tableau_bord (varchar(255), Oui)
-    tableau_bord = models.CharField(max_length=255, null=True, verbose_name="Tableau de Bord")
-
-    # 32. terrain_jeux (varchar(255), Oui)
-    terrain_jeux = models.CharField(max_length=255, null=True, verbose_name="Terrain de Jeux")
-
-    # 33. type_point_eau (varchar(255), Oui)
-    type_point_eau = models.CharField(max_length=255, null=True, verbose_name="Type Point d'Eau")
-
-    # 34. type_sources_energie (varchar(255), Oui)
-    type_sources_energie = models.CharField(max_length=255, null=True, verbose_name="Type Sources Énergie")
-
-    def __str__(self):
-        return f"Infos Générales ID: {self.id}"
+class EcoleDigeGombe(models.Model):
+    id = models.AutoField(primary_key=True)
+    sous_division = models.CharField(max_length=191)
+    nom_etablissement = models.CharField(max_length=255)
+    numero_dinacope = models.CharField(max_length=64, blank=True, null=True)
+    niveau = models.CharField(max_length=64, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=64, blank=True, null=True)
+    quartier = models.CharField(max_length=128, blank=True, null=True)
+    source_file = models.CharField(max_length=255, blank=True, null=True)
+    imported_at = models.DateTimeField(blank=True, null=True)
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId')  # Field name made lowercase.
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Information Générale"
-        verbose_name_plural = "Informations Générales"
-# ok
-class Proveds(BaseModel):
-    # 1. createdAt (datetime(6), Oui)
-    createdAt = models.DateTimeField(
-        auto_now_add=True, # Enregistre la date à la création (si l'application gère ça)
-        null=True, 
-        verbose_name="Date de Création"
-    )
+        managed = False
+        db_table = 'ecole_dige_gombe'
 
-    # 2. fk_province_id (bigint(20), Oui)
-    # Clé étrangère vers le modèle Province (qui n'existe pas encore mais on fait l'hypothèse)
-    fk_province_id = models.ForeignKey(
-        'Provinces', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        verbose_name="Province ID (FK)"
-    )
 
-    # 3. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 4. libelle (varchar(255), Oui)
-    libelle = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Libellé"
-    )
-
-    # 5. slug (varchar(255), Oui)
-    slug = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Slug"
-    )
-
-    def __str__(self):
-        # Utilise le libellé pour une meilleure lecture
-        return self.libelle or f"Proved ID: {self.id}"
+class EcoleDigeGombeAutre(models.Model):
+    id = models.AutoField(primary_key=True)
+    sous_division = models.CharField(max_length=191)
+    nom_etablissement = models.CharField(max_length=255)
+    numero_dinacope = models.CharField(max_length=64, blank=True, null=True)
+    niveau = models.CharField(max_length=64, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=64, blank=True, null=True)
+    quartier = models.CharField(max_length=128, blank=True, null=True)
+    source_file = models.CharField(max_length=255, blank=True, null=True)
+    imported_at = models.DateTimeField(blank=True, null=True)
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId')  # Field name made lowercase.
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Proved"
-        verbose_name_plural = "Proveds"
-# ok
-class Provinces(BaseModel):
-    # 1. is_deleted (tinyint(1), Oui, Défaut: 0)
-    # tinyint(1) -> BooleanField, Défaut 0 -> False
-    is_deleted = models.BooleanField(
-        default=False, 
-        null=True,  # Correspond à 'Oui' pour Null
-        verbose_name="Est Supprimé"
-    )
+        managed = False
+        db_table = 'ecole_dige_gombe_autre'
 
-    # 2. created_at (datetime(6), Oui)
-    created_at = models.DateTimeField(
-        auto_now_add=True, # Optionnel : Gère la date de création par Django
-        null=True, 
-        verbose_name="Date de Création"
-    )
 
-    # 3. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 4. user_id (bigint(20), Oui)
-    # Clé étrangère vers le modèle User (ou BigIntegerField si le modèle User n'est pas encore défini)
-    user_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Utilisateur ID"
-    )
-
-    # 5. chef_lieu (varchar(255), Oui)
-    chef_lieu = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Chef-Lieu"
-    )
-
-    # 6. libelle (varchar(255), Oui)
-    libelle = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Libellé"
-    )
-
-    # 7. slug (varchar(255), Oui)
-    slug = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Slug"
-    )
-
-    def __str__(self):
-        # Utilise le libellé pour une meilleure lecture
-        return self.libelle or f"Province ID: {self.id}"
+class EducationEnvironnementale(models.Model):
+    education_environnementale_discipline = models.TextField(blank=True, null=True)  # This field type is a guess.
+    education_environnementale_enseigne = models.TextField(blank=True, null=True)  # This field type is a guess.
+    education_environnementale_parascolaire = models.TextField(blank=True, null=True)  # This field type is a guess.
+    education_environnementale_programme = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.ForeignKey('Formulaires', models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Province"
-        verbose_name_plural = "Provinces"
-# ok
-class Regimes_gestion(BaseModel):
-    # 1. created_at (datetime(6), Non)
-    created_at = models.DateTimeField(
-        auto_now_add=True, 
-        null=False,
-        verbose_name="Date de Création"
-    )
+        managed = False
+        db_table = 'education_environnementale'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3. updated_at (datetime(6), Non)
-    updated_at = models.DateTimeField(
-        auto_now=True, 
-        null=False,
-        verbose_name="Date de Dernière Mise à Jour"
-    )
-
-    # 4. code (varchar(255), Non)
-    code = models.CharField(
-        max_length=255, 
-        null=False, 
-        unique=True, # J'ajoute unique=True car un 'code' est souvent unique
-        verbose_name="Code du Régime"
-    )
-
-    # 5. description (varchar(255), Non)
-    description = models.CharField(
-        max_length=255, 
-        null=False, 
-        verbose_name="Description"
-    )
-
-    def __str__(self):
-        # Utilise le code ou la description
-        return f"{self.code} - {self.description}"
+class Enseigants(models.Model):
+    formstid = models.BigIntegerField(db_column='FormStId', blank=True, null=True)  # Field name made lowercase.
+    id = models.BigAutoField(primary_key=True)
+    enseignants = models.TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Régime de Gestion"
-        verbose_name_plural = "Régimes de Gestion"
-# ok
-class Sous_proved(BaseModel):
-    # 1. created_at (datetime(6), Oui)
-    created_at = models.DateTimeField(
-        auto_now_add=True, 
-        null=True,
-        verbose_name="Date de Création"
-    )
+        managed = False
+        db_table = 'enseigants'
 
-    # 2. fk_proved_id (bigint(20), Oui)
-    # Clé étrangère vers Proveds (modèle créé précédemment)
-    fk_proved_id = models.ForeignKey(
-        'Proveds', 
-        on_delete=models.SET_NULL, 
-        null=True, 
-        verbose_name="Proved ID (FK)"
-    )
 
-    # 3. fk_territoire_id (bigint(20), Oui)
-    # Clé étrangère vers Territoires (modèle à venir)
-    fk_territoire_id = models.ForeignKey(
-        'Territoires', # Assurez-vous que le nom du modèle est correct
-        on_delete=models.SET_NULL, 
-        null=True, 
-        verbose_name="Territoire ID (FK)"
-    )
-
-    # 4. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 5. libelle (varchar(255), Oui)
-    libelle = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Libellé"
-    )
-
-    # 6. lieu_implantation (varchar(255), Oui)
-    lieu_implantation = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Lieu d'Implantation"
-    )
-
-    # 7. slug (varchar(255), Oui)
-    slug = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Slug"
-    )
-
-    def __str__(self):
-        return self.libelle or f"Sous-Proved ID: {self.id}"
+class Etablisement(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    anneeid = models.ForeignKey(AnneeScolaire, models.DO_NOTHING, db_column='anneeId')  # Field name made lowercase.
+    provinceid = models.ForeignKey('Provinces', models.DO_NOTHING, db_column='provinceId')  # Field name made lowercase.
+    provedid = models.ForeignKey('Proveds', models.DO_NOTHING, db_column='provedId')  # Field name made lowercase.
+    sousprovedid = models.ForeignKey('SousProved', models.DO_NOTHING, db_column='sousProvedId')  # Field name made lowercase.
+    territoireid = models.BigIntegerField(db_column='territoireId', blank=True, null=True)  # Field name made lowercase.
+    type_enseignement = models.CharField(max_length=50, blank=True, null=True)
+    nometablissement = models.CharField(db_column='nomEtablissement', max_length=255)  # Field name made lowercase.
+    nomchefetablissement = models.CharField(db_column='nomChefEtablissement', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    telephoneetablissement = models.CharField(db_column='telephoneEtablissement', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    adresseetablissement = models.CharField(db_column='adresseEtablissement', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    informations_generale = models.ForeignKey('InformationsGenerale', models.DO_NOTHING, blank=True, null=True)
+    localisation_administrative = models.ForeignKey('LocalisationAdministrative', models.DO_NOTHING, blank=True, null=True)
+    localisation_scolaire = models.ForeignKey('LocalisationScolaire', models.DO_NOTHING, blank=True, null=True)
+    reference_juridique = models.ForeignKey('ReferenceJuridique', models.DO_NOTHING, blank=True, null=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    isactive = models.IntegerField(db_column='isActive', blank=True, null=True)  # Field name made lowercase.
+    isdeleted = models.IntegerField(db_column='isDeleted', blank=True, null=True)  # Field name made lowercase.
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Sous-Proved"
-        verbose_name_plural = "Sous-Proveds"
-# ok
-class St1_effectifs_par_age(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    # Clé étrangère vers le formulaire ou l'établissement principal
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 3-32. Champs d'effectifs (varchar(255), Oui)
-
-    # Effective Filles (moins de 3 ans, 3 ans, plus de 3 ans) par année (1ere, 2eme, 3eme)
-    
-    # Filles 3 ans
-    effectif_filles_3ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Filles 3 ans (1ère)")
-    effectif_filles_3ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Filles 3 ans (2ème)")
-    effectif_filles_3ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Filles 3 ans (3ème)")
-    
-    # Filles 4 ans
-    effectif_filles_4ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Filles 4 ans (1ère)")
-    effectif_filles_4ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Filles 4 ans (2ème)")
-    effectif_filles_4ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Filles 4 ans (3ème)")
-    
-    # Filles 5 ans
-    effectif_filles_5ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Filles 5 ans (1ère)")
-    effectif_filles_5ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Filles 5 ans (2ème)")
-    effectif_filles_5ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Filles 5 ans (3ème)")
-    
-    # Filles moins de 3 ans
-    effectif_filles_moins_3ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Filles < 3 ans (1ère)")
-    effectif_filles_moins_3ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Filles < 3 ans (2ème)")
-    effectif_filles_moins_3ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Filles < 3 ans (3ème)")
-    
-    # Filles plus de 5 ans
-    effectif_filles_plus_5ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Filles > 5 ans (1ère)")
-    effectif_filles_plus_5ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Filles > 5 ans (2ème)")
-    effectif_filles_plus_5ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Filles > 5 ans (3ème)")
-
-    # Effective Garçons (moins de 3 ans, 3 ans, plus de 3 ans) par année (1ere, 2eme, 3eme)
-
-    # Garçons 3 ans
-    effectif_garcons_3ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Garçons 3 ans (1ère)")
-    effectif_garcons_3ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Garçons 3 ans (2ème)")
-    effectif_garcons_3ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Garçons 3 ans (3ème)")
-    
-    # Garçons 4 ans
-    effectif_garcons_4ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Garçons 4 ans (1ère)")
-    effectif_garcons_4ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Garçons 4 ans (2ème)")
-    effectif_garcons_4ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Garçons 4 ans (3ème)")
-
-    # Garçons 5 ans
-    effectif_garcons_5ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Garçons 5 ans (1ère)")
-    effectif_garcons_5ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Garçons 5 ans (2ème)")
-    effectif_garcons_5ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Garçons 5 ans (3ème)")
-
-    # Garçons moins de 3 ans
-    effectif_garcons_moins_3ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Garçons < 3 ans (1ère)")
-    effectif_garcons_moins_3ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Garçons < 3 ans (2ème)")
-    effectif_garcons_moins_3ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Garçons < 3 ans (3ème)")
-    
-    # Garçons plus de 5 ans
-    effectif_garcons_plus_5ans_1ere = models.CharField(max_length=255, null=True, verbose_name="Garçons > 5 ans (1ère)")
-    effectif_garcons_plus_5ans_2eme = models.CharField(max_length=255, null=True, verbose_name="Garçons > 5 ans (2ème)")
-    effectif_garcons_plus_5ans_3eme = models.CharField(max_length=255, null=True, verbose_name="Garçons > 5 ans (3ème)")
+        managed = False
+        db_table = 'etablisement'
 
 
-    def __str__(self):
-        return f"Effectifs par âge (ID: {self.id})"
+class Etablissement(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    anneeid = models.ForeignKey(AnneeScolaire, models.DO_NOTHING, db_column='anneeId')  # Field name made lowercase.
+    nometablissement = models.CharField(db_column='nomEtablissement', max_length=255)  # Field name made lowercase.
+    type_enseignement = models.CharField(max_length=50, blank=True, null=True)
+    nomchefetablissement = models.CharField(db_column='nomChefEtablissement', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    adresseetablissement = models.CharField(db_column='adresseEtablissement', max_length=500, blank=True, null=True)  # Field name made lowercase.
+    telephoneetablissement = models.CharField(db_column='telephoneEtablissement', max_length=50, blank=True, null=True)  # Field name made lowercase.
+    provinceid = models.ForeignKey('Provinces', models.DO_NOTHING, db_column='provinceId')  # Field name made lowercase.
+    provedid = models.ForeignKey('Proveds', models.DO_NOTHING, db_column='provedId')  # Field name made lowercase.
+    sousprovedid = models.ForeignKey('SousProved', models.DO_NOTHING, db_column='sousProvedId')  # Field name made lowercase.
+    informations_generale = models.ForeignKey('InformationsGenerale', models.DO_NOTHING, blank=True, null=True)
+    localisation_administrative = models.ForeignKey('LocalisationAdministrative', models.DO_NOTHING, blank=True, null=True)
+    localisation_scolaire = models.ForeignKey('LocalisationScolaire', models.DO_NOTHING, blank=True, null=True)
+    territoireid = models.BigIntegerField(db_column='territoireId', blank=True, null=True)  # Field name made lowercase.
+    reference_juridique = models.ForeignKey('ReferenceJuridique', models.DO_NOTHING, blank=True, null=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    isactive = models.IntegerField(db_column='isActive', blank=True, null=True)  # Field name made lowercase.
+    isdeleted = models.IntegerField(db_column='isDeleted', blank=True, null=True)  # Field name made lowercase.
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    nom_norm = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Effectif par Âge"
-        verbose_name_plural = "Effectifs par Âge"
-# ok
-class St1_enseignant(BaseModel):
-    pass
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'etablissement'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3. enseignants_autres_femmes_1ere (varchar(255), Oui)
-    enseignants_autres_femmes_1ere = models.CharField(max_length=255, null=True, verbose_name="Autres Femmes (1ère)")
-    
-    # 4. enseignants_autres_femmes_2eme (varchar(255), Oui)
-    enseignants_autres_femmes_2eme = models.CharField(max_length=255, null=True, verbose_name="Autres Femmes (2ème)")
-    
-    # 5. enseignants_autres_femmes_3eme (varchar(255), Oui)
-    enseignants_autres_femmes_3eme = models.CharField(max_length=255, null=True, verbose_name="Autres Femmes (3ème)")
-
-    # 6. enseignants_autres_hommes_1ere (varchar(255), Oui)
-    enseignants_autres_hommes_1ere = models.CharField(max_length=255, null=True, verbose_name="Autres Hommes (1ère)")
-    
-    # 7. enseignants_autres_hommes_2eme (varchar(255), Oui)
-    enseignants_autres_hommes_2eme = models.CharField(max_length=255, null=True, verbose_name="Autres Hommes (2ème)")
-    
-    # 8. enseignants_autres_hommes_3eme (varchar(255), Oui)
-    enseignants_autres_hommes_3eme = models.CharField(max_length=255, null=True, verbose_name="Autres Hommes (3ème)")
-
-    # Enseignants D4 Femmes
-    # 9. enseignants_d4_femmes_1ere (varchar(255), Oui)
-    enseignants_d4_femmes_1ere = models.CharField(max_length=255, null=True, verbose_name="D4 Femmes (1ère)")
-    # 10. enseignants_d4_femmes_2eme (varchar(255), Oui)
-    enseignants_d4_femmes_2eme = models.CharField(max_length=255, null=True, verbose_name="D4 Femmes (2ème)")
-    # 11. enseignants_d4_femmes_3eme (varchar(255), Oui)
-    enseignants_d4_femmes_3eme = models.CharField(max_length=255, null=True, verbose_name="D4 Femmes (3ème)")
-
-    # Enseignants D4 Hommes
-    # 12. enseignants_d4_hommes_1ere (varchar(255), Oui)
-    enseignants_d4_hommes_1ere = models.CharField(max_length=255, null=True, verbose_name="D4 Hommes (1ère)")
-    # 13. enseignants_d4_hommes_2eme (varchar(255), Oui)
-    enseignants_d4_hommes_2eme = models.CharField(max_length=255, null=True, verbose_name="D4 Hommes (2ème)")
-    # 14. enseignants_d4_hommes_3eme (varchar(255), Oui)
-    enseignants_d4_hommes_3eme = models.CharField(max_length=255, null=True, verbose_name="D4 Hommes (3ème)")
-
-    # Enseignants D6 Femmes
-    # 15. enseignants_d6_femmes_1ere (varchar(255), Oui)
-    enseignants_d6_femmes_1ere = models.CharField(max_length=255, null=True, verbose_name="D6 Femmes (1ère)")
-    # 16. enseignants_d6_femmes_2eme (varchar(255), Oui)
-    enseignants_d6_femmes_2eme = models.CharField(max_length=255, null=True, verbose_name="D6 Femmes (2ème)")
-    # 17. enseignants_d6_femmes_3eme (varchar(255), Oui)
-    enseignants_d6_femmes_3eme = models.CharField(max_length=255, null=True, verbose_name="D6 Femmes (3ème)")
-    
-    # Enseignants D6 Hommes
-    # 18. enseignants_d6_hommes_1ere (varchar(255), Oui)
-    enseignants_d6_hommes_1ere = models.CharField(max_length=255, null=True, verbose_name="D6 Hommes (1ère)")
-    # 19. enseignants_d6_hommes_2eme (varchar(255), Oui)
-    enseignants_d6_hommes_2eme = models.CharField(max_length=255, null=True, verbose_name="D6 Hommes (2ème)")
-    # 20. enseignants_d6_hommes_3eme (varchar(255), Oui)
-    enseignants_d6_hommes_3eme = models.CharField(max_length=255, null=True, verbose_name="D6 Hommes (3ème)")
-
-    enseignants_d4p_femmes_1ere = models.CharField(max_length=255, null=True)
-    enseignants_d4p_femmes_2eme = models.CharField(max_length=255, null=True)
-    enseignants_d4p_femmes_3eme = models.CharField(max_length=255, null=True)
-    enseignants_d4p_hommes_1ere = models.CharField(max_length=255, null=True)
-    enseignants_d4p_hommes_2eme = models.CharField(max_length=255, null=True)
-    enseignants_d4p_hommes_3eme = models.CharField(max_length=255, null=True)
-
-    # Enseignants EM Femmes
-    # 21. enseignants_em_femmes_1ere (varchar(255), Oui)
-    enseignants_em_femmes_1ere = models.CharField(max_length=255, null=True, verbose_name="EM Femmes (1ère)")
-    # 22. enseignants_em_femmes_2eme (varchar(255), Oui)
-    enseignants_em_femmes_2eme = models.CharField(max_length=255, null=True, verbose_name="EM Femmes (2ème)")
-    # 23. enseignants_em_femmes_3eme (varchar(255), Oui)
-    enseignants_em_femmes_3eme = models.CharField(max_length=255, null=True, verbose_name="EM Femmes (3ème)")
-
-    # Enseignants EM Hommes
-    # 24. enseignants_em_hommes_1ere (varchar(255), Oui)
-    enseignants_em_hommes_1ere = models.CharField(max_length=255, null=True, verbose_name="EM Hommes (1ère)")
-    # 25. enseignants_em_hommes_2eme (varchar(255), Oui)
-    enseignants_em_hommes_2eme = models.CharField(max_length=255, null=True, verbose_name="EM Hommes (2ème)")
-    # 26. enseignants_em_hommes_3eme (varchar(255), Oui)
-    enseignants_em_hommes_3eme = models.CharField(max_length=255, null=True, verbose_name="EM Hommes (3ème)")
-
-    # Enseignants P6 Femmes
-    # 27. enseignants_p6_femmes_1ere (varchar(255), Oui)
-    enseignants_p6_femmes_1ere = models.CharField(max_length=255, null=True, verbose_name="P6 Femmes (1ère)")
-    # 28. enseignants_p6_femmes_2eme (varchar(255), Oui)
-    enseignants_p6_femmes_2eme = models.CharField(max_length=255, null=True, verbose_name="P6 Femmes (2ème)")
-    # 29. enseignants_p6_femmes_3eme (varchar(255), Oui)
-    enseignants_p6_femmes_3eme = models.CharField(max_length=255, null=True, verbose_name="P6 Femmes (3ème)")
-    
-    # Enseignants P6 Hommes
-    # 30. enseignants_p6_hommes_1ere (varchar(255), Oui)
-    enseignants_p6_hommes_1ere = models.CharField(max_length=255, null=True, verbose_name="P6 Hommes (1ère)")
-    # 31. enseignants_p6_hommes_2eme (varchar(255), Oui)
-    enseignants_p6_hommes_2eme = models.CharField(max_length=255, null=True, verbose_name="P6 Hommes (2ème)")
-    # 32. enseignants_p6_hommes_3eme (varchar(255), Oui)
-    enseignants_p6_hommes_3eme = models.CharField(max_length=255, null=True, verbose_name="P6 Hommes (3ème)")
-    
-    # 33. personnel_eligible_retraite (varchar(255), Oui)
-    personnel_eligible_retraite = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Personnel Éligible Retraite"
-    )
-
-    def __str__(self):
-        return f"Personnel Enseignant (ID: {self.id})"
+class EtablissementNiveaux(models.Model):
+    etablissement_id = models.BigIntegerField()
+    niveau = models.ForeignKey('NiveauEnseignement', models.DO_NOTHING)
 
     class Meta:
-        verbose_name = "Personnel Enseignant"
-        verbose_name_plural = "Personnel Enseignants"
-# ok
-class St1_groupes_specifiques(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'etablissement_niveaux'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-50. Champs d'effectifs (varchar(255), Oui)
-    
-    # 3-8. Autochtones (Filles/Garçons, 1ère, 2ème, 3ème)
-    autochtones_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Autochtones Filles (1ère)")
-    autochtones_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Autochtones Filles (2ème)")
-    autochtones_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Autochtones Filles (3ème)")
-    autochtones_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Autochtones Garçons (1ère)")
-    autochtones_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Autochtones Garçons (2ème)")
-    autochtones_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Autochtones Garçons (3ème)")
-
-    # 9-14. Déplacés Externes (Filles/Garçons)
-    deplaces_externes_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Déplacés Ext. Filles (1ère)")
-    deplaces_externes_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Ext. Filles (2ème)")
-    deplaces_externes_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Ext. Filles (3ème)")
-    deplaces_externes_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Déplacés Ext. Garçons (1ère)")
-    deplaces_externes_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Ext. Garçons (2ème)")
-    deplaces_externes_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Ext. Garçons (3ème)")
-    
-    # 15-20. Déplacés Internes (Filles/Garçons)
-    deplaces_internes_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Déplacés Int. Filles (1ère)")
-    deplaces_internes_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Int. Filles (2ème)")
-    deplaces_internes_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Int. Filles (3ème)")
-    deplaces_internes_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Déplacés Int. Garçons (1ère)")
-    deplaces_internes_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Int. Garçons (2ème)")
-    deplaces_internes_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Déplacés Int. Garçons (3ème)")
-
-    # 21-26. Étrangers (Filles/Garçons)
-    etrangers_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Étrangers Filles (1ère)")
-    etrangers_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Étrangers Filles (2ème)")
-    etrangers_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Étrangers Filles (3ème)")
-    etrangers_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Étrangers Garçons (1ère)")
-    etrangers_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Étrangers Garçons (2ème)")
-    etrangers_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Étrangers Garçons (3ème)")
-    
-    # 27-32. Handicapés (Filles/Garçons)
-    handicapes_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Handicapés Filles (1ère)")
-    handicapes_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Handicapés Filles (2ème)")
-    handicapes_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Handicapés Filles (3ème)")
-    handicapes_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Handicapés Garçons (1ère)")
-    handicapes_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Handicapés Garçons (2ème)")
-    handicapes_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Handicapés Garçons (3ème)")
-
-    # 33-38. Orphelins (Filles/Garçons)
-    orphelins_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Orphelins Filles (1ère)")
-    orphelins_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Orphelins Filles (2ème)")
-    orphelins_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Orphelins Filles (3ème)")
-    orphelins_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Orphelins Garçons (1ère)")
-    orphelins_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Orphelins Garçons (2ème)")
-    orphelins_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Orphelins Garçons (3ème)")
-    
-    # 39-44. Réfugiés (Filles/Garçons)
-    refugies_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Réfugiés Filles (1ère)")
-    refugies_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Réfugiés Filles (2ème)")
-    refugies_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Réfugiés Filles (3ème)")
-    refugies_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Réfugiés Garçons (1ère)")
-    refugies_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Réfugiés Garçons (2ème)")
-    refugies_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Réfugiés Garçons (3ème)")
-
-    # 45-50. Réintégrants (Filles/Garçons)
-    reintegrants_filles_1ere = models.CharField(max_length=255, null=True, verbose_name="Réintégrants Filles (1ère)")
-    reintegrants_filles_2eme = models.CharField(max_length=255, null=True, verbose_name="Réintégrants Filles (2ème)")
-    reintegrants_filles_3eme = models.CharField(max_length=255, null=True, verbose_name="Réintégrants Filles (3ème)")
-    reintegrants_garcons_1ere = models.CharField(max_length=255, null=True, verbose_name="Réintégrants Garçons (1ère)")
-    reintegrants_garcons_2eme = models.CharField(max_length=255, null=True, verbose_name="Réintégrants Garçons (2ème)")
-    reintegrants_garcons_3eme = models.CharField(max_length=255, null=True, verbose_name="Réintégrants Garçons (3ème)")
-
-    def __str__(self):
-        return f"Groupes Spécifiques (ID: {self.id})"
+class EtablissementTypeEnseignement(models.Model):
+    etablissement = models.ForeignKey(Etablissement, models.DO_NOTHING)
+    type_enseignement = models.ForeignKey('TypeEnseignement', models.DO_NOTHING)
 
     class Meta:
-        verbose_name = "Groupe Spécifique"
-        verbose_name_plural = "Groupes Spécifiques"
-# ok
-class St1_guides_educateurs(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'etablissement_type_enseignement'
+        unique_together = (('etablissement', 'type_enseignement'),)
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-20. Champs pour les guides/éducateurs (varchar(255), Oui)
-
-    # Guides 'autres'
-    guides_autres_1ere = models.CharField(max_length=255, null=True, verbose_name="Autres Guides (1ère)")
-    guides_autres_2eme = models.CharField(max_length=255, null=True, verbose_name="Autres Guides (2ème)")
-    guides_autres_3eme = models.CharField(max_length=255, null=True, verbose_name="Autres Guides (3ème)")
-
-    # Guides 'comptage'
-    guides_comptage_1ere = models.CharField(max_length=255, null=True, verbose_name="Guides Comptage (1ère)")
-    guides_comptage_2eme = models.CharField(max_length=255, null=True, verbose_name="Guides Comptage (2ème)")
-    guides_comptage_3eme = models.CharField(max_length=255, null=True, verbose_name="Guides Comptage (3ème)")
-
-    # Guides 'étude du milieu'
-    guides_etude_du_milieu_1ere = models.CharField(max_length=255, null=True, verbose_name="Guides Étude Milieu (1ère)")
-    guides_etude_du_milieu_2eme = models.CharField(max_length=255, null=True, verbose_name="Guides Étude Milieu (2ème)")
-    guides_etude_du_milieu_3eme = models.CharField(max_length=255, null=True, verbose_name="Guides Étude Milieu (3ème)")
-
-    # Guides 'éveil'
-    guides_eveil_1ere = models.CharField(max_length=255, null=True, verbose_name="Guides Éveil (1ère)")
-    guides_eveil_2eme = models.CharField(max_length=255, null=True, verbose_name="Guides Éveil (2ème)")
-    guides_eveil_3eme = models.CharField(max_length=255, null=True, verbose_name="Guides Éveil (3ème)") # Note: Manque '1ere' dans l'image, j'ai supposé 'eveil_1ere'
-
-    # Guides 'français'
-    guides_francais_1ere = models.CharField(max_length=255, null=True, verbose_name="Guides Français (1ère)")
-    guides_francais_2eme = models.CharField(max_length=255, null=True, verbose_name="Guides Français (2ème)")
-    guides_francais_3eme = models.CharField(max_length=255, null=True, verbose_name="Guides Français (3ème)")
-
-    # Guides 'thèmes transversaux'
-    guides_themes_transversaux_1ere = models.CharField(max_length=255, null=True, verbose_name="Guides Thèmes Transversaux (1ère)")
-    guides_themes_transversaux_2eme = models.CharField(max_length=255, null=True, verbose_name="Guides Thèmes Transversaux (2ème)")
-    guides_themes_transversaux_3eme = models.CharField(max_length=255, null=True, verbose_name="Guides Thèmes Transversaux (3ème)")
-
-    def __str__(self):
-        return f"Guides/Éducateurs (ID: {self.id})"
+class EtablissementsSd(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    sous_division = models.CharField(max_length=191)
+    nom_etablissement = models.CharField(max_length=255)
+    numero_dinacope = models.CharField(max_length=64, blank=True, null=True)
+    niveau = models.CharField(max_length=64, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=64, blank=True, null=True)
+    quartier = models.CharField(max_length=128, blank=True, null=True)
+    source_file = models.CharField(max_length=255, blank=True, null=True)
+    imported_at = models.DateTimeField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Guide/Éducateur"
-        verbose_name_plural = "Guides/Éducateurs"
-# ok
-class St1_infrastuctures(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'etablissements_sd'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-8. Champs de salles de classe (varchar(255), Oui)
-
-    # Nombre de salles autorisées
-    nb_salles_autorisees_1ere = models.CharField(max_length=255, null=True, verbose_name="Salles Autorisées (1ère année)")
-    nb_salles_autorisees_2eme = models.CharField(max_length=255, null=True, verbose_name="Salles Autorisées (2ème année)")
-    nb_salles_autorisees_3eme = models.CharField(max_length=255, null=True, verbose_name="Salles Autorisées (3ème année)")
-
-    # Nombre de salles organisées
-    nb_salles_organisees_1ere = models.CharField(max_length=255, null=True, verbose_name="Salles Organisées (1ère année)")
-    nb_salles_organisees_2eme = models.CharField(max_length=255, null=True, verbose_name="Salles Organisées (2ème année)")
-    nb_salles_organisees_3eme = models.CharField(max_length=255, null=True, verbose_name="Salles Organisées (3ème année)")
-
-    def __str__(self):
-        return f"Infrastructure (ID: {self.id})"
+class Filieres(models.Model):
+    effectifelevesf1h = models.IntegerField(db_column='effectifElevesF1H')  # Field name made lowercase.
+    effectifelevesf2h = models.IntegerField(db_column='effectifElevesF2H')  # Field name made lowercase.
+    effectifelevesf3h = models.IntegerField(db_column='effectifElevesF3H')  # Field name made lowercase.
+    effectifelevesf4h = models.IntegerField(db_column='effectifElevesF4H')  # Field name made lowercase.
+    effectifelevesf7 = models.IntegerField(db_column='effectifElevesF7')  # Field name made lowercase.
+    effectifelevesf8 = models.IntegerField(db_column='effectifElevesF8')  # Field name made lowercase.
+    effectifelevesg1h = models.IntegerField(db_column='effectifElevesG1H')  # Field name made lowercase.
+    effectifelevesg2h = models.IntegerField(db_column='effectifElevesG2H')  # Field name made lowercase.
+    effectifelevesg3h = models.IntegerField(db_column='effectifElevesG3H')  # Field name made lowercase.
+    effectifelevesg4h = models.IntegerField(db_column='effectifElevesG4H')  # Field name made lowercase.
+    effectifelevesg7 = models.IntegerField(db_column='effectifElevesG7')  # Field name made lowercase.
+    effectifelevesg8 = models.IntegerField(db_column='effectifElevesG8')  # Field name made lowercase.
+    form_st = models.ForeignKey('Formulaires', models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nom = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Infrastructure ST1"
-        verbose_name_plural = "Infrastructures ST1"
-# ok
-class St1_locaux(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 3-62. Champs de locaux (varchar(255), Oui)
-
-    # Locaux: Bureau
-    bureau_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Dur (Bon)")
-    bureau_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Dur (Mauvais)")
-    bureau_paille_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Paille (Bon)")
-    bureau_paille_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Paille (Mauvais)")
-    bureau_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Semi-Dur (Bon)")
-    bureau_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Semi-Dur (Mauvais)")
-    bureau_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Terre (Bon)")
-    bureau_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Terre (Mauvais)")
-
-    # Locaux: Magasin
-    magasin_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Dur (Bon)")
-    magasin_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Dur (Mauvais)")
-    magasin_paille_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Paille (Bon)")
-    magasin_paille_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Paille (Mauvais)")
-    magasin_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Semi-Dur (Bon)")
-    magasin_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Semi-Dur (Mauvais)")
-    magasin_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Terre (Bon)")
-    magasin_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Terre (Mauvais)")
-
-    # Locaux: Salle Activités
-    salle_activites_detruits = models.CharField(max_length=255, null=True, verbose_name="Salle Activités (Détruits)")
-    salle_activites_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Dur (Bon)")
-    salle_activites_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Dur (Mauvais)")
-    salle_activites_paille_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Paille (Bon)")
-    salle_activites_paille_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Paille (Mauvais)")
-    salle_activites_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Semi-Dur (Bon)")
-    salle_activites_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Semi-Dur (Mauvais)")
-    salle_activites_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Terre (Bon)")
-    salle_activites_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Activités Terre (Mauvais)")
-
-    # Locaux: Salle Attente
-    salle_attente_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Dur (Bon)")
-    salle_attente_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Dur (Mauvais)")
-    salle_attente_paille_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Paille (Bon)")
-    salle_attente_paille_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Paille (Mauvais)")
-    salle_attente_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Semi-Dur (Bon)")
-    salle_attente_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Semi-Dur (Mauvais)")
-    salle_attente_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Terre (Bon)")
-    salle_attente_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Terre (Mauvais)")
-
-    # Locaux: Salle Jeux
-    salle_jeux_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Dur (Bon)")
-    salle_jeux_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Dur (Mauvais)")
-    salle_jeux_paille_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Paille (Bon)")
-    salle_jeux_paille_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Paille (Mauvais)")
-    salle_jeux_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Semi-Dur (Bon)")
-    salle_jeux_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Semi-Dur (Mauvais)")
-    salle_jeux_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Terre (Bon)")
-    salle_jeux_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux Terre (Mauvais)")
-
-    # Locaux: Salle Repos (Repos)
-    salle_repos_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Dur (Bon)")
-    salle_repos_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Dur (Mauvais)")
-    salle_repos_paille_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Paille (Bon)")
-    salle_repos_paille_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Paille (Mauvais)")
-    salle_repos_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Semi-Dur (Bon)")
-    salle_repos_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Semi-Dur (Mauvais)")
-    salle_repos_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Terre (Bon)")
-    salle_repos_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Terre (Mauvais)")
+        managed = False
+        db_table = 'filieres'
 
 
-    def __str__(self):
-        return f"Locaux (ID: {self.id})"
+class Formulaire(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    responded = models.IntegerField()
+    nometab = models.CharField(db_column='nomEtab', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    etablissement = models.ForeignKey(Etablissement, models.DO_NOTHING, blank=True, null=True)
+    idannee = models.BigIntegerField(blank=True, null=True)
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId', blank=True, null=True)  # Field name made lowercase.
+    type = models.CharField(max_length=255, blank=True, null=True)
+    idutilisateur = models.BigIntegerField(db_column='idUtilisateur', blank=True, null=True)  # Field name made lowercase.
+    validated = models.IntegerField()
+    validatedby = models.BigIntegerField(db_column='validatedBy', blank=True, null=True)  # Field name made lowercase.
+    created_at = models.DateTimeField(blank=True, null=True)
+    idetablissement = models.BigIntegerField(blank=True, null=True)
+    date = models.CharField(max_length=255, blank=True, null=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    corrected = models.IntegerField(blank=True, null=True)
+    nom_norm = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Local ST1"
-        verbose_name_plural = "Locaux ST1"
-# ok
-class St1_manuels_enfants(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'formulaire'
+        unique_together = (('etablissement', 'idannee', 'sousprovedid', 'type'),)
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-20. Champs pour les manuels des enfants (varchar(255), Oui)
-
-    # Manuels 'autres'
-    manuels_autres_1ere = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels Enfants (1ère)")
-    manuels_autres_2eme = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels Enfants (2ème)")
-    manuels_autres_3eme = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels Enfants (3ème)")
-
-    # Manuels 'comptage'
-    manuels_comptage_1ere = models.CharField(max_length=255, null=True, verbose_name="Manuels Comptage (1ère)")
-    manuels_comptage_2eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Comptage (2ème)")
-    manuels_comptage_3eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Comptage (3ème)")
-
-    # Manuels 'étude du milieu'
-    manuels_etude_du_milieu_1ere = models.CharField(max_length=255, null=True, verbose_name="Manuels Étude Milieu (1ère)")
-    manuels_etude_du_milieu_2eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Étude Milieu (2ème)")
-    manuels_etude_du_milieu_3eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Étude Milieu (3ème)")
-
-    # Manuels 'éveil'
-    manuels_eveil_1ere = models.CharField(max_length=255, null=True, verbose_name="Manuels Éveil (1ère)")
-    manuels_eveil_2eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Éveil (2ème)")
-    manuels_eveil_3eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Éveil (3ème)")
-
-    # Manuels 'français'
-    manuels_francais_1ere = models.CharField(max_length=255, null=True, verbose_name="Manuels Français (1ère)")
-    manuels_francais_2eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Français (2ème)")
-    manuels_francais_3eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Français (3ème)")
-
-    # Manuels 'thèmes transversaux'
-    manuels_themes_transversaux_1ere = models.CharField(max_length=255, null=True, verbose_name="Manuels Thèmes Transversaux (1ère)")
-    manuels_themes_transversaux_2eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Thèmes Transversaux (2ème)")
-    manuels_themes_transversaux_3eme = models.CharField(max_length=255, null=True, verbose_name="Manuels Thèmes Transversaux (3ème)")
-
-    def __str__(self):
-        return f"Manuels Enfants (ID: {self.id})"
+class Formulaires(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    updated_at = models.DateTimeField()
+    responded = models.IntegerField()
+    nometab = models.CharField(db_column='nomEtab', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    etablissement = models.ForeignKey(Etablissement, models.DO_NOTHING, blank=True, null=True)
+    idannee = models.BigIntegerField(blank=True, null=True)
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId', blank=True, null=True)  # Field name made lowercase.
+    type = models.CharField(max_length=255, blank=True, null=True)
+    idutilisateur = models.BigIntegerField(db_column='idUtilisateur', blank=True, null=True)  # Field name made lowercase.
+    validated = models.IntegerField()
+    validatedby = models.BigIntegerField(db_column='validatedBy', blank=True, null=True)  # Field name made lowercase.
+    created_at = models.DateTimeField()
+    idetablissement = models.BigIntegerField(blank=True, null=True)
+    date = models.CharField(max_length=255, blank=True, null=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    nom_norm = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Manuel Enfant ST1"
-        verbose_name_plural = "Manuels Enfants ST1"
-# ok
-class St1_personnel_administratif(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'formulaires'
+        unique_together = (('etablissement', 'idannee', 'sousprovedid', 'type'),)
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-42. Champs du personnel (varchar(255), Oui)
-
-    # Catégorie 'autres'
-    autres_directeur_f = models.CharField(max_length=255, null=True, verbose_name="Autres Directrices (F)")
-    autres_directeur_h = models.CharField(max_length=255, null=True, verbose_name="Autres Directeurs (H)")
-    autres_directeur_adjoint_f = models.CharField(max_length=255, null=True, verbose_name="Autres Directrices Adjointes (F)")
-    autres_directeur_adjoint_h = models.CharField(max_length=255, null=True, verbose_name="Autres Directeurs Adjoints (H)")
-    autres_ouvrier_f = models.CharField(max_length=255, null=True, verbose_name="Autres Ouvrières (F)")
-    autres_ouvrier_h = models.CharField(max_length=255, null=True, verbose_name="Autres Ouvriers (H)")
-    autres_surveillant_f = models.CharField(max_length=255, null=True, verbose_name="Autres Surveillantes (F)")
-    autres_surveillant_h = models.CharField(max_length=255, null=True, verbose_name="Autres Surveillants (H)")
-
-    # Catégorie D4
-    d4_directeur_f = models.CharField(max_length=255, null=True, verbose_name="D4 Directrice (F)")
-    d4_directeur_h = models.CharField(max_length=255, null=True, verbose_name="D4 Directeur (H)")
-    d4_directeur_adjoint_f = models.CharField(max_length=255, null=True, verbose_name="D4 Directrice Adjointe (F)")
-    d4_directeur_adjoint_h = models.CharField(max_length=255, null=True, verbose_name="D4 Directeur Adjoint (H)")
-    d4_ouvrier_f = models.CharField(max_length=255, null=True, verbose_name="D4 Ouvrière (F)")
-    d4_ouvrier_h = models.CharField(max_length=255, null=True, verbose_name="D4 Ouvrier (H)")
-    d4_surveillant_f = models.CharField(max_length=255, null=True, verbose_name="D4 Surveillante (F)")
-    d4_surveillant_h = models.CharField(max_length=255, null=True, verbose_name="D4 Surveillant (H)")
-
-    # Catégorie D6
-    d6_directeur_f = models.CharField(max_length=255, null=True, verbose_name="D6 Directrice (F)")
-    d6_directeur_h = models.CharField(max_length=255, null=True, verbose_name="D6 Directeur (H)")
-    d6_directeur_adjoint_f = models.CharField(max_length=255, null=True, verbose_name="D6 Directrice Adjointe (F)")
-    d6_directeur_adjoint_h = models.CharField(max_length=255, null=True, verbose_name="D6 Directeur Adjoint (H)")
-    d6_ouvrier_f = models.CharField(max_length=255, null=True, verbose_name="D6 Ouvrière (F)")
-    d6_ouvrier_h = models.CharField(max_length=255, null=True, verbose_name="D6 Ouvrier (H)")
-    d6_surveillant_f = models.CharField(max_length=255, null=True, verbose_name="D6 Surveillante (F)")
-    d6_surveillant_h = models.CharField(max_length=255, null=True, verbose_name="D6 Surveillant (H)")
-    
-    # Catégorie EM
-    em_directeur_f = models.CharField(max_length=255, null=True, verbose_name="EM Directrice (F)")
-    em_directeur_h = models.CharField(max_length=255, null=True, verbose_name="EM Directeur (H)")
-    em_directeur_adjoint_f = models.CharField(max_length=255, null=True, verbose_name="EM Directrice Adjointe (F)")
-    em_directeur_adjoint_h = models.CharField(max_length=255, null=True, verbose_name="EM Directeur Adjoint (H)")
-    em_ouvrier_f = models.CharField(max_length=255, null=True, verbose_name="EM Ouvrière (F)")
-    em_ouvrier_h = models.CharField(max_length=255, null=True, verbose_name="EM Ouvrier (H)")
-    em_surveillant_f = models.CharField(max_length=255, null=True, verbose_name="EM Surveillante (F)")
-    em_surveillant_h = models.CharField(max_length=255, null=True, verbose_name="EM Surveillant (H)")
-
-    # Catégorie P6
-    p6_directeur_f = models.CharField(max_length=255, null=True, verbose_name="P6 Directrice (F)")
-    p6_directeur_h = models.CharField(max_length=255, null=True, verbose_name="P6 Directeur (H)")
-    p6_directeur_adjoint_f = models.CharField(max_length=255, null=True, verbose_name="P6 Directrice Adjointe (F)")
-    p6_directeur_adjoint_h = models.CharField(max_length=255, null=True, verbose_name="P6 Directeur Adjoint (H)")
-    p6_ouvrier_f = models.CharField(max_length=255, null=True, verbose_name="P6 Ouvrière (F)")
-    p6_ouvrier_h = models.CharField(max_length=255, null=True, verbose_name="P6 Ouvrier (H)")
-    p6_surveillant_f = models.CharField(max_length=255, null=True, verbose_name="P6 Surveillante (F)")
-    p6_surveillant_h = models.CharField(max_length=255, null=True, verbose_name="P6 Surveillant (H)")
-
-    def __str__(self):
-        return f"Personnel Administratif (ID: {self.id})"
+class Identification(models.Model):
+    id = models.AutoField(primary_key=True)
+    fk_annee_id = models.BigIntegerField(blank=True, null=True)
+    fk_etab_id = models.BigIntegerField(blank=True, null=True)
+    fk_centre_reg_id = models.BigIntegerField(blank=True, null=True)
+    fk_province_id = models.BigIntegerField(blank=True, null=True)
+    fk_proved_id = models.BigIntegerField(blank=True, null=True)
+    code_centre_reg = models.CharField(max_length=255, blank=True, null=True)
+    fk_territoire_id = models.BigIntegerField(blank=True, null=True)
+    fk_ville_id = models.BigIntegerField(blank=True, null=True)
+    sous_proved_id = models.BigIntegerField(blank=True, null=True)
+    denomination = models.CharField(max_length=255, blank=True, null=True)
+    adresse = models.CharField(max_length=191, blank=True, null=True)
+    nom_chef_etab = models.CharField(max_length=191, blank=True, null=True)
+    latitude = models.CharField(max_length=255, blank=True, null=True)
+    longitude = models.CharField(max_length=255, blank=True, null=True)
+    milieu = models.CharField(max_length=191, blank=True, null=True)
+    ref_juridique = models.CharField(max_length=191, blank=True, null=True)
+    num_secope = models.CharField(max_length=191, blank=True, null=True)
+    stat_occup_parcel = models.CharField(max_length=191, blank=True, null=True)
+    etab_est = models.CharField(max_length=191, blank=True, null=True)
+    tel_chef_etab = models.CharField(max_length=150, blank=True, null=True)
+    secteur_enseignement = models.CharField(max_length=150, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=6, blank=True, null=True)
+    type_enseignement = models.CharField(max_length=3, blank=True, null=True)
+    download = models.IntegerField(blank=True, null=True)
+    submit = models.IntegerField(blank=True, null=True)
+    finished = models.IntegerField(blank=True, null=True)
+    altitude = models.CharField(max_length=255, blank=True, null=True)
+    released_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+    center = models.CharField(max_length=255, blank=True, null=True)
+    user_id = models.BigIntegerField(blank=True, null=True)
+    remplissage = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Personnel Administratif ST1"
-        verbose_name_plural = "Personnel Administratif ST1"
-# ok
-class St2_classes_autorisees_et_organisees(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 3-16. Champs de classes autorisées et organisées (varchar(255), Oui)
-
-    # Nombre de classes autorisées (Niveaux 0 à 6)
-    st2_nombre_classes_autorise_0 = models.CharField(max_length=255, null=True, verbose_name="Classes Autorisées (Niveau 0)")
-    st2_nombre_classes_autorise_1 = models.CharField(max_length=255, null=True, verbose_name="Classes Autorisées (Niveau 1)")
-    st2_nombre_classes_autorise_2 = models.CharField(max_length=255, null=True, verbose_name="Classes Autorisées (Niveau 2)")
-    st2_nombre_classes_autorise_3 = models.CharField(max_length=255, null=True, verbose_name="Classes Autorisées (Niveau 3)")
-    st2_nombre_classes_autorise_4 = models.CharField(max_length=255, null=True, verbose_name="Classes Autorisées (Niveau 4)")
-    st2_nombre_classes_autorise_5 = models.CharField(max_length=255, null=True, verbose_name="Classes Autorisées (Niveau 5)")
-    st2_nombre_classes_autorise_6 = models.CharField(max_length=255, null=True, verbose_name="Classes Autorisées (Niveau 6)")
-
-    # Nombre de classes organisées (Niveaux 0 à 6)
-    st2_nombre_classes_organise_0 = models.CharField(max_length=255, null=True, verbose_name="Classes Organisées (Niveau 0)")
-    st2_nombre_classes_organise_1 = models.CharField(max_length=255, null=True, verbose_name="Classes Organisées (Niveau 1)")
-    st2_nombre_classes_organise_2 = models.CharField(max_length=255, null=True, verbose_name="Classes Organisées (Niveau 2)")
-    st2_nombre_classes_organise_3 = models.CharField(max_length=255, null=True, verbose_name="Classes Organisées (Niveau 3)")
-    st2_nombre_classes_organise_4 = models.CharField(max_length=255, null=True, verbose_name="Classes Organisées (Niveau 4)")
-    st2_nombre_classes_organise_5 = models.CharField(max_length=255, null=True, verbose_name="Classes Organisées (Niveau 5)")
-    st2_nombre_classes_organise_6 = models.CharField(max_length=255, null=True, verbose_name="Classes Organisées (Niveau 6)")
-
-    def __str__(self):
-        return f"Classes Autorisées et Organisées ST2 (ID: {self.id})"
-
-    class Meta:
-        verbose_name = "Classes ST2"
-        verbose_name_plural = "Classes ST2"
-# ok
-class St2_effectifs_eleve_ciquieme(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 3-30. Champs d'effectifs (varchar(255), Oui)
-
-    # Filles - Répartition par âge (9 à plus de 11 ans)
-    st2_nombre_cinquieme_f_10 = models.CharField(max_length=255, null=True, verbose_name="Filles 10 ans (5ème)")
-    st2_nombre_cinquieme_f_11 = models.CharField(max_length=255, null=True, verbose_name="Filles 11 ans (5ème)")
-    st2_nombre_cinquieme_f_8 = models.CharField(max_length=255, null=True, verbose_name="Filles 8 ans (5ème)")
-    st2_nombre_cinquieme_f_9 = models.CharField(max_length=255, null=True, verbose_name="Filles 9 ans (5ème)")
-    
-    # Filles - Groupes spécifiques
-    st2_nombre_cinquieme_f_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Filles dont Autochtones (5ème)")
-    st2_nombre_cinquieme_f_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Filles dont avec Handicap (5ème)")
-    st2_nombre_cinquieme_f_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Filles dont Déplacés (5ème)")
-    st2_nombre_cinquieme_f_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Filles dont Étrangers (5ème)")
-    st2_nombre_cinquieme_f_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Internants (5ème)")
-    st2_nombre_cinquieme_f_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Filles dont Orphelins (5ème)")
-    st2_nombre_cinquieme_f_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Filles dont Redoublants (5ème)")
-    st2_nombre_cinquieme_f_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réfugiés (5ème)")
-    st2_nombre_cinquieme_f_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réintégrants (5ème)")
-    st2_nombre_cinquieme_f_plus11 = models.CharField(max_length=255, null=True, verbose_name="Filles > 11 ans (5ème)")
-
-    # Garçons - Répartition par âge (9 à plus de 11 ans)
-    st2_nombre_cinquieme_g_10 = models.CharField(max_length=255, null=True, verbose_name="Garçons 10 ans (5ème)")
-    st2_nombre_cinquieme_g_11 = models.CharField(max_length=255, null=True, verbose_name="Garçons 11 ans (5ème)")
-    st2_nombre_cinquieme_g_8 = models.CharField(max_length=255, null=True, verbose_name="Garçons 8 ans (5ème)")
-    st2_nombre_cinquieme_g_9 = models.CharField(max_length=255, null=True, verbose_name="Garçons 9 ans (5ème)")
-    
-    # Garçons - Groupes spécifiques
-    st2_nombre_cinquieme_g_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Autochtones (5ème)")
-    st2_nombre_cinquieme_g_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Garçons dont avec Handicap (5ème)")
-    st2_nombre_cinquieme_g_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Déplacés (5ème)")
-    st2_nombre_cinquieme_g_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Étrangers (5ème)")
-    st2_nombre_cinquieme_g_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Internants (5ème)")
-    st2_nombre_cinquieme_g_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Orphelins (5ème)")
-    st2_nombre_cinquieme_g_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Redoublants (5ème)")
-    st2_nombre_cinquieme_g_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réfugiés (5ème)")
-    st2_nombre_cinquieme_g_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réintégrants (5ème)")
-    st2_nombre_cinquieme_g_plus11 = models.CharField(max_length=255, null=True, verbose_name="Garçons > 11 ans (5ème)")
+        managed = False
+        db_table = 'identification'
 
 
-    def __str__(self):
-        return f"Effectifs 5ème année ST2 (ID: {self.id})"
+class Identifications(models.Model):
+    download = models.TextField(blank=True, null=True)  # This field type is a guess.
+    finished = models.TextField(blank=True, null=True)  # This field type is a guess.
+    remplissage = models.IntegerField(blank=True, null=True)
+    submit = models.TextField(blank=True, null=True)  # This field type is a guess.
+    fk_annee_id = models.BigIntegerField(blank=True, null=True)
+    fk_centre_reg_id = models.BigIntegerField(blank=True, null=True)
+    fk_etab_id = models.BigIntegerField(blank=True, null=True)
+    fk_proved_id = models.BigIntegerField(blank=True, null=True)
+    fk_province_id = models.BigIntegerField(blank=True, null=True)
+    fk_territoire_id = models.BigIntegerField(blank=True, null=True)
+    fk_ville_id = models.BigIntegerField(blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    released_at = models.DateTimeField(blank=True, null=True)
+    sous_proved_id = models.BigIntegerField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    user_id = models.BigIntegerField(blank=True, null=True)
+    secteur_enseignement = models.CharField(max_length=150, blank=True, null=True)
+    tel_chef_etab = models.CharField(max_length=150, blank=True, null=True)
+    adresse = models.CharField(max_length=191, blank=True, null=True)
+    etab_est = models.CharField(max_length=191, blank=True, null=True)
+    milieu = models.CharField(max_length=191, blank=True, null=True)
+    nom_chef_etab = models.CharField(max_length=191, blank=True, null=True)
+    num_secope = models.CharField(max_length=191, blank=True, null=True)
+    ref_juridique = models.CharField(max_length=191, blank=True, null=True)
+    stat_occup_parcel = models.CharField(max_length=191, blank=True, null=True)
+    center = models.CharField(max_length=255, blank=True, null=True)
+    code_centre_reg = models.CharField(max_length=255, blank=True, null=True)
+    denomination = models.CharField(max_length=255, blank=True, null=True)
+    latitude = models.CharField(max_length=255, blank=True, null=True)
+    longitude = models.CharField(max_length=255, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+    type_enseignement = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Effectif Élève 5ème ST2"
-        verbose_name_plural = "Effectifs Élèves 5ème ST2"
-# ok
-class St2_effectifs_eleve_deuxieme(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'identifications'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-36. Champs d'effectifs (varchar(255), Oui)
-
-    # Filles - Répartition par âge (6 à plus de 11 ans)
-    st2_nombre_deuxieme_f_10 = models.CharField(max_length=255, null=True, verbose_name="Filles 10 ans (2ème)")
-    st2_nombre_deuxieme_f_11 = models.CharField(max_length=255, null=True, verbose_name="Filles 11 ans (2ème)")
-    st2_nombre_deuxieme_f_6 = models.CharField(max_length=255, null=True, verbose_name="Filles 6 ans (2ème)")
-    st2_nombre_deuxieme_f_7 = models.CharField(max_length=255, null=True, verbose_name="Filles 7 ans (2ème)")
-    st2_nombre_deuxieme_f_8 = models.CharField(max_length=255, null=True, verbose_name="Filles 8 ans (2ème)")
-    st2_nombre_deuxieme_f_9 = models.CharField(max_length=255, null=True, verbose_name="Filles 9 ans (2ème)")
-    
-    # Filles - Groupes spécifiques
-    st2_nombre_deuxieme_f_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Filles dont Autochtones (2ème)")
-    st2_nombre_deuxieme_f_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Filles dont avec Handicap (2ème)")
-    st2_nombre_deuxieme_f_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Filles dont Déplacés (2ème)")
-    st2_nombre_deuxieme_f_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Filles dont Étrangers (2ème)")
-    st2_nombre_deuxieme_f_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Internants (2ème)")
-    st2_nombre_deuxieme_f_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Filles dont Orphelins (2ème)")
-    st2_nombre_deuxieme_f_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Filles dont Redoublants (2ème)")
-    st2_nombre_deuxieme_f_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réfugiés (2ème)")
-    st2_nombre_deuxieme_f_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réintégrants (2ème)")
-    st2_nombre_deuxieme_f_moins6 = models.CharField(max_length=255, null=True, verbose_name="Filles < 6 ans (2ème)")
-    st2_nombre_deuxieme_f_plus11 = models.CharField(max_length=255, null=True, verbose_name="Filles > 11 ans (2ème)")
-
-    # Garçons - Répartition par âge (6 à plus de 11 ans)
-    st2_nombre_deuxieme_g_10 = models.CharField(max_length=255, null=True, verbose_name="Garçons 10 ans (2ème)")
-    st2_nombre_deuxieme_g_11 = models.CharField(max_length=255, null=True, verbose_name="Garçons 11 ans (2ème)")
-    st2_nombre_deuxieme_g_6 = models.CharField(max_length=255, null=True, verbose_name="Garçons 6 ans (2ème)")
-    st2_nombre_deuxieme_g_7 = models.CharField(max_length=255, null=True, verbose_name="Garçons 7 ans (2ème)")
-    st2_nombre_deuxieme_g_8 = models.CharField(max_length=255, null=True, verbose_name="Garçons 8 ans (2ème)")
-    st2_nombre_deuxieme_g_9 = models.CharField(max_length=255, null=True, verbose_name="Garçons 9 ans (2ème)")
-    
-    # Garçons - Groupes spécifiques
-    st2_nombre_deuxieme_g_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Autochtones (2ème)")
-    st2_nombre_deuxieme_g_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Garçons dont avec Handicap (2ème)")
-    st2_nombre_deuxieme_g_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Déplacés (2ème)")
-    st2_nombre_deuxieme_g_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Étrangers (2ème)")
-    st2_nombre_deuxieme_g_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Internants (2ème)")
-    st2_nombre_deuxieme_g_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Orphelins (2ème)")
-    st2_nombre_deuxieme_g_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Redoublants (2ème)")
-    st2_nombre_deuxieme_g_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réfugiés (2ème)")
-    st2_nombre_deuxieme_g_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réintégrants (2ème)")
-    st2_nombre_deuxieme_g_moins6 = models.CharField(max_length=255, null=True, verbose_name="Garçons < 6 ans (2ème)")
-    st2_nombre_deuxieme_g_plus11 = models.CharField(max_length=255, null=True, verbose_name="Garçons > 11 ans (2ème)")
-
-    def __str__(self):
-        return f"Effectifs 2ème année ST2 (ID: {self.id})"
+class InformationRelativePersonnel(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    anneedenaissance = models.CharField(db_column='AnneeDeNaissance', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    anneeengagement = models.CharField(db_column='AnneeEngagement', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    fonction = models.CharField(db_column='Fonction', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    matriculesecope = models.CharField(db_column='MatriculeSecope', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    nom = models.CharField(db_column='Nom', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    qualification = models.CharField(db_column='Qualification', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sexe = models.CharField(db_column='Sexe', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    situationsalariale = models.CharField(db_column='SituationSalariale', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    anneeetudes = models.CharField(db_column='AnneeEtudes', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Effectif Élève 2ème ST2"
-        verbose_name_plural = "Effectifs Élèves 2ème ST2"
-# ok
-class St2_effectifs_eleve_premiere(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    ) #
+        managed = False
+        db_table = 'information_relative_personnel'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-36. Champs d'effectifs (varchar(255), Oui)
-
-    # Filles - Répartition par âge (6 à plus de 11 ans)
-    st2_nombre_premiere_f_10 = models.CharField(max_length=255, null=True, verbose_name="Filles 10 ans (1ère)") #
-    st2_nombre_premiere_f_11 = models.CharField(max_length=255, null=True, verbose_name="Filles 11 ans (1ère)") #
-    st2_nombre_premiere_f_6 = models.CharField(max_length=255, null=True, verbose_name="Filles 6 ans (1ère)") #
-    st2_nombre_premiere_f_7 = models.CharField(max_length=255, null=True, verbose_name="Filles 7 ans (1ère)") #
-    st2_nombre_premiere_f_8 = models.CharField(max_length=255, null=True, verbose_name="Filles 8 ans (1ère)") #
-    st2_nombre_premiere_f_9 = models.CharField(max_length=255, null=True, verbose_name="Filles 9 ans (1ère)") #
-    
-    # Filles - Groupes spécifiques
-    st2_nombre_premiere_f_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Filles dont Autochtones (1ère)") #
-    st2_nombre_premiere_f_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Filles dont avec Handicap (1ère)") #
-    st2_nombre_premiere_f_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Filles dont Déplacés (1ère)") #
-    st2_nombre_premiere_f_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Filles dont Étrangers (1ère)") #
-    st2_nombre_premiere_f_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Internants (1ère)") #
-    st2_nombre_premiere_f_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Filles dont Orphelins (1ère)") #
-    st2_nombre_premiere_f_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Filles dont Redoublants (1ère)") #
-    st2_nombre_premiere_f_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réfugiés (1ère)") #
-    st2_nombre_premiere_f_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réintégrants (1ère)") #
-    st2_nombre_premiere_f_moins6 = models.CharField(max_length=255, null=True, verbose_name="Filles < 6 ans (1ère)") #
-    st2_nombre_premiere_f_plus11 = models.CharField(max_length=255, null=True, verbose_name="Filles > 11 ans (1ère)") #
-
-    # Garçons - Répartition par âge (6 à plus de 11 ans)
-    st2_nombre_premiere_g_10 = models.CharField(max_length=255, null=True, verbose_name="Garçons 10 ans (1ère)") #
-    st2_nombre_premiere_g_11 = models.CharField(max_length=255, null=True, verbose_name="Garçons 11 ans (1ère)") #
-    st2_nombre_premiere_g_6 = models.CharField(max_length=255, null=True, verbose_name="Garçons 6 ans (1ère)") #
-    st2_nombre_premiere_g_7 = models.CharField(max_length=255, null=True, verbose_name="Garçons 7 ans (1ère)") #
-    st2_nombre_premiere_g_8 = models.CharField(max_length=255, null=True, verbose_name="Garçons 8 ans (1ère)") #
-    st2_nombre_premiere_g_9 = models.CharField(max_length=255, null=True, verbose_name="Garçons 9 ans (1ère)") #
-    
-    # Garçons - Groupes spécifiques
-    st2_nombre_premiere_g_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Autochtones (1ère)") #
-    st2_nombre_premiere_g_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Garçons dont avec Handicap (1ère)") #
-    st2_nombre_premiere_g_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Déplacés (1ère)") #
-    st2_nombre_premiere_g_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Étrangers (1ère)") #
-    st2_nombre_premiere_g_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Internants (1ère)") #
-    st2_nombre_premiere_g_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Orphelins (1ère)") #
-    st2_nombre_premiere_g_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Redoublants (1ère)") #
-    st2_nombre_premiere_g_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réfugiés (1ère)") #
-    st2_nombre_premiere_g_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réintégrants (1ère)") #
-    st2_nombre_premiere_g_moins6 = models.CharField(max_length=255, null=True, verbose_name="Garçons < 6 ans (1ère)") #
-    st2_nombre_premiere_g_plus11 = models.CharField(max_length=255, null=True, verbose_name="Garçons > 11 ans (1ère)") #
-
-    def __str__(self):
-        return f"Effectifs 1ère année ST2 (ID: {self.id})"
+class InformationsGenerale(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    cloture = models.CharField(max_length=255, blank=True, null=True)
+    coges = models.CharField(max_length=255, blank=True, null=True)
+    coges_operationnel = models.CharField(max_length=255, blank=True, null=True)
+    compartiments_filles = models.CharField(max_length=255, blank=True, null=True)
+    copa = models.CharField(max_length=255, blank=True, null=True)
+    copa_operationnel = models.CharField(max_length=255, blank=True, null=True)
+    cour_recreation = models.CharField(max_length=255, blank=True, null=True)
+    etablissement_pris_en_charge_programme_refugies = models.CharField(max_length=255, blank=True, null=True)
+    internat = models.CharField(max_length=255, blank=True, null=True)
+    latrines = models.CharField(max_length=255, blank=True, null=True)
+    locaux_utilises = models.CharField(max_length=255, blank=True, null=True)
+    nature_cloture = models.CharField(max_length=255, blank=True, null=True)
+    nbr_femmes_dans_copa = models.CharField(max_length=255, blank=True, null=True)
+    nbr_femmes_dans_coge = models.CharField(max_length=255, blank=True, null=True)
+    nom_second_etablissement = models.CharField(max_length=255, blank=True, null=True)
+    nombre_compartiments = models.CharField(max_length=255, blank=True, null=True)
+    organisme_projet = models.CharField(max_length=255, blank=True, null=True)
+    par_quel_organisme = models.CharField(max_length=255, blank=True, null=True)
+    plan_action = models.CharField(max_length=255, blank=True, null=True)
+    point_eau = models.CharField(max_length=255, blank=True, null=True)
+    prevision_budgetaire = models.CharField(max_length=255, blank=True, null=True)
+    programmes_officiels = models.CharField(max_length=255, blank=True, null=True)
+    projet_etablissement = models.CharField(max_length=255, blank=True, null=True)
+    reunions_pv = models.CharField(max_length=255, blank=True, null=True)
+    reunions_rapport = models.CharField(max_length=255, blank=True, null=True)
+    revue_performance = models.CharField(max_length=255, blank=True, null=True)
+    sources_energie = models.CharField(max_length=255, blank=True, null=True)
+    tableau_bord = models.CharField(max_length=255, blank=True, null=True)
+    terrain_jeux = models.CharField(max_length=255, blank=True, null=True)
+    type_point_eau = models.CharField(max_length=255, blank=True, null=True)
+    type_sources_energie = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Effectif Élève 1ère ST2"
-        verbose_name_plural = "Effectifs Élèves 1ère ST2"
-# ok
-class St2_effectifs_eleves_preprimaire(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(null=True)
-
-    # 2. id (bigint(20), Non, AUTO_INCREMENT) - Géré automatiquement par Django.
-
-    # --- EFFECTIFS FILLES (F) - Par Âge (varchar(255), Oui) ---
-    # 3. st2_nombre_preprimaire_f_10
-    st2_nombre_preprimaire_f_10 = models.CharField(max_length=255, null=True)
-    # 4. st2_nombre_preprimaire_f_11
-    st2_nombre_preprimaire_f_11 = models.CharField(max_length=255, null=True)
-    # 5. st2_nombre_preprimaire_f_6
-    st2_nombre_preprimaire_f_6 = models.CharField(max_length=255, null=True)
-    # 6. st2_nombre_preprimaire_f_7
-    st2_nombre_preprimaire_f_7 = models.CharField(max_length=255, null=True)
-    # 7. st2_nombre_preprimaire_f_8
-    st2_nombre_preprimaire_f_8 = models.CharField(max_length=255, null=True)
-    # 8. st2_nombre_preprimaire_f_9
-    st2_nombre_preprimaire_f_9 = models.CharField(max_length=255, null=True)
-    
-    # --- EFFECTIFS FILLES (F) - Par Catégorie (varchar(255), Oui) ---
-    # 9. st2_nombre_preprimaire_f_dont_autochtone
-    st2_nombre_preprimaire_f_dont_autochtone = models.CharField(max_length=255, null=True)
-    # 10. st2_nombre_preprimaire_f_dont_avec_handicap
-    st2_nombre_preprimaire_f_dont_avec_handicap = models.CharField(max_length=255, null=True)
-    # 11. st2_nombre_preprimaire_f_dont_deplaces
-    st2_nombre_preprimaire_f_dont_deplaces = models.CharField(max_length=255, null=True)
-    # 12. st2_nombre_preprimaire_f_dont_etrangers
-    st2_nombre_preprimaire_f_dont_etrangers = models.CharField(max_length=255, null=True)
-    # 13. st2_nombre_preprimaire_f_dont_internants
-    st2_nombre_preprimaire_f_dont_internants = models.CharField(max_length=255, null=True)
-    # 14. st2_nombre_preprimaire_f_dont_orphelins
-    st2_nombre_preprimaire_f_dont_orphelins = models.CharField(max_length=255, null=True)
-    # 15. st2_nombre_preprimaire_f_dont_redoublons
-    st2_nombre_preprimaire_f_dont_redoublons = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_f_dont_refugies = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_f_dont_reintegrants = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_f_moins6 = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_f_plus11 = models.CharField(max_length=255, null=True)
+        managed = False
+        db_table = 'informations_generale'
 
 
-    # --- EFFECTIFS GARÇONS (G) - Par Âge (varchar(255), Oui) ---
-    # 16. st2_nombre_preprimaire_g_10
-    st2_nombre_preprimaire_g_10 = models.CharField(max_length=255, null=True)
-    # 17. st2_nombre_preprimaire_g_11
-    st2_nombre_preprimaire_g_11 = models.CharField(max_length=255, null=True)
-    # 18. st2_nombre_preprimaire_g_6
-    st2_nombre_preprimaire_g_6 = models.CharField(max_length=255, null=True)
-    # 19. st2_nombre_preprimaire_g_7
-    st2_nombre_preprimaire_g_7 = models.CharField(max_length=255, null=True)
-    # 20. st2_nombre_preprimaire_g_8
-    st2_nombre_preprimaire_g_8 = models.CharField(max_length=255, null=True)
-    # 21. st2_nombre_preprimaire_g_9
-    st2_nombre_preprimaire_g_9 = models.CharField(max_length=255, null=True)
-    
-    # --- EFFECTIFS GARÇONS (G) - Par Catégorie (varchar(255), Oui) ---
-    # 22. st2_nombre_preprimaire_g_dont_autochtone
-    st2_nombre_preprimaire_g_dont_autochtone = models.CharField(max_length=255, null=True)
-    # 23. st2_nombre_preprimaire_g_dont_avec_handicap
-    st2_nombre_preprimaire_g_dont_avec_handicap = models.CharField(max_length=255, null=True)
-    # 24. st2_nombre_preprimaire_g_dont_deplaces
-    st2_nombre_preprimaire_g_dont_deplaces = models.CharField(max_length=255, null=True)
-    # 25. st2_nombre_preprimaire_g_dont_etrangers
-    st2_nombre_preprimaire_g_dont_etrangers = models.CharField(max_length=255, null=True)
-    # 26. st2_nombre_preprimaire_g_dont_internants
-    st2_nombre_preprimaire_g_dont_internants = models.CharField(max_length=255, null=True)
-    # 27. st2_nombre_preprimaire_g_dont_orphelins
-    st2_nombre_preprimaire_g_dont_orphelins = models.CharField(max_length=255, null=True)
-    # 28. st2_nombre_preprimaire_g_dont_redoublons
-    st2_nombre_preprimaire_g_dont_redoublons = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_g_dont_refugies = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_g_dont_reintegrants = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_g_moins6 = models.CharField(max_length=255, null=True)
-    st2_nombre_preprimaire_g_plus11 = models.CharField(max_length=255, null=True)
-    
-    class Meta:
-        pass
-# ok
-class St2_effectifs_eleve_quatrieme(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 3-32. Champs d'effectifs (varchar(255), Oui)
-
-    # Filles - Répartition par âge (7 à plus de 11 ans)
-    st2_nombre_quatrieme_f_10 = models.CharField(max_length=255, null=True, verbose_name="Filles 10 ans (4ème)")
-    st2_nombre_quatrieme_f_11 = models.CharField(max_length=255, null=True, verbose_name="Filles 11 ans (4ème)")
-    st2_nombre_quatrieme_f_7 = models.CharField(max_length=255, null=True, verbose_name="Filles 7 ans (4ème)")
-    st2_nombre_quatrieme_f_8 = models.CharField(max_length=255, null=True, verbose_name="Filles 8 ans (4ème)")
-    st2_nombre_quatrieme_f_9 = models.CharField(max_length=255, null=True, verbose_name="Filles 9 ans (4ème)")
-    
-    # Filles - Groupes spécifiques
-    st2_nombre_quatrieme_f_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Filles dont Autochtones (4ème)")
-    st2_nombre_quatrieme_f_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Filles dont avec Handicap (4ème)")
-    st2_nombre_quatrieme_f_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Filles dont Déplacés (4ème)")
-    st2_nombre_quatrieme_f_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Filles dont Étrangers (4ème)")
-    st2_nombre_quatrieme_f_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Internants (4ème)")
-    st2_nombre_quatrieme_f_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Filles dont Orphelins (4ème)")
-    st2_nombre_quatrieme_f_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Filles dont Redoublants (4ème)")
-    st2_nombre_quatrieme_f_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réfugiés (4ème)")
-    st2_nombre_quatrieme_f_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réintégrants (4ème)")
-    st2_nombre_quatrieme_f_plus11 = models.CharField(max_length=255, null=True, verbose_name="Filles > 11 ans (4ème)")
-
-    # Garçons - Répartition par âge (7 à plus de 11 ans)
-    st2_nombre_quatrieme_g_10 = models.CharField(max_length=255, null=True, verbose_name="Garçons 10 ans (4ème)")
-    st2_nombre_quatrieme_g_11 = models.CharField(max_length=255, null=True, verbose_name="Garçons 11 ans (4ème)")
-    st2_nombre_quatrieme_g_7 = models.CharField(max_length=255, null=True, verbose_name="Garçons 7 ans (4ème)")
-    st2_nombre_quatrieme_g_8 = models.CharField(max_length=255, null=True, verbose_name="Garçons 8 ans (4ème)")
-    st2_nombre_quatrieme_g_9 = models.CharField(max_length=255, null=True, verbose_name="Garçons 9 ans (4ème)")
-    
-    # Garçons - Groupes spécifiques
-    st2_nombre_quatrieme_g_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Autochtones (4ème)")
-    st2_nombre_quatrieme_g_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Garçons dont avec Handicap (4ème)")
-    st2_nombre_quatrieme_g_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Déplacés (4ème)")
-    st2_nombre_quatrieme_g_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Étrangers (4ème)")
-    st2_nombre_quatrieme_g_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Internants (4ème)")
-    st2_nombre_quatrieme_g_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Orphelins (4ème)")
-    st2_nombre_quatrieme_g_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Redoublants (4ème)")
-    st2_nombre_quatrieme_g_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réfugiés (4ème)")
-    st2_nombre_quatrieme_g_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réintégrants (4ème)")
-    st2_nombre_quatrieme_g_plus11 = models.CharField(max_length=255, null=True, verbose_name="Garçons > 11 ans (4ème)")
-
-
-    def __str__(self):
-        return f"Effectifs 4ème année ST2 (ID: {self.id})"
+class InfosGeneralesEtab(models.Model):
+    id = models.AutoField(primary_key=True)
+    fk_annee_id = models.IntegerField(blank=True, null=True)
+    fk_etab_id = models.IntegerField(blank=True, null=True)
+    libelle_etab = models.TextField()
+    type_enseignement = models.CharField(max_length=3, db_comment="Type d'enseignement")
+    nbre_femme_dans_copa = models.IntegerField(blank=True, null=True)
+    nbre_reunion_avec_rapports_annee_passee = models.IntegerField(blank=True, null=True)
+    nbre_femmes_dans_coges = models.IntegerField(blank=True, null=True)
+    nom2_etab = models.CharField(max_length=255, blank=True, null=True)
+    type_point_eau = models.CharField(max_length=255, blank=True, null=True)
+    nom_type_source_energie = models.CharField(max_length=255, blank=True, null=True)
+    nbre_compart_latrine = models.IntegerField(blank=True, null=True)
+    nature_cloture = models.CharField(max_length=255, blank=True, null=True)
+    organisme_pris_en_charge_internat = models.CharField(max_length=255, blank=True, null=True)
+    plan_action_operationel_exist = models.IntegerField(blank=True, null=True)
+    nbre_enseign_form12_mois = models.IntegerField(blank=True, null=True)
+    nbre_enseign_cote_positiv = models.IntegerField(blank=True, null=True)
+    nbre_enseign_insp_pedag = models.IntegerField(blank=True, null=True)
+    pv_reunion_etab_unite_peda_opera = models.IntegerField(blank=True, null=True)
+    nbre_arbres_plantes = models.IntegerField(blank=True, null=True)
+    nbre_femmes_enseign_recrutees_cette_annee = models.IntegerField(blank=True, null=True)
+    nbre_enseign_suivi_format_peda_sens_genre = models.IntegerField(blank=True, null=True)
+    nbre_reunions_avec_pvannee_passee = models.IntegerField(blank=True, null=True)
+    released_at = models.DateTimeField(blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+    nbre_latrine_pour_filles = models.IntegerField(blank=True, null=True)
+    nom_program_pris_en_charge_internat = models.CharField(max_length=255, blank=True, null=True)
+    pv_reunion_verif_pvd_et_dd = models.CharField(max_length=255, blank=True, null=True)
+    nbre_ens_formes_adm1er_soin = models.IntegerField(blank=True, null=True)
+    active_step = models.IntegerField(blank=True, null=True)
+    user_id = models.IntegerField(blank=True, null=True)
+    active_step_end = models.IntegerField(blank=True, null=True)
+    finished = models.IntegerField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    program_officiel = models.IntegerField(blank=True, null=True)
+    copa = models.IntegerField(blank=True, null=True)
+    copa_operationel = models.IntegerField(blank=True, null=True)
+    coges_exist = models.IntegerField(blank=True, null=True)
+    coges_operationel = models.IntegerField(blank=True, null=True)
+    locaux_util2_etab = models.IntegerField(blank=True, null=True)
+    point_eau_exist = models.IntegerField(blank=True, null=True)
+    source_energy_exist = models.IntegerField(blank=True, null=True)
+    latrine_exist = models.IntegerField(blank=True, null=True)
+    cour_recre_exist = models.IntegerField(blank=True, null=True)
+    terrain_jeux_exist = models.IntegerField(blank=True, null=True)
+    cloture_exist = models.IntegerField(blank=True, null=True)
+    internat_exist = models.IntegerField(blank=True, null=True)
+    internat_pris_en_charge = models.IntegerField(blank=True, null=True)
+    develop_projet_etab_avec_partie_prenantes = models.IntegerField(blank=True, null=True)
+    prev_budget_et_docum_compt = models.IntegerField(blank=True, null=True)
+    tab_de_bord_exist = models.IntegerField(blank=True, null=True)
+    revue_annuel_perf_rap = models.IntegerField(blank=True, null=True)
+    chef_format12_mois = models.IntegerField(blank=True, null=True)
+    chef_cote_positivement = models.IntegerField(blank=True, null=True)
+    activite_parascolaire_cette_annee = models.IntegerField(blank=True, null=True)
+    etab_unite_peda_opera = models.IntegerField(blank=True, null=True)
+    etab_manuel_proced_gest_ress_fin_mat_et_autre = models.IntegerField(blank=True, null=True)
+    comm_plan_exist = models.IntegerField(blank=True, null=True)
+    etab_particip_forum_echange_reseau_prox_rep = models.IntegerField(blank=True, null=True)
+    dir_reseau_locaux_ope_rldexist = models.IntegerField(blank=True, null=True)
+    chef_assist_res_loc_direct_rld = models.IntegerField(blank=True, null=True)
+    arbres_exist = models.IntegerField(blank=True, null=True)
+    coins_gestion_dechets_exist = models.IntegerField(blank=True, null=True)
+    gouv_ope_dans_etab = models.IntegerField(blank=True, null=True)
+    nom_organism_pris_etab_encharge = models.CharField(max_length=255, blank=True, null=True)
+    fk_identification_id = models.IntegerField(blank=True, null=True)
+    fk_province_id = models.IntegerField(blank=True, null=True)
+    fk_proved_id = models.IntegerField(blank=True, null=True)
+    fk_territoire_id = models.IntegerField(blank=True, null=True)
+    fk_sous_proved_id = models.IntegerField(blank=True, null=True)
+    type_point_eau_forage = models.CharField(max_length=255, blank=True, null=True)
+    type_point_eau_source = models.CharField(max_length=255, blank=True, null=True)
+    nom_type_source_energie_solaire = models.CharField(max_length=255, blank=True, null=True)
+    nom_type_source_energie_groupe_elec = models.CharField(max_length=255, blank=True, null=True)
+    submit = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Effectif Élève 4ème ST2"
-        verbose_name_plural = "Effectifs Élèves 4ème ST2"
-# ok
-class St2_effectifs_eleve_sixieme(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'infos_generales_etab'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-28. Champs d'effectifs (varchar(255), Oui)
-
-    # Filles - Répartition par âge (9 à plus de 11 ans)
-    st2_nombre_sixieme_f_10 = models.CharField(max_length=255, null=True, verbose_name="Filles 10 ans (6ème)")
-    st2_nombre_sixieme_f_11 = models.CharField(max_length=255, null=True, verbose_name="Filles 11 ans (6ème)")
-    st2_nombre_sixieme_f_9 = models.CharField(max_length=255, null=True, verbose_name="Filles 9 ans (6ème)")
-    
-    # Filles - Groupes spécifiques
-    st2_nombre_sixieme_f_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Filles dont Autochtones (6ème)")
-    st2_nombre_sixieme_f_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Filles dont avec Handicap (6ème)")
-    st2_nombre_sixieme_f_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Filles dont Déplacés (6ème)")
-    st2_nombre_sixieme_f_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Filles dont Étrangers (6ème)")
-    st2_nombre_sixieme_f_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Internants (6ème)")
-    st2_nombre_sixieme_f_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Filles dont Orphelins (6ème)")
-    st2_nombre_sixieme_f_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Filles dont Redoublants (6ème)")
-    st2_nombre_sixieme_f_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réfugiés (6ème)")
-    st2_nombre_sixieme_f_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réintégrants (6ème)")
-    st2_nombre_sixieme_f_plus11 = models.CharField(max_length=255, null=True, verbose_name="Filles > 11 ans (6ème)")
-
-    # Garçons - Répartition par âge (9 à plus de 11 ans)
-    st2_nombre_sixieme_g_10 = models.CharField(max_length=255, null=True, verbose_name="Garçons 10 ans (6ème)")
-    st2_nombre_sixieme_g_11 = models.CharField(max_length=255, null=True, verbose_name="Garçons 11 ans (6ème)")
-    st2_nombre_sixieme_g_9 = models.CharField(max_length=255, null=True, verbose_name="Garçons 9 ans (6ème)")
-    
-    # Garçons - Groupes spécifiques
-    st2_nombre_sixieme_g_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Autochtones (6ème)")
-    st2_nombre_sixieme_g_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Garçons dont avec Handicap (6ème)")
-    st2_nombre_sixieme_g_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Déplacés (6ème)")
-    st2_nombre_sixieme_g_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Étrangers (6ème)")
-    st2_nombre_sixieme_g_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Internants (6ème)")
-    st2_nombre_sixieme_g_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Orphelins (6ème)")
-    st2_nombre_sixieme_g_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Redoublants (6ème)")
-    st2_nombre_sixieme_g_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réfugiés (6ème)")
-    st2_nombre_sixieme_g_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réintégrants (6ème)")
-    st2_nombre_sixieme_g_plus11 = models.CharField(max_length=255, null=True, verbose_name="Garçons > 11 ans (6ème)")
-
-    def __str__(self):
-        return f"Effectifs 6ème année ST2 (ID: {self.id})"
+class InvalidFormsTmp(models.Model):
+    id = models.BigIntegerField(primary_key=True)
 
     class Meta:
-        verbose_name = "Effectif Élève 6ème ST2"
-        verbose_name_plural = "Effectifs Élèves 6ème ST2"
-# ok
-class St2_effectifs_eleve_troisieme(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 3-36. Champs d'effectifs (varchar(255), Oui)
-
-    # Filles - Répartition par âge (6 à plus de 11 ans)
-    st2_nombre_troisieme_f_6 = models.CharField(max_length=255, null=True, verbose_name="Filles 6 ans (3ème)")
-    st2_nombre_troisieme_f_7 = models.CharField(max_length=255, null=True, verbose_name="Filles 7 ans (3ème)")
-    st2_nombre_troisieme_f_8 = models.CharField(max_length=255, null=True, verbose_name="Filles 8 ans (3ème)")
-    st2_nombre_troisieme_f_9 = models.CharField(max_length=255, null=True, verbose_name="Filles 9 ans (3ème)")
-    st2_nombre_troisieme_f_10 = models.CharField(max_length=255, null=True, verbose_name="Filles 10 ans (3ème)")
-    st2_nombre_troisieme_f_11 = models.CharField(max_length=255, null=True, verbose_name="Filles 11 ans (3ème)")
-
-    # Filles - Groupes spéciaux et âges extrêmes
-    st2_nombre_troisieme_f_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Filles dont Autochtones (3ème)")
-    st2_nombre_troisieme_f_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Filles dont avec Handicap (3ème)")
-    st2_nombre_troisieme_f_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Filles dont Déplacés (3ème)")
-    st2_nombre_troisieme_f_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Filles dont Étrangers (3ème)")
-    st2_nombre_troisieme_f_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Internants (3ème)")
-    st2_nombre_troisieme_f_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Filles dont Orphelins (3ème)")
-    st2_nombre_troisieme_f_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Filles dont Redoublants (3ème)")
-    st2_nombre_troisieme_f_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réfugiés (3ème)")
-    st2_nombre_troisieme_f_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Filles dont Réintégrants (3ème)")
-    st2_nombre_troisieme_f_moins6 = models.CharField(max_length=255, null=True, verbose_name="Filles < 6 ans (3ème)")
-    st2_nombre_troisieme_f_plus11 = models.CharField(max_length=255, null=True, verbose_name="Filles > 11 ans (3ème)")
-
-    # Garçons - Répartition par âge (6 à plus de 11 ans)
-    st2_nombre_troisieme_g_6 = models.CharField(max_length=255, null=True, verbose_name="Garçons 6 ans (3ème)")
-    st2_nombre_troisieme_g_7 = models.CharField(max_length=255, null=True, verbose_name="Garçons 7 ans (3ème)")
-    st2_nombre_troisieme_g_8 = models.CharField(max_length=255, null=True, verbose_name="Garçons 8 ans (3ème)")
-    st2_nombre_troisieme_g_9 = models.CharField(max_length=255, null=True, verbose_name="Garçons 9 ans (3ème)")
-    st2_nombre_troisieme_g_10 = models.CharField(max_length=255, null=True, verbose_name="Garçons 10 ans (3ème)")
-    st2_nombre_troisieme_g_11 = models.CharField(max_length=255, null=True, verbose_name="Garçons 11 ans (3ème)")
-
-    # Garçons - Groupes spéciaux et âges extrêmes
-    st2_nombre_troisieme_g_dont_autochtone = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Autochtones (3ème)")
-    st2_nombre_troisieme_g_dont_avec_handicap = models.CharField(max_length=255, null=True, verbose_name="Garçons dont avec Handicap (3ème)")
-    st2_nombre_troisieme_g_dont_deplaces = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Déplacés (3ème)")
-    st2_nombre_troisieme_g_dont_etrangers = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Étrangers (3ème)")
-    st2_nombre_troisieme_g_dont_internants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Internants (3ème)")
-    st2_nombre_troisieme_g_dont_orphelins = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Orphelins (3ème)")
-    st2_nombre_troisieme_g_dont_redoublons = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Redoublants (3ème)")
-    st2_nombre_troisieme_g_dont_refugies = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réfugiés (3ème)")
-    st2_nombre_troisieme_g_dont_reintegrants = models.CharField(max_length=255, null=True, verbose_name="Garçons dont Réintégrants (3ème)")
-    st2_nombre_troisieme_g_moins6 = models.CharField(max_length=255, null=True, verbose_name="Garçons < 6 ans (3ème)")
-    st2_nombre_troisieme_g_plus11 = models.CharField(max_length=255, null=True, verbose_name="Garçons > 11 ans (3ème)")
+        managed = False
+        db_table = 'invalid_forms_tmp'
 
 
-    def __str__(self):
-        return f"Effectifs 3ème année ST2 (ID: {self.id})"
+class InventaireBanc(models.Model):
+    banc_1_place_bon_etat = models.IntegerField(blank=True, null=True)
+    banc_1_place_mauvais_etat = models.IntegerField(blank=True, null=True)
+    banc_2_places_bon_etat = models.IntegerField(blank=True, null=True)
+    banc_2_places_mauvais_etat = models.IntegerField(blank=True, null=True)
+    banc_3_places_bon_etat = models.IntegerField(blank=True, null=True)
+    banc_3_places_mauvais_etat = models.IntegerField(blank=True, null=True)
+    banc_4_places_bon_etat = models.IntegerField(blank=True, null=True)
+    banc_4_places_mauvais_etat = models.IntegerField(blank=True, null=True)
+    banc_plus_4_places_bon_etat = models.IntegerField(blank=True, null=True)
+    banc_plus_4_places_mauvais_etat = models.IntegerField(blank=True, null=True)
+    total_bon_etat = models.IntegerField(blank=True, null=True)
+    total_general = models.IntegerField(blank=True, null=True)
+    total_mauvais_etat = models.IntegerField(blank=True, null=True)
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Effectif Élève 3ème ST2"
-        verbose_name_plural = "Effectifs Élèves 3ème ST2"
-# ok
-class St2_environnement_et_developpement(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    ) #
+        managed = False
+        db_table = 'inventaire_banc'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-17. Champs de données (varchar(255), Oui)
-    st2_activites_parascolaires = models.CharField(max_length=255, null=True, verbose_name="Activités parascolaires") #
-    st2_coíns_dechets = models.CharField(max_length=255, null=True, verbose_name="Coins/aires de déchets") #
-    st2_dispose_arbres = models.CharField(max_length=255, null=True, verbose_name="Dispose d'arbres/espaces verts") #
-    st2_enseignants_formes_genre = models.CharField(max_length=255, null=True, verbose_name="Enseignants formés genre") #
-    st2_enseignants_formes_premiers_soins = models.CharField(max_length=255, null=True, verbose_name="Enseignants formés premiers soins") #
-    st2_etablissement_locaux_directeurs_rid = models.CharField(max_length=255, null=True, verbose_name="Établissement, locaux, directeurs, RID") #
-    st2_femmes_enseignantes_recrutees = models.CharField(max_length=255, null=True, verbose_name="Femmes enseignantes recrutées") #
-    st2_gouvernement_eleves = models.CharField(max_length=255, null=True, verbose_name="Gouvernement des élèves") #
-    st2_manuel_procedure = models.CharField(max_length=255, null=True, verbose_name="Manuel de procédure/règlement") #
-    st2_nombre_arbres_plantes = models.CharField(max_length=255, null=True, verbose_name="Nombre d'arbres plantés") #
-    st2_participation_rep = models.CharField(max_length=255, null=True, verbose_name="Participation aux réunions/décisions REP") #
-    st2_plan_communication = models.CharField(max_length=255, null=True, verbose_name="Plan de communication") #
-    st2_pv_eleves = models.CharField(max_length=255, null=True, verbose_name="Procès-verbaux des élèves") #
-    st2_reseaux_locaux_directeurs = models.CharField(max_length=255, null=True, verbose_name="Réseaux locaux des directeurs") #
-    st2_unite_pedagogique = models.CharField(max_length=255, null=True, verbose_name="Unité pédagogique") #
-
-    def __str__(self):
-        return f"Environnement & Développement ST2 (ID: {self.id})"
+class LocalisationAdministrative(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    annee = models.CharField(max_length=255, blank=True, null=True)
+    code_adm_ets = models.CharField(max_length=255, blank=True, null=True)
+    code_adm_ets_auto = models.CharField(max_length=255, blank=True, null=True)
+    province = models.CharField(max_length=255, blank=True, null=True)
+    province_educationnelle = models.CharField(max_length=255, blank=True, null=True)
+    secteur = models.CharField(max_length=255, blank=True, null=True)
+    sous_division = models.CharField(max_length=255, blank=True, null=True)
+    territoire = models.CharField(max_length=255, blank=True, null=True)
+    territoire_commune = models.CharField(max_length=255, blank=True, null=True)
+    village = models.CharField(max_length=255, blank=True, null=True)
+    ville = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Environnement et Développement ST2"
-        verbose_name_plural = "Environnement et Développement ST2"
-# ok
-class St2_equipements_ateliers_ou_laboratoires(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'localisation_administrative'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-6. Champs d'équipements (varchar(255), Oui)
-    st2_NomEquipement = models.CharField(max_length=255, null=True, verbose_name="Nom de l'équipement")
-    st2_NombreEquipementsMauvais = models.CharField(max_length=255, null=True, verbose_name="Nombre d'équipements en mauvais état")
-    st2_NombreEquipementsBon = models.CharField(max_length=255, null=True, verbose_name="Nombre d'équipements en bon état")
-    st2_TypeAtelierOuLabo = models.CharField(max_length=255, null=True, verbose_name="Type d'atelier ou laboratoire")
-
-    def __str__(self):
-        return f"Équipements, Ateliers ou Labos ST2 (ID: {self.id})"
+class LocalisationScolaire(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    altitude = models.CharField(max_length=255, blank=True, null=True)
+    centre_regroupement = models.CharField(max_length=255, blank=True, null=True)
+    latitude = models.CharField(max_length=255, blank=True, null=True)
+    longitude = models.CharField(max_length=255, blank=True, null=True)
+    milieu = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Équipements Ateliers Labos ST2"
-        verbose_name_plural = "Équipements Ateliers Labos ST2"
-# ok
-class St2_etat_des_locaux(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'localisation_scolaire'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-42. Champs des locaux (varchar(255), Oui)
-
-    # Latrines
-    locaux_latrine_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Latrine Dur Bon") #
-    locaux_latrine_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Latrine Dur Bon")
-    locaux_latrine_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Latrine Paille Feuillage Bon") #
-    locaux_latrine_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Latrine Paille Feuillage Mauvais") #
-    locaux_latrine_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Latrine Semi-dur Bon") #
-    locaux_latrine_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Latrine Semi-dur Mauvais") #
-    locaux_latrine_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Latrine Terre Bon") #
-    locaux_latrine_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Latrine Terre Mauvais") #
-
-    # Magasins
-    locaux_magasin_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Dur Bon") #
-    locaux_magasin_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Dur Mauvais") #
-    locaux_magasin_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Paille Feuillage Bon") #
-    locaux_magasin_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Paille Feuillage Mauvais") #
-    locaux_magasin_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Semi-dur Bon") #
-    locaux_magasin_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Semi-dur Mauvais") #
-    locaux_magasin_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Terre Bon") #
-    locaux_magasin_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Terre Mauvais") #
-
-    # Locaux/Salle de Bureau Administratif
-    locaux_salle_bureau_administratif_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Dur Bon") #
-    locaux_salle_bureau_administratif_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Dur Mauvais") #
-    locaux_salle_bureau_administratif_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Paille Feuillage Bon") #
-    locaux_salle_bureau_administratif_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Paille Feuillage Mauvais") #
-    locaux_salle_bureau_administratif_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Semi-dur Bon") #
-    locaux_salle_bureau_administratif_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Semi-dur Mauvais") #
-    locaux_salle_bureau_administratif_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Terre Bon") #
-    locaux_salle_bureau_administratif_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Admin Terre Mauvais") #
-
-    # Salles de Cours
-    locaux_salle_de_cours_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Dur Bon") #
-    locaux_salle_de_cours_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Dur Mauvais") #
-    locaux_salle_de_cours_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Paille Feuillage Bon") #
-    locaux_salle_de_cours_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Paille Feuillage Mauvais") #
-    locaux_salle_de_cours_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Semi-dur Bon") #
-    locaux_salle_de_cours_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Semi-dur Mauvais") #
-    locaux_salle_de_cours_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Terre Bon") #
-    locaux_salle_de_cours_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Cours Terre Mauvais") #
-    
-    # Salles Spécialisées
-    locaux_salle_specialisees_dur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Dur Bon") #
-    locaux_salle_specialisees_dur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Dur Mauvais") #
-    locaux_salle_specialisees_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Paille Feuillage Bon") #
-    locaux_salle_specialisees_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Paille Feuillage Mauvais") #
-    locaux_salle_specialisees_semidur_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Semi-dur Bon") #
-    locaux_salle_specialisees_semidur_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Semi-dur Mauvais") #
-    locaux_salle_specialisees_terre_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Terre Bon") #
-    locaux_salle_specialisees_terre_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Spécialisée Terre Mauvais") #
-    
-    # (Note: Certains champs de l'image de St1_locaux semblent se chevaucher ou avoir été renommés/déplacés dans votre structure. J'ai utilisé l'image St2_etat_des_locaux fournie en dernier pour cette structure)
-
-    def __str__(self):
-        return f"État des Locaux ST2 (ID: {self.id})"
+class MapEtabType(models.Model):
+    etab_id = models.BigIntegerField()
+    nom_norm = models.CharField(max_length=255)
+    type_norm = models.CharField(max_length=50, blank=True, null=True)
+    anneeid = models.BigIntegerField(db_column='anneeId')  # Field name made lowercase.
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId')  # Field name made lowercase.
+    provedid = models.BigIntegerField(db_column='provedId')  # Field name made lowercase.
+    provinceid = models.BigIntegerField(db_column='provinceId')  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "État des Locaux ST2"
-        verbose_name_plural = "État des Locaux ST2"
-# ok
-class St2_etat_des_locaux_specifiques(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'map_etab_type'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-24. Champs des locaux spécifiques (varchar(255), Oui)
-
-    # Locaux/Salles d'Activité
-    locaux_activite_entole_bon = models.CharField(max_length=255, null=True, verbose_name="Activité Entôlé Bon")
-    locaux_activite_entole_mauvais = models.CharField(max_length=255, null=True, verbose_name="Activité Entôlé Mauvais")
-    locaux_activite_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Activité Paille/Feuillage Bon")
-    locaux_activite_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Activité Paille/Feuillage Mauvais")
-
-    # Locaux/Salles de Bureau
-    locaux_bureau_entole_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Entôlé Bon")
-    locaux_bureau_entole_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Entôlé Mauvais")
-    locaux_bureau_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Bureau Paille/Feuillage Bon")
-    locaux_bureau_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Bureau Paille/Feuillage Mauvais")
-
-    # Locaux/Magasin
-    locaux_magasin_entole_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Entôlé Bon")
-    locaux_magasin_entole_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Entôlé Mauvais")
-    locaux_magasin_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Magasin Paille/Feuillage Bon")
-    locaux_magasin_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Magasin Paille/Feuillage Mauvais")
-
-    # Locaux/Salle d'Attente
-    locaux_salle_attente_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Paille/Feuillage Bon")
-    locaux_salle_attente_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Attente Paille/Feuillage Mauvais")
-    
-    # Locaux/Salles de Jeux/Sport
-    locaux_salle_jeux_sport_entole_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux/Sport Entôlé Bon")
-    locaux_salle_jeux_sport_entole_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux/Sport Entôlé Mauvais")
-    locaux_salle_jeux_sport_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux/Sport Paille/Feuillage Bon")
-    locaux_salle_jeux_sport_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Jeux/Sport Paille/Feuillage Mauvais")
-    
-    # Locaux/Salles de Repos
-    locaux_salle_repos_entole_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Entôlé Bon")
-    locaux_salle_repos_entole_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Entôlé Mauvais")
-    locaux_salle_repos_paille_feuillage_bon = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Paille/Feuillage Bon")
-    locaux_salle_repos_paille_feuillage_mauvais = models.CharField(max_length=255, null=True, verbose_name="Salle Repos Paille/Feuillage Mauvais")
-
-    def __str__(self):
-        return f"État des Locaux Spécifiques ST2 (ID: {self.id})"
+class NiveauEnseignement(models.Model):
+    age_minimum = models.IntegerField(blank=True, null=True)
+    duree_annees = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField()
+    id = models.BigAutoField(primary_key=True)
+    updated_at = models.DateTimeField()
+    code = models.CharField(max_length=100)
+    nom = models.CharField(max_length=100)
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "État des Locaux Spécifiques ST2"
-        verbose_name_plural = "État des Locaux Spécifiques ST2"
-# ok
-class St2_guides_pedagogiques_disponibles(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'niveau_enseignement'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-51. Champs des guides (varchar(255), Oui)
-
-    # Guides 'autres' (manuel, 4eme, 5eme, 6eme, Pre-primaire)
-    guide_autres_manuel_1ere = models.CharField(max_length=255, null=True, verbose_name="Autres Guides - Manuel") #
-    guide_autres_manuel_2eme = models.CharField(max_length=255, null=True, verbose_name="Autres Guides - 4ème") #
-    guide_autres_manuel_3eme = models.CharField(max_length=255, null=True, verbose_name="Autres Guides - 5ème") #
-    guide_autres_manuel_4eme = models.CharField(max_length=255, null=True, verbose_name="Autres Guides - 6ème") #
-    guide_autres_manuel_5eme = models.CharField(max_length=255, null=True, verbose_name="Autres Guides - 5ème") #
-    guide_autres_manuel_6eme = models.CharField(max_length=255, null=True, verbose_name="Autres Guides - 6ème") #
-    guide_autres_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Autres Guides - Pré-Primaire") #
-
-    # Guides 'éducation civique, morale, paix' (2eme, 3eme, 4eme, 5eme, 6eme)
-    guide_education_civique_morale_1ere = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 2ème") #
-    guide_education_civique_morale_2eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 2ème") #
-    guide_education_civique_morale_3eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 3ème") #
-    guide_education_civique_morale_4eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 4ème") #
-    guide_education_civique_morale_5eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 5ème") #
-    guide_education_civique_morale_6eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 6ème") #
-    guide_education_pour_la_paix_1ere = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 2ème") #
-    guide_education_pour_la_paix_2eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 2ème") #
-    guide_education_pour_la_paix_3eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 3ème") #
-    guide_education_pour_la_paix_4eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 4ème") #
-    guide_education_pour_la_paix_5eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 5ème") #
-    guide_education_pour_la_paix_6eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 6ème") #
-
-    # Guides 'éveil' (2eme, 3eme, 4eme, 5eme, 6eme, pre-primaire)
-    guide_eveil_1ere = models.CharField(max_length=255, null=True, verbose_name="Éveil - 1ème") #
-    guide_eveil_2eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 2ème") #
-    guide_eveil_3eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 3ème") #
-    guide_eveil_4eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 4ème") #
-    guide_eveil_5eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 5ème") #
-    guide_eveil_6eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 6ème") #
-    guide_eveil_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Éveil - Pré-Primaire") #
-
-    # Guides 'français' (2eme, 3eme, 4eme, 5eme, 6eme, pre-primaire)
-    guide_francais_1ere = models.CharField(max_length=255, null=True, verbose_name="Français - 2ème") #
-    guide_francais_2eme = models.CharField(max_length=255, null=True, verbose_name="Français - 2ème") #
-    guide_francais_3eme = models.CharField(max_length=255, null=True, verbose_name="Français - 3ème") #
-    guide_francais_4eme = models.CharField(max_length=255, null=True, verbose_name="Français - 4ème") #
-    guide_francais_5eme = models.CharField(max_length=255, null=True, verbose_name="Français - 5ème") #
-    guide_francais_6eme = models.CharField(max_length=255, null=True, verbose_name="Français - 6ème") #
-    guide_francais_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Français - Pré-Primaire") #
-
-    # Guides 'mathématiques' (2eme, 3eme, 4eme, 5eme, 6eme, pre-primaire)
-    guide_mathematique_1eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 1ème") #
-    guide_mathematique_2eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 2ème") #
-    guide_mathematique_3eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 3ème") #
-    guide_mathematique_4eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 4ème") #
-    guide_mathematique_5eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 5ème") #
-    guide_mathematique_6eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 6ème") #
-    guide_mathematique_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - Pré-Primaire") #
-
-    # Guides 'thèmes transversaux' (2eme, 3eme, 4eme, 5eme,6eme, pre-primaire)
-    guide_themes_tranversaux_1ere = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 1ère") #
-    guide_themes_tranversaux_2eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 2ème") #
-    guide_themes_tranversaux_3eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 3ème") #
-    guide_themes_tranversaux_4eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 4ème") #
-    guide_themes_tranversaux_5eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 5ème") #
-    guide_themes_tranversaux_6eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 6ème") #
-    guide_themes_tranversaux_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - Pré-Primaire") #
-
-    def __str__(self):
-        return f"Guides Pédagogiques Disponibles ST2 (ID: {self.id})"
+class OptionCycle(models.Model):
+    created_at = models.DateTimeField()
+    cycle = models.ForeignKey(Cycle, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    updated_at = models.DateTimeField()
+    nom = models.CharField(max_length=120)
+    description = models.TextField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Guides Pédagogiques ST2"
-        verbose_name_plural = "Guides Pédagogiques ST2"
-# ok
-class St2_manuels_disponibles(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'option_cycle'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3-50. Champs des manuels (varchar(255), Oui)
-
-    # Manuels 'autres' (manuel, 4eme, 5eme, 6eme)
-    manuels_autres_manuel_1ere = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels - Manuel") #
-    manuels_autres_manuel_2eme = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels - 4ème") #
-    manuels_autres_manuel_3eme = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels - 5ème") #
-    manuels_autres_manuel_4eme = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels - 4ème") #
-    manuels_autres_manuel_5eme = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels - 5ème") #
-    manuels_autres_manuel_6eme = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels - 6ème") #    
-    manuels_autres_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Autres Manuels - Pré-Primaire") #
-
-    # Manuels 'éducation civique, morale, paix' (1ere à 5eme, pre-primaire)
-    manuels_education_civique_morale_1ere = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 1ère") #
-    manuels_education_civique_morale_2eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 2ème") #
-    manuels_education_civique_morale_3eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 3ème") #
-    manuels_education_civique_morale_4eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 4ème") #
-    manuels_education_civique_morale_5eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 5ème") #
-    manuels_education_civique_morale_6eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - 6ème") #
-    manuels_education_civique_morale_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Éduc. Civique/Morale - Pré-Primaire") #
-    manuels_education_pour_la_paix_1ere = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 1ère") #
-    manuels_education_pour_la_paix_2eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 2ème") #
-    manuels_education_pour_la_paix_3eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 3ème") #
-    manuels_education_pour_la_paix_4eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 4ème") #
-    manuels_education_pour_la_paix_5eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 5ème") #
-    manuels_education_pour_la_paix_6eme = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - 6ème") #
-    manuels_education_pour_la_paix_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Éduc. pour la Paix - Pré-Primaire") #
-
-    # Manuels 'éveil' (1ere à 4eme, pre-primaire)
-    manuels_eveil_1ere = models.CharField(max_length=255, null=True, verbose_name="Éveil - 1ère") #
-    manuels_eveil_2eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 2ème") #
-    manuels_eveil_3eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 3ème") #
-    manuels_eveil_4eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 4ème") #
-    manuels_eveil_5eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 5ème") #
-    manuels_eveil_6eme = models.CharField(max_length=255, null=True, verbose_name="Éveil - 6ème") #
-    manuels_eveil_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Éveil - Pré-Primaire") #
-
-    # Manuels 'français' (1ere à 6eme, pre-primaire)
-    manuels_francais_1ere = models.CharField(max_length=255, null=True, verbose_name="Français - 1ère") #
-    manuels_francais_2eme = models.CharField(max_length=255, null=True, verbose_name="Français - 2ème") #
-    manuels_francais_3eme = models.CharField(max_length=255, null=True, verbose_name="Français - 3ème") #
-    manuels_francais_4eme = models.CharField(max_length=255, null=True, verbose_name="Français - 4ème") #
-    manuels_francais_5eme = models.CharField(max_length=255, null=True, verbose_name="Français - 5ème") #
-    manuels_francais_6eme = models.CharField(max_length=255, null=True, verbose_name="Français - 6ème") #
-    manuels_francais_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Français - Pré-Primaire") #
-
-    # Manuels 'mathématiques' (1ere à 6eme, pre-primaire)
-    manuels_mathematique_1ere = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 1ère") #
-    manuels_mathematique_2eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 2ème") #
-    manuels_mathematique_3eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 3ème") #
-    manuels_mathematique_4eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 4ème") #
-    manuels_mathematique_5eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 5ème") #
-    manuels_mathematique_6eme = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - 6ème") #
-    manuels_mathematique_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Mathématiques - Pré-Primaire") #
-
-    # Manuels 'thèmes transversaux' (1ere à 5eme, pre-primaire)
-    manuels_themes_tranversaux_1ere = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 1ère") #
-    manuels_themes_tranversaux_2eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 2ème") #
-    manuels_themes_tranversaux_3eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 3ème") #
-    manuels_themes_tranversaux_4eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 4ème") #
-    manuels_themes_tranversaux_5eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 5ème") #
-    manuels_themes_tranversaux_6eme = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - 6ème") #
-    manuels_themes_transversaux_pre_primaire = models.CharField(max_length=255, null=True, verbose_name="Thèmes Transversaux - Pré-Primaire") #
-
-    def __str__(self):
-        return f"Manuels Disponibles ST2 (ID: {self.id})"
+class PersonnelEnseignant(models.Model):
+    form_st_id = models.BigIntegerField(unique=True, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    chef_cote_positif = models.CharField(max_length=255, blank=True, null=True)
+    chef_formation = models.CharField(max_length=255, blank=True, null=True)
+    educateurs_cotes_positifs = models.CharField(max_length=255, blank=True, null=True)
+    educateurs_formes = models.CharField(max_length=255, blank=True, null=True)
+    educateurs_inspectes = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    etablissement_id = models.BigIntegerField(blank=True, null=True)
 
     class Meta:
-        verbose_name = "Manuels Disponibles ST2"
-        verbose_name_plural = "Manuels Disponibles ST2"
-# ok
-class St2_personnel_administratif_et_ouvrier(BaseModel):
-    # Champs d'identification et de lien
-    # 'id' est la clé primaire auto-incrémentée (Al)
-    id = models.BigAutoField(primary_key=True, db_column='id') # bigint(20), Non Null 
-    # 'form_st_id' est une clé étrangère potentielle (FKfkdlr12h0rndcm3qs0d0ylekg)
-    form_st_id = models.BigIntegerField(null=True, blank=True, db_column='form_st_id') # bigint(20), Oui Null 
+        managed = False
+        db_table = 'personnel_enseignant'
 
-    # Champs pour le personnel administratif et ouvrier (VARCHAR(255), Oui Null)
-    # Les champs sont tous de type varchar(255) avec Null=Oui, nous utiliserons donc CharField(max_length=255, null=True, blank=True)
-    
-    # admin_autres
-    admin_autres_directeur_adjoint_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_directeur_adjoint_f')
-    admin_autres_directeur_adjoint_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_directeur_adjoint_h')
-    admin_autres_directeur_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_directeur_f')
-    admin_autres_directeur_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_directeur_h')
-    admin_autres_ouvrier_autre_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_ouvrier_autre_f')
-    admin_autres_ouvrier_autre_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_ouvrier_autre_h')
-    admin_autres_surnumeraire_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_surnumeraire_f')
-    admin_autres_surnumeraire_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_surnumeraire_h')
-    admin_autres_surveillant_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_surveillant_f')
-    admin_autres_surveillant_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_autres_surveillant_h')
 
-    # admin_d4
-    admin_d4_directeur_adjoint_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_directeur_adjoint_f')
-    admin_d4_directeur_adjoint_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_directeur_adjoint_h')
-    admin_d4_directeur_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_directeur_f')
-    admin_d4_directeur_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_directeur_h')
-    admin_d4_ouvrier_autre_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_ouvrier_autre_f')
-    admin_d4_ouvrier_autre_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_ouvrier_autre_h')
-    admin_d4_surnumeraire_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_surnumeraire_f')
-    admin_d4_surnumeraire_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_surnumeraire_h')
-    admin_d4_surveillant_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_surveillant_f')
-    admin_d4_surveillant_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d4_surveillant_h')
-
-    # admin_d6
-    admin_d6_directeur_adjoint_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_directeur_adjoint_f')
-    admin_d6_directeur_adjoint_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_directeur_adjoint_h')
-    admin_d6_directeur_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_directeur_f')
-    admin_d6_directeur_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_directeur_h')
-    admin_d6_ouvrier_autre_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_ouvrier_autre_f')
-    admin_d6_ouvrier_autre = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_ouvrier_autre')
-    admin_d6_surnumeraire_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_surnumeraire_f')
-    admin_d6_surnumeraire_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_surnumeraire_h')
-    admin_d6_surveillant_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_surveillant_f')
-    admin_d6_surveillant_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_d6_surveillant_h')
-
-    # admin_moin_d4
-    admin_moin_d4_directeur_adjoint_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_directeur_adjoint_f')
-    admin_moin_d4_directeur_adjoint_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_directeur_adjoint_h')
-    admin_moin_d4_directeur_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_directeur_f')
-    admin_moin_d4_directeur_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_directeur_h')
-    admin_moin_d4_ouvrier_autre_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_ouvrier_autre_f')
-    admin_moin_d4_ouvrier_autre_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_ouvrier_autre_h')
-    admin_moin_d4_surnumeraire_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_surnumeraire_f')
-    admin_moin_d4_surnumeraire_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_surnumeraire_h')
-    admin_moin_d4_surveillant_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_surveillant_f')
-    admin_moin_d4_surveillant_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_moin_d4_surveillant_h')
-
-    # admin_p6
-    admin_p6_directeur_adjoint_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_directeur_adjoint_f')
-    admin_p6_directeur_adjoint_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_directeur_adjoint_h')
-    admin_p6_directeur_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_directeur_f')
-    admin_p6_directeur_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_directeur_h')
-    admin_p6_ouvrier_autre_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_ouvrier_autre_f')
-    admin_p6_ouvrier_autre_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_ouvrier_autre_h')
-    admin_p6_surnumeraire_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_surnumeraire_f')
-    admin_p6_surnumeraire_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_surnumeraire_h')
-    admin_p6_surveillant_f = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_surveillant_f')
-    admin_p6_surveillant_h = models.CharField(max_length=255, null=True, blank=True, db_column='admin_p6_surveillant_h')
+class Proveds(models.Model):
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    fk_province = models.ForeignKey('Provinces', models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    libelle = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        managed = True
+        managed = False
+        db_table = 'proveds'
+
+
+class Provinces(models.Model):
+    is_deleted = models.IntegerField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    user_id = models.BigIntegerField(blank=True, null=True)
+    chef_lieu = models.CharField(max_length=255, blank=True, null=True)
+    libelle = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'provinces'
+
+
+class ReferenceJuridique(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    identification_id = models.BigIntegerField(blank=True, null=True)
+    etat_etablissement = models.CharField(max_length=255, blank=True, null=True)
+    matricule_secope = models.CharField(max_length=255, blank=True, null=True)
+    reference_juridique = models.CharField(max_length=255, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=255, blank=True, null=True)
+    statut_occupation = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'reference_juridique'
+
+
+class RegimeGestion(models.Model):
+    created_at = models.DateTimeField()
+    id = models.BigAutoField(primary_key=True)
+    updated_at = models.DateTimeField()
+    code = models.CharField(max_length=255)
+    description = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'regime_gestion'
+
+
+class ReglementVigueur(models.Model):
+    reglement_discrimination = models.TextField(blank=True, null=True)  # This field type is a guess.
+    reglement_harcelement = models.TextField(blank=True, null=True)  # This field type is a guess.
+    reglement_securite_physique = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'reglement_vigueur'
+
+
+class Roles(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    description = models.CharField(max_length=255, blank=True, null=True)
+    name = models.CharField(unique=True, max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'roles'
+
+
+class SanteSexuelleReproductive(models.Model):
+    sante_reproductive_discipline = models.TextField(blank=True, null=True)  # This field type is a guess.
+    sante_reproductive_enseigne = models.TextField(blank=True, null=True)  # This field type is a guess.
+    sante_reproductive_parascolaire = models.TextField(blank=True, null=True)  # This field type is a guess.
+    sante_reproductive_programme = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sante_sexuelle_reproductive'
+
+
+class Secteur(models.Model):
+    created_at = models.DateTimeField()
+    id = models.BigAutoField(primary_key=True)
+    updated_at = models.DateTimeField()
+    denomination = models.CharField(max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'secteur'
+
+
+class SensibilisationContreAbus(models.Model):
+    sensibilisation_abus_discipline = models.TextField(blank=True, null=True)  # This field type is a guess.
+    sensibilisation_abus_enseigne = models.TextField(blank=True, null=True)  # This field type is a guess.
+    sensibilisation_abus_parascolaire = models.TextField(blank=True, null=True)  # This field type is a guess.
+    sensibilisation_abus_programme = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sensibilisation_contre_abus'
+
+
+class SousProved(models.Model):
+    created_at = models.DateTimeField(blank=True, null=True)
+    fk_proved = models.ForeignKey(Proveds, models.DO_NOTHING, blank=True, null=True)
+    fk_territoire = models.ForeignKey('Territoires', models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    libelle = models.CharField(max_length=255, blank=True, null=True)
+    lieu_implantation = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'sous_proved'
+
+
+class St1EffectifsParAge(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    effectif_filles_3ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_3ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_3ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_4ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_4ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_4ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_5ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_5ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_5ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_moins_3ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_moins_3ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_moins_3ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_plus_5ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_plus_5ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_filles_plus_5ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_3ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_3ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_3ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_4ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_4ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_4ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_5ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_5ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_5ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_moins_3ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_moins_3ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_moins_3ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_plus_5ans_1ere = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_plus_5ans_2eme = models.CharField(max_length=255, blank=True, null=True)
+    effectif_garcons_plus_5ans_3eme = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_effectifs_par_age'
+
+
+class St1Enseignant(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    enseignants_autres_femmes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_autres_femmes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_autres_femmes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_autres_hommes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_autres_hommes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_autres_hommes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4_femmes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4_femmes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4_femmes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4_hommes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4_hommes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4_hommes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4p_femmes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4p_femmes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4p_femmes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4p_hommes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4p_hommes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d4p_hommes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d6_femmes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d6_femmes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d6_femmes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d6_hommes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d6_hommes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_d6_hommes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_em_femmes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_em_femmes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_em_femmes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_em_hommes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_em_hommes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_em_hommes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_p6_femmes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_p6_femmes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_p6_femmes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_p6_hommes_1ere = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_p6_hommes_2eme = models.CharField(max_length=255, blank=True, null=True)
+    enseignants_p6_hommes_3eme = models.CharField(max_length=255, blank=True, null=True)
+    personnel_eligible_retraite = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_enseignant'
+
+
+class St1GroupesSpecifiques(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    autochtones_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    autochtones_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    autochtones_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    autochtones_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    autochtones_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    autochtones_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_externes_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_externes_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_externes_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_externes_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_externes_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_externes_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_internes_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_internes_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_internes_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_internes_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_internes_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    deplaces_internes_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+    etrangers_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    etrangers_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    etrangers_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    etrangers_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    etrangers_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    etrangers_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+    handicaps_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    handicaps_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    handicaps_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    handicaps_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    handicaps_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    handicaps_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+    orphelins_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    orphelins_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    orphelins_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    orphelins_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    orphelins_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    orphelins_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+    refugies_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    refugies_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    refugies_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    refugies_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    refugies_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    refugies_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+    reintegrants_filles_1ere = models.CharField(max_length=255, blank=True, null=True)
+    reintegrants_filles_2eme = models.CharField(max_length=255, blank=True, null=True)
+    reintegrants_filles_3eme = models.CharField(max_length=255, blank=True, null=True)
+    reintegrants_garcons_1ere = models.CharField(max_length=255, blank=True, null=True)
+    reintegrants_garcons_2eme = models.CharField(max_length=255, blank=True, null=True)
+    reintegrants_garcons_3eme = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_groupes_specifiques'
+
+
+class St1GuidesEducateurs(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    guides_autres_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guides_autres_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_autres_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_comptage_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guides_comptage_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_comptage_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_etude_du_milieu_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guides_etude_du_milieu_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_etude_du_milieu_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_eveil_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guides_eveil_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_eveil_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_francais_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guides_francais_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_francais_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_themes_transversaux_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guides_themes_transversaux_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guides_themes_transversaux_3eme = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_guides_educateurs'
+
+
+class St1Infrastructure(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nb_salles_autorisees_1ere = models.CharField(max_length=255, blank=True, null=True)
+    nb_salles_autorisees_2eme = models.CharField(max_length=255, blank=True, null=True)
+    nb_salles_autorisees_3eme = models.CharField(max_length=255, blank=True, null=True)
+    nb_salles_organisees_1ere = models.CharField(max_length=255, blank=True, null=True)
+    nb_salles_organisees_2eme = models.CharField(max_length=255, blank=True, null=True)
+    nb_salles_organisees_3eme = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_infrastructure'
+
+
+class St1Locaux(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    bureau_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    bureau_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    bureau_paille_bon = models.CharField(max_length=255, blank=True, null=True)
+    bureau_paille_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    bureau_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    bureau_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    bureau_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    bureau_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    magasin_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    magasin_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    magasin_paille_bon = models.CharField(max_length=255, blank=True, null=True)
+    magasin_paille_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    magasin_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    magasin_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    magasin_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    magasin_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_detruits = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_paille_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_paille_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_activites_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_paille_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_paille_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_attente_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_paille_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_paille_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_jeux_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_paille_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_paille_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    salle_repos_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_locaux'
+
+
+class St1ManuelsEnfants(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    manuels_autres_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_comptage_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_comptage_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_comptage_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_etude_du_milieu_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_etude_du_milieu_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_etude_du_milieu_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_transversaux_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_transversaux_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_transversaux_3eme = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_manuels_enfants'
+
+
+class St1PersonnelAdministratif(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    autres_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    autres_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    autres_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    autres_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    autres_ouvrier_f = models.CharField(max_length=255, blank=True, null=True)
+    autres_ouvrier_h = models.CharField(max_length=255, blank=True, null=True)
+    autres_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    autres_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    d4_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    d4_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    d4_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    d4_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    d4_ouvrier_f = models.CharField(max_length=255, blank=True, null=True)
+    d4_ouvrier_h = models.CharField(max_length=255, blank=True, null=True)
+    d4_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    d4_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    d6_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    d6_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    d6_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    d6_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    d6_ouvrier_f = models.CharField(max_length=255, blank=True, null=True)
+    d6_ouvrier_h = models.CharField(max_length=255, blank=True, null=True)
+    d6_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    d6_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    em_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    em_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    em_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    em_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    em_ouvrier_f = models.CharField(max_length=255, blank=True, null=True)
+    em_ouvrier_h = models.CharField(max_length=255, blank=True, null=True)
+    em_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    em_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    p6_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    p6_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    p6_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    p6_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    p6_ouvrier_f = models.CharField(max_length=255, blank=True, null=True)
+    p6_ouvrier_h = models.CharField(max_length=255, blank=True, null=True)
+    p6_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    p6_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st1_personnel_administratif'
+
+
+class St2ClassesAutoriseesEtOrganisees(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_classes_autorise_0 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_autorise_1 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_autorise_2 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_autorise_3 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_autorise_4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_autorise_5 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_autorise_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_organise_0 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_organise_1 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_organise_2 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_organise_3 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_organise_4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_organise_5 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_classes_organise_6 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_classes_autorisees_et_organisees'
+
+
+class St2EffectifsElevesCinquieme(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_cinquieme_f_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_f_plus11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_cinquieme_g_plus11 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_effectifs_eleves_cinquieme'
+
+
+class St2EffectifsElevesDeuxieme(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_deuxieme_f_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_f_plus11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_deuxieme_g_plus11 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_effectifs_eleves_deuxieme'
+
+
+class St2EffectifsElevesPremiere(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_premiere_f_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_f_plus11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_premiere_g_plus11 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_effectifs_eleves_premiere'
+
+
+class St2EffectifsElevesPreprimaire(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_preprimaire_f_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_f_plus11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_preprimaire_g_plus11 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_effectifs_eleves_preprimaire'
+
+
+class St2EffectifsElevesQuatrieme(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_quatrieme_f_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_f_plus11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_quatrieme_g_plus11 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_effectifs_eleves_quatrieme'
+
+
+class St2EffectifsElevesSixieme(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_sixieme_f_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_f_plus11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_sixieme_g_plus11 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_effectifs_eleves_sixieme'
+
+
+class St2EffectifsElevesTroisieme(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nombre_troisieme_f_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_f_plus11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_10 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_11 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_7 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_8 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_9 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_autochtone = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_avec_handicap = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_deplaces = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_etrangers = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_internants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_orphelins = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_redoublons = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_refugies = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_dont_reintegrants = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_moins6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_troisieme_g_plus11 = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_effectifs_eleves_troisieme'
+
+
+class St2EnvironnementEtDeveloppement(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_activites_parascolaires = models.CharField(max_length=255, blank=True, null=True)
+    st2_coins_dechets = models.CharField(max_length=255, blank=True, null=True)
+    st2_dispose_arbres = models.CharField(max_length=255, blank=True, null=True)
+    st2_enseignants_formes_genre = models.CharField(max_length=255, blank=True, null=True)
+    st2_enseignants_formes_premiers_soins = models.CharField(max_length=255, blank=True, null=True)
+    st2_etablissement_locaux_directeurs_rld = models.CharField(max_length=255, blank=True, null=True)
+    st2_femmes_enseignantes_recrutees = models.CharField(max_length=255, blank=True, null=True)
+    st2_gouvernement_eleves = models.CharField(max_length=255, blank=True, null=True)
+    st2_manuel_procedure = models.CharField(max_length=255, blank=True, null=True)
+    st2_nombre_arbres_plantes = models.CharField(max_length=255, blank=True, null=True)
+    st2_participation_rep = models.CharField(max_length=255, blank=True, null=True)
+    st2_plan_communication = models.CharField(max_length=255, blank=True, null=True)
+    st2_pv_eleves = models.CharField(max_length=255, blank=True, null=True)
+    st2_reseaux_locaux_directeurs = models.CharField(max_length=255, blank=True, null=True)
+    st2_unite_pedagogique = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_environnement_et_developpement'
+
+
+class St2EquipementsAteliersOuLaboratoires(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_nomequipement = models.CharField(db_column='st2_NomEquipement', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    st2_nombreequipemenstmauvais = models.CharField(db_column='st2_NombreEquipemenstMauvais', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    st2_nombreequipementsbon = models.CharField(db_column='st2_NombreEquipementsBon', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    st2_typeatelieroulabo = models.CharField(db_column='st2_TypeAtelierOuLabo', max_length=255, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'st2_equipements_ateliers_ou_laboratoires'
+
+
+class St2EtatDesLocaux(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    locaux_latrine_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_latrine_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_latrine_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_latrine_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_latrine_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_latrine_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_latrine_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_latrine_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_bureau_administratif_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_de_cours_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_dur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_dur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_semidur_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_semidur_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_terre_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_specialisee_terre_mauvais = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_etat_des_locaux'
+
+
+class St2EtatDesLocauxSpecifiques(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    locaux_activite_entole_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_activite_entole_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_activite_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_activite_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_bureau_entole_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_bureau_entole_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_bureau_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_bureau_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_entole_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_entole_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_magasin_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_attente_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_attente_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_jeux_sport_entole_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_jeux_sport_entole_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_jeux_sport_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_jeux_sport_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_repos_entole_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_repos_entole_mauvais = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_repos_paille_feuillage_bon = models.CharField(max_length=255, blank=True, null=True)
+    locaux_salle_repos_paille_feuillage_mauvais = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_etat_des_locaux_specifiques'
+
+
+class St2GuidesPedagogiquesDisponibles(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    guide_autres_manuel_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guide_autres_manuel_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_autres_manuel_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_autres_manuel_4eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_autres_manuel_5eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_autres_manuel_6eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_autres_manuel_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_civique_morale_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_civique_morale_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_civique_morale_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_civique_morale_4eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_civique_morale_5eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_civique_morale_6eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_civique_morale_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_pour_la_paix_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_pour_la_paix_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_pour_la_paix_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_pour_la_paix_4eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_pour_la_paix_5eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_pour_la_paix_6eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_education_pour_la_paix_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    guide_eveil_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guide_eveil_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_eveil_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_eveil_4eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_eveil_5eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_eveil_6eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_eveil_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    guide_francais_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guide_francais_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_francais_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_francais_4eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_francais_5eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_francais_6eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_francais_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    guide_mathematique_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guide_mathematique_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_mathematique_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_mathematique_4eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_mathematique_5eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_mathematique_6eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_mathematique_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    guide_themes_tranversaux_1ere = models.CharField(max_length=255, blank=True, null=True)
+    guide_themes_tranversaux_2eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_themes_tranversaux_3eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_themes_tranversaux_4eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_themes_tranversaux_5eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_themes_tranversaux_6eme = models.CharField(max_length=255, blank=True, null=True)
+    guide_themes_tranversaux_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_guides_pedagogiques_disponibles'
+
+
+class St2ManuelsDisponibles(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    manuels_autres_manuel_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_manuel_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_manuel_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_manuel_4eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_manuel_5eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_manuel_6eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_autres_manuel_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_civique_morale_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_civique_morale_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_civique_morale_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_civique_morale_4eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_civique_morale_5eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_civique_morale_6eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_civique_morale_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_pour_la_paix_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_pour_la_paix_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_pour_la_paix_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_pour_la_paix_4eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_pour_la_paix_5eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_pour_la_paix_6eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_education_pour_la_paix_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_4eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_5eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_6eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_eveil_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_4eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_5eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_6eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_francais_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    manuels_mathematique_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_mathematique_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_mathematique_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_mathematique_4eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_mathematique_5eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_mathematique_6eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_mathematique_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_tranversaux_1ere = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_tranversaux_2eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_tranversaux_3eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_tranversaux_4eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_tranversaux_5eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_tranversaux_6eme = models.CharField(max_length=255, blank=True, null=True)
+    manuels_themes_tranversaux_pre_primaire = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'st2_manuels_disponibles'
+
+
+class St2PersonnelAdministratifEtOuvrier(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    admin_autres_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_ouvrier_autre_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_ouvrier_autre_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_surnumeraire_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_surnumeraire_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_autres_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_ouvrier_autre_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_ouvrier_autre_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_surnumeraire_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_surnumeraire_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d4_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_ouvrier_autre_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_ouvrier_autre_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_surnumeraire_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_surnumeraire_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_d6_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_ouvrier_autre_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_ouvrier_autre_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_surnumeraire_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_surnumeraire_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_moin_d4_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_directeur_adjoint_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_directeur_adjoint_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_directeur_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_directeur_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_ouvrier_autre_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_ouvrier_autre_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_surnumeraire_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_surnumeraire_h = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_surveillant_f = models.CharField(max_length=255, blank=True, null=True)
+    admin_p6_surveillant_h = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
         db_table = 'st2_personnel_administratif_et_ouvrier'
-        verbose_name = 'Personnel Administratif et Ouvrier'
-        verbose_name_plural = 'Personnel Administratif et Ouvriers'
 
-    def __str__(self):
-        return f"Personnel Admin/Ouvrier ID: {self.id}"
-# ok
-class St2_repartition_et_affectations(BaseModel):
-    # Champs d'identification
-    # 'id' est la clé primaire auto-incrémentée (AUTO) de type bigint(20)
-    id = models.BigAutoField(primary_key=True, db_column='id') # bigint(20), Non Null, AUTO [cite: 24, 31]
-    
-    # 'form_st_id' est une clé potentielle de type bigint(20)
-    form_st_id = models.BigIntegerField(null=True, blank=True, db_column='form_st_id') # bigint(20), Oui Null [cite: 24, 31]
-    
-    # 'niveau' est un champ de type int(11)
-    niveau = models.IntegerField(null=True, blank=True, db_column='niveau') # int(11), Oui Null 
 
-    # Champs de répartition et d'affectation
-    # Tous les champs suivants sont de type varchar(255) et sont Null=Oui, 
-    # donc nous utilisons CharField(max_length=255, null=True, blank=True)
-    
-    # Affectations - 1ère année (1f = femme, 1h = homme)
-    st2_class_affectation_1f_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1f_autres')
-    st2_class_affectation_1f_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1f_d4')
-    st2_class_affectation_1f_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1f_d6')
-    st2_class_affectation_1f_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1f_p6')
-    st2_class_affectation_1f_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1f_pred4')
-    st2_class_affectation_1h_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1h_autres')
-    st2_class_affectation_1h_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1h_d4')
-    st2_class_affectation_1h_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1h_d6')
-    st2_class_affectation_1h_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1h_p6')
-    st2_class_affectation_1h_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_1h_pred4')
-
-    # Affectations - 2ème année
-    st2_class_affectation_2f_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2f_autres')
-    st2_class_affectation_2f_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2f_d4')
-    st2_class_affectation_2f_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2f_d6')
-    st2_class_affectation_2f_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2f_p6')
-    st2_class_affectation_2f_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2f_pred4')
-    st2_class_affectation_2h_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2h_autres')
-    st2_class_affectation_2h_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2h_d4')
-    st2_class_affectation_2h_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2h_d6')
-    st2_class_affectation_2h_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2h_p6')
-    st2_class_affectation_2h_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_2h_pred4')
-
-    # Affectations - 3ème année
-    st2_class_affectation_3f_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3f_autres')
-    st2_class_affectation_3f_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3f_d4')
-    st2_class_affectation_3f_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3f_d6')
-    st2_class_affectation_3f_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3f_p6')
-    st2_class_affectation_3f_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3f_pred4')
-    st2_class_affectation_3h_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3h_autres')
-    st2_class_affectation_3h_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3h_d4')
-    st2_class_affectation_3h_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3h_d6')
-    st2_class_affectation_3h_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3h_p6')
-    st2_class_affectation_3h_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_3h_pred4')
-
-    # Affectations - 4ème année
-    st2_class_affectation_4f_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4f_autres')
-    st2_class_affectation_4f_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4f_d4')
-    st2_class_affectation_4f_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4f_d6')
-    st2_class_affectation_4f_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4f_p6')
-    st2_class_affectation_4f_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4f_pred4')
-    st2_class_affectation_4h_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4h_autres')
-    st2_class_affectation_4h_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4h_d4')
-    st2_class_affectation_4h_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4h_d6')
-    st2_class_affectation_4h_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4h_p6')
-    st2_class_affectation_4h_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_4h_pred4')
-
-    # Affectations - 5ème année
-    st2_class_affectation_5f_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5f_autres')
-    st2_class_affectation_5f_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5f_d4')
-    st2_class_affectation_5f_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5f_d6')
-    st2_class_affectation_5f_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5f_p6')
-    st2_class_affectation_5f_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5f_pred4')
-    st2_class_affectation_5h_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5h_autres')
-    st2_class_affectation_5h_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5h_d4')
-    st2_class_affectation_5h_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5h_d6')
-    st2_class_affectation_5h_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5h_p6')
-    st2_class_affectation_5h_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_5h_pred4')
-
-    # Affectations - 6ème année
-    st2_class_affectation_6f_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6f_autres')
-    st2_class_affectation_6f_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6f_d4')
-    st2_class_affectation_6f_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6f_d6')
-    st2_class_affectation_6f_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6f_p6')
-    st2_class_affectation_6f_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6f_pred4')
-    st2_class_affectation_6h_autres = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6h_autres')
-    st2_class_affectation_6h_d4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6h_d4')
-    st2_class_affectation_6h_d6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6h_d6')
-    st2_class_affectation_6h_p6 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6h_p6')
-    st2_class_affectation_6h_pred4 = models.CharField(max_length=255, null=True, blank=True, db_column='st2_class_affectation_6h_pred4')
+class St2RepartitionAffectation(models.Model):
+    niveau = models.IntegerField(blank=True, null=True)
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st2_class_affectation_1f_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1f_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1f_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1f_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1f_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1h_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1h_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1h_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1h_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_1h_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2f_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2f_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2f_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2f_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2f_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2h_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2h_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2h_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2h_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_2h_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3f_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3f_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3f_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3f_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3f_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3h_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3h_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3h_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3h_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_3h_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4f_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4f_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4f_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4f_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4f_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4h_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4h_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4h_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4h_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_4h_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5f_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5f_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5f_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5f_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5f_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5h_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5h_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5h_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5h_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_5h_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6f_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6f_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6f_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6f_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6f_pred4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6h_autres = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6h_d4 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6h_d6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6h_p6 = models.CharField(max_length=255, blank=True, null=True)
+    st2_class_affectation_6h_pred4 = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        # Assure que le modèle utilise le nom de table correct dans la base de données
+        managed = False
         db_table = 'st2_repartition_affectation'
-        managed = True
-        verbose_name = 'Répartition et Affectation'
-        verbose_name_plural = 'Répartitions et Affectations'
 
-    def __str__(self):
-        return f"Affectation ID: {self.id} (Niveau: {self.niveau})"
-# ok
-class St2_repartition_enseignants_et_eligibles(BaseModel):
-    # 1. form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-    # 3. NbEnseignantsEligiblesRetraite (varchar(255), Oui)
-    nb_enseignants_eligibles_retraite = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nombre Enseignants Éligibles à la Retraite"
-    )
 
-    def __str__(self):
-        return f"Éligibilité Retraite ST2 (ID: {self.id})"
+class St2RepartitionEnseignantsEligibles(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nbenseignantseligiblesretraite = models.CharField(db_column='nbEnseignantsEligiblesRetraite', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Répartition Enseignants et Éligibles ST2"
-        verbose_name_plural = "Répartition Enseignants et Éligibles ST2"
-# ok
-class St2_repartition_releve(BaseModel):
-    # 1. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st2_repartition_enseignants_eligibles'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3. releveAutresF (varchar(255), Oui)
-    releve_autres_f = models.CharField(max_length=255, null=True, verbose_name="Relevé Autres Femmes")
-    
-    # 4. releveAutresH (varchar(255), Oui)
-    releve_autres_h = models.CharField(max_length=255, null=True, verbose_name="Relevé Autres Hommes")
-    
-    # 5. releveD4F (varchar(255), Oui)
-    releve_d4_f = models.CharField(max_length=255, null=True, verbose_name="Relevé D4 Femmes")
-    
-    # 6. releveD4H (varchar(255), Oui)
-    releve_d4_h = models.CharField(max_length=255, null=True, verbose_name="Relevé D4 Hommes")
-    
-    # 7. releveD6F (varchar(255), Oui)
-    releve_d6_f = models.CharField(max_length=255, null=True, verbose_name="Relevé D6 Femmes")
-    
-    # 8. releveD6H (varchar(255), Oui)
-    releve_d6_h = models.CharField(max_length=255, null=True, verbose_name="Relevé D6 Hommes")
-    
-    # 9. releveP6F (varchar(255), Oui)
-    releve_p6_f = models.CharField(max_length=255, null=True, verbose_name="Relevé P6 Femmes")
-    
-    # 10. releveP6H (varchar(255), Oui)
-    releve_p6_h = models.CharField(max_length=255, null=True, verbose_name="Relevé P6 Hommes")
-    
-    # 11. relevePred4F (varchar(255), Oui)
-    releve_pred4_f = models.CharField(max_length=255, null=True, verbose_name="Relevé PRE D4 Femmes")
-    
-    # 12. relevePred4H (varchar(255), Oui)
-    releve_pred4_h = models.CharField(max_length=255, null=True, verbose_name="Relevé PRE D4 Hommes")
-
-    def __str__(self):
-        return f"Répartition Relevé ST2 (ID: {self.id})"
+class St2RepartitionReleve(models.Model):
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    releveautresf = models.CharField(db_column='releveAutresF', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    releveautresh = models.CharField(db_column='releveAutresH', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    releved4f = models.CharField(db_column='releveD4F', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    releved4h = models.CharField(db_column='releveD4H', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    releved6f = models.CharField(db_column='releveD6F', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    releved6h = models.CharField(db_column='releveD6H', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    relevep6f = models.CharField(db_column='releveP6F', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    relevep6h = models.CharField(db_column='releveP6H', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    relevepred4f = models.CharField(db_column='relevePred4F', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    relevepred4h = models.CharField(db_column='relevePred4H', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Répartition Relevé ST2"
-        verbose_name_plural = "Répartition Relevé ST2"
-# ok
-class St2_resultat_enaf_epsante(BaseModel):
-    # 44. form_st_id (bigint(20), Non)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st2_repartition_releve'
 
-    # 45. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1-8. Résultats d'examen (Admis, Inscrit, Présent)
-    st2_effectif_eleves_admins_francais_f = models.IntegerField(null=True, verbose_name="Admis Français Filles")
-    st2_effectif_eleves_admins_francais_g = models.IntegerField(null=True, verbose_name="Admis Français Garçons")
-    st2_effectif_eleves_admins_maths_f = models.IntegerField(null=True, verbose_name="Admis Maths Filles")
-    st2_effectif_eleves_admins_maths_g = models.IntegerField(null=True, verbose_name="Admis Maths Garçons")
-    st2_effectif_eleves_inscrit_f = models.IntegerField(null=True, verbose_name="Inscrits Filles")
-    st2_effectif_eleves_inscrit_g = models.IntegerField(null=True, verbose_name="Inscrits Garçons")
-    st2_effectif_eleves_present_f = models.IntegerField(null=True, verbose_name="Présents Filles")
-    st2_effectif_eleves_present_g = models.IntegerField(null=True, verbose_name="Présents Garçons")
-
-    # 9-14. Nombre d'absences par classe (1ère à 6ème)
-    st2_nombre_absences_eleves_1 = models.IntegerField(null=True, verbose_name="Absences Classe 1")
-    st2_nombre_absences_eleves_2 = models.IntegerField(null=True, verbose_name="Absences Classe 2")
-    st2_nombre_absences_eleves_3 = models.IntegerField(null=True, verbose_name="Absences Classe 3")
-    st2_nombre_absences_eleves_4 = models.IntegerField(null=True, verbose_name="Absences Classe 4")
-    st2_nombre_absences_eleves_5 = models.IntegerField(null=True, verbose_name="Absences Classe 5")
-    st2_nombre_absences_eleves_6 = models.IntegerField(null=True, verbose_name="Absences Classe 6")
-
-    # 15-20. Bénéficiaires du déparasitage par classe (1ère à 6ème)
-    st2_nombre_eleves_beneficiants_deparasitage_1 = models.IntegerField(null=True, verbose_name="Bénéf. Déparasitage Classe 1")
-    st2_nombre_eleves_beneficiants_deparasitage_2 = models.IntegerField(null=True, verbose_name="Bénéf. Déparasitage Classe 2")
-    st2_nombre_eleves_beneficiants_deparasitage_3 = models.IntegerField(null=True, verbose_name="Bénéf. Déparasitage Classe 3")
-    st2_nombre_eleves_beneficiants_deparasitage_4 = models.IntegerField(null=True, verbose_name="Bénéf. Déparasitage Classe 4")
-    st2_nombre_eleves_beneficiants_deparasitage_5 = models.IntegerField(null=True, verbose_name="Bénéf. Déparasitage Classe 5")
-    st2_nombre_eleves_beneficiants_deparasitage_6 = models.IntegerField(null=True, verbose_name="Bénéf. Déparasitage Classe 6")
-
-    # 21-26. Bénéficiaires de visites médicales par classe (1ère à 6ème)
-    st2_nombre_eleves_beneficiants_visite_medicales_1 = models.IntegerField(null=True, verbose_name="Bénéf. Visite Méd. Classe 1")
-    st2_nombre_eleves_beneficiants_visite_medicales_2 = models.IntegerField(null=True, verbose_name="Bénéf. Visite Méd. Classe 2")
-    st2_nombre_eleves_beneficiants_visite_medicales_3 = models.IntegerField(null=True, verbose_name="Bénéf. Visite Méd. Classe 3")
-    st2_nombre_eleves_beneficiants_visite_medicales_4 = models.IntegerField(null=True, verbose_name="Bénéf. Visite Méd. Classe 4")
-    st2_nombre_eleves_beneficiants_visite_medicales_5 = models.IntegerField(null=True, verbose_name="Bénéf. Visite Méd. Classe 5")
-    st2_nombre_eleves_beneficiants_visite_medicales_6 = models.IntegerField(null=True, verbose_name="Bénéf. Visite Méd. Classe 6")
-
-    # 27-32. Nombre de jours ouvrables par classe (1ère à 6ème)
-    st2_nombre_jours_ouvrables_1 = models.IntegerField(null=True, verbose_name="Jours Ouvrables Classe 1")
-    st2_nombre_jours_ouvrables_2 = models.IntegerField(null=True, verbose_name="Jours Ouvrables Classe 2")
-    st2_nombre_jours_ouvrables_3 = models.IntegerField(null=True, verbose_name="Jours Ouvrables Classe 3")
-    st2_nombre_jours_ouvrables_4 = models.IntegerField(null=True, verbose_name="Jours Ouvrables Classe 4")
-    st2_nombre_jours_ouvrables_5 = models.IntegerField(null=True, verbose_name="Jours Ouvrables Classe 5")
-    st2_nombre_jours_ouvrables_6 = models.IntegerField(null=True, verbose_name="Jours Ouvrables Classe 6")
-
-    # 33-38. Nombre total d'élèves par classe (1ère à 6ème)
-    st2_nombre_total_eleves_1 = models.IntegerField(null=True, verbose_name="Total Élèves Classe 1")
-    st2_nombre_total_eleves_2 = models.IntegerField(null=True, verbose_name="Total Élèves Classe 2")
-    st2_nombre_total_eleves_3 = models.IntegerField(null=True, verbose_name="Total Élèves Classe 3")
-    st2_nombre_total_eleves_4 = models.IntegerField(null=True, verbose_name="Total Élèves Classe 4")
-    st2_nombre_total_eleves_5 = models.IntegerField(null=True, verbose_name="Total Élèves Classe 5")
-    st2_nombre_total_eleves_6 = models.IntegerField(null=True, verbose_name="Total Élèves Classe 6")
-
-    # 39-43. Statistiques générales
-    st2_taux_abandon = models.FloatField(null=True, verbose_name="Taux Abandon (Double)")
-    st2_taux_reussite_enafep = models.FloatField(null=True, verbose_name="Taux Réussite Analphabétisme (Double)")
-    st2_total_admins_g_reussite_test = models.IntegerField(null=True, verbose_name="Total Admis Test Réussite Garçons")
-    st2_total_admins_f_reussite_test = models.IntegerField(null=True, verbose_name="Total Admis Test Réussite Filles")
-
-    def __str__(self):
-        return f"Résultats ENAF & EPSANTÉ ST2 (ID: {self.id})"
+class St2ResultatsEnafEpsante(models.Model):
+    st2_effectif_eleves_admis_francais_f = models.IntegerField(blank=True, null=True)
+    st2_effectif_eleves_admis_francais_g = models.IntegerField(blank=True, null=True)
+    st2_effectif_eleves_admis_maths_f = models.IntegerField(blank=True, null=True)
+    st2_effectif_eleves_admis_maths_g = models.IntegerField(blank=True, null=True)
+    st2_effectif_eleves_inscrit_f = models.IntegerField(blank=True, null=True)
+    st2_effectif_eleves_inscrit_g = models.IntegerField(blank=True, null=True)
+    st2_effectif_eleves_present_f = models.IntegerField(blank=True, null=True)
+    st2_effectif_eleves_present_g = models.IntegerField(blank=True, null=True)
+    st2_nombre_absences_eleves_1 = models.IntegerField(blank=True, null=True)
+    st2_nombre_absences_eleves_2 = models.IntegerField(blank=True, null=True)
+    st2_nombre_absences_eleves_3 = models.IntegerField(blank=True, null=True)
+    st2_nombre_absences_eleves_4 = models.IntegerField(blank=True, null=True)
+    st2_nombre_absences_eleves_5 = models.IntegerField(blank=True, null=True)
+    st2_nombre_absences_eleves_6 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_deparasitage_1 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_deparasitage_2 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_deparasitage_3 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_deparasitage_4 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_deparasitage_5 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_deparasitage_6 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_visite_medicales_1 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_visite_medicales_2 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_visite_medicales_3 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_visite_medicales_4 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_visite_medicales_5 = models.IntegerField(blank=True, null=True)
+    st2_nombre_eleves_beneficiants_visite_medicales_6 = models.IntegerField(blank=True, null=True)
+    st2_nombre_jours_ouvrables_1 = models.IntegerField(blank=True, null=True)
+    st2_nombre_jours_ouvrables_2 = models.IntegerField(blank=True, null=True)
+    st2_nombre_jours_ouvrables_3 = models.IntegerField(blank=True, null=True)
+    st2_nombre_jours_ouvrables_4 = models.IntegerField(blank=True, null=True)
+    st2_nombre_jours_ouvrables_5 = models.IntegerField(blank=True, null=True)
+    st2_nombre_jours_ouvrables_6 = models.IntegerField(blank=True, null=True)
+    st2_nombre_total_eleves_1 = models.IntegerField(blank=True, null=True)
+    st2_nombre_total_eleves_2 = models.IntegerField(blank=True, null=True)
+    st2_nombre_total_eleves_3 = models.IntegerField(blank=True, null=True)
+    st2_nombre_total_eleves_4 = models.IntegerField(blank=True, null=True)
+    st2_nombre_total_eleves_5 = models.IntegerField(blank=True, null=True)
+    st2_nombre_total_eleves_6 = models.IntegerField(blank=True, null=True)
+    st2_taux_abandon = models.FloatField(blank=True, null=True)
+    st2_taux_reussite_enafep = models.FloatField(blank=True, null=True)
+    st2_total_admis_f_reussie_test = models.IntegerField(blank=True, null=True)
+    st2_total_admis_g_reussie_test = models.IntegerField(blank=True, null=True)
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Résultats ENAF & EPSANTÉ ST2"
-        verbose_name_plural = "Résultats ENAF & EPSANTÉ ST2"
-# ok
-class St3_disponible_programme_national(BaseModel):
-    # 2. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête ST3
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st2_resultats_enaf_epsante'
 
-    # 3. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. EstDisponibiliteDansLeProgrammeNational (bit(1), Oui)
-    EstDisponibiliteDansLeProgrammeNational = models.BooleanField(
-        null=True, 
-        verbose_name="Est Disponible dans le Programme National"
-    )
-
-    # 4. NomDuFiliere (varchar(255), Oui)
-    NomDuFiliere = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom de la Filière"
-    )
-    
-    # 5. TypeDeProgrammeNational (varchar(255), Oui)
-    TypeDeProgrammeNational = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Type de Programme National"
-    )
-
-    def __str__(self):
-        return f"Programme National ST3 (ID: {self.id})"
+class St3DisponibiliteProgrammeNational(models.Model):
+    estdisponibilitedansleprogrammenational = models.TextField(db_column='EstDisponibiliteDansLeProgrammeNational', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nomdufiliere = models.CharField(db_column='NomDuFiliere', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    typedeprogrammenational = models.CharField(db_column='TypeDeProgrammeNational', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Disponibilité Programme National ST3"
-        verbose_name_plural = "Disponibilités Programme National ST3"
-# ok
-class St3_documentation(BaseModel):
-    # 3. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête ST3
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_disponibilite_programme_national'
 
-    # 4. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. st3_manuel_procedure (bit(1), Oui)
-    st3_manuel_procedure = models.BooleanField(
-        null=True, 
-        verbose_name="Manuel de Procédure Disponible"
-    )
-
-    # 2. st3_plan_communication (bit(1), Oui)
-    st3_plan_communication = models.BooleanField(
-        null=True, 
-        verbose_name="Plan de Communication Disponible"
-    )
-
-    def __str__(self):
-        return f"Documentation ST3 (ID: {self.id})"
+class St3Documentation(models.Model):
+    st3_manuel_procedure = models.TextField(blank=True, null=True)  # This field type is a guess.
+    st3_plan_communication = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Documentation ST3"
-        verbose_name_plural = "Documentation ST3"
-# ok
-class St3_dual_input_section(BaseModel):
-    # 3. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_documentation'
 
-    # 4. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. st3_enseignants_formes_genre (int(11), Oui)
-    st3_enseignants_formes_genre = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre d'Enseignants Formés (Genre)"
-    )
-
-    # 2. st3_femmes_enseignantes_recrutees (int(11), Oui)
-    st3_femmes_enseignantes_recrutees = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre de Femmes Enseignantes Recrutées"
-    )
-
-    def __str__(self):
-        return f"Section Double Entrée ST3 (ID: {self.id})"
+class St3DualInputSection(models.Model):
+    st3_enseignants_formes_genre = models.IntegerField(blank=True, null=True)
+    st3_femmes_enseignantes_recrutees = models.IntegerField(blank=True, null=True)
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Section Double Entrée ST3"
-        verbose_name_plural = "Sections Double Entrée ST3"
-# ok
-class St3_effectif_eleve_inscrit_sexe_annee_etude_age_revolu(BaseModel):
-    # 1. effectifParAgeEtSexe_id (bigint(20), Oui)
-    effectifParAgeEtSexe_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="ID Effectif par Âge et Sexe (FK)"
-    )
+        managed = False
+        db_table = 'st3_dual_input_section'
 
-    # 2. effectifParCategorieParticuliere_id (bigint(20), Oui)
-    effectifParCategorieParticuliere_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="ID Effectif par Catégorie Particulière (FK)"
-    )
 
-    # 3. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 4. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    def __str__(self):
-        return f"Liaison Effectif Élèves ST3 (ID: {self.id})"
+class St3EffectifEleveInscritSexeAnneeEtudeAgeRevolu(models.Model):
+    effectifparageetsexe = models.OneToOneField('St3EffectifParAgeSexe', models.DO_NOTHING, db_column='effectifParAgeEtSexe_id', blank=True, null=True)  # Field name made lowercase.
+    effectifparcategorieparticuliere = models.OneToOneField('St3EffectifParCategorieParticuliere', models.DO_NOTHING, db_column='effectifParCategorieParticuliere_id', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Liaison Effectif Élèves ST3"
-        verbose_name_plural = "Liaisons Effectif Élèves ST3"   
-# ok
-class Effectif_eleve_type_enseignement(BaseModel):
-    # Champs d'identification
-    # 'id' est la clé primaire auto-incrémentée (bigint(20), Non Null)
-    id = models.BigAutoField(primary_key=True, db_column='id') 
-    
-    # 'form_st_id' est la clé étrangère potentielle (bigint(20), Oui Null)
-    form_st_id = models.BigIntegerField(null=True, blank=True, db_column='form_st_id') 
-    
-    # Tous les champs d'effectifs sont de type int(11) et sont Null=Oui,
-    # nous utilisons donc models.IntegerField(null=True, blank=True)
-    
-    # --- Enseignement Arts et Métiers (1H, 2H, 3H, 4H correspondent probablement à des années) ---
-    # 1H
-    st_3_EnseignementArtsEtMetiers1HF = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers1HF') 
-    st_3_EnseignementArtsEtMetiers1HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers1HF_Redoublant') 
-    st_3_EnseignementArtsEtMetiers1HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Arts EtMetiers1HG') 
-    st_3_EnseignementArtsEtMetiers1HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers1HG_Redoublant') 
-    st_3_EnseignementArtsEtMetiers1HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers1HNombreClass') 
-    
-    # 2H
-    st_3_EnseignementArtsEtMetiers2HF = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers2HF') 
-    st_3_EnseignementArtsEtMetiers2HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers2HF_Redoublant') 
-    st_3_EnseignementArtsEtMetiers2HG = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers2HG') 
-    st_3_EnseignementArtsEtMetiers2HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers2HG_Redoublant') 
-    st_3_EnseignementArtsEtMetiers2HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers2HNombreClass') 
-    
-    # 3H
-    st_3_EnseignementArtsEtMetiers3HF = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers3HF') 
-    st_3_EnseignementArtsEtMetiers3HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers3HF_Redoublant') 
-    st_3_EnseignementArtsEtMetiers3HG = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers3HG') 
-    st_3_EnseignementArtsEtMetiers3HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers3HG_Redoublant') 
-    st_3_EnseignementArtsEtMetiers3HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers3HNombreClass') 
-    
-    # 4H
-    st_3_EnseignementArtsEtMetiers4HF = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers4HF') 
-    st_3_EnseignementArtsEtMetiers4HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers4HF_Redoublant') 
-    st_3_EnseignementArtsEtMetiers4HG = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers4HG') 
-    st_3_EnseignementArtsEtMetiers4HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers4HG_Redoublant') 
-    st_3_EnseignementArtsEtMetiers4HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers4HNombreClass') 
-    
-    # 7F/G & 8F/G
-    st_3_EnseignementArtsEtMetiers7F = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers7F') 
-    st_3_EnseignementArtsEtMetiers7FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers 7FRedoublant') 
-    st_3_EnseignementArtsEtMetiers7G = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers7G') 
-    st_3_EnseignementArtsEtMetiers7GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers7GRedoublant') 
-    st_3_EnseignementArtsEtMetiers7NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers7NombreClass') 
-    st_3_EnseignementArtsEtMetiers8F = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers8F') 
-    st_3_EnseignementArtsEtMetiers8FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers8FRedoublant') 
-    st_3_EnseignementArtsEtMetiers8G = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Arts EtMetiers8G') 
-    st_3_EnseignementArtsEtMetiers8GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers8GRedoublant') 
-    st_3_EnseignementArtsEtMetiers8NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementArts EtMetiers8NombreClass') 
+        managed = False
+        db_table = 'st3_effectif_eleve_inscrit_sexe_annee_etude_age_revolu'
 
-    # --- Enseignement Général ---
-    # 1H
-    st_3_EnseignementGeneral1HF = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral1HF') 
-    st_3_EnseignementGeneral1HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General 1HF_Redoublant') 
-    st_3_EnseignementGeneral1HG = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral1HG') 
-    st_3_EnseignementGeneral1HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral1HG_Redoublant') 
-    st_3_EnseignementGeneral1HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General 1HNombre Class') 
-    
-    # 2H
-    st_3_EnseignementGeneral2HF = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral2HF') 
-    st_3_EnseignementGeneral2HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral2HF_Redoublant') 
-    st_3_EnseignementGeneral2HG = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral2HG') 
-    st_3_EnseignementGeneral2HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral2HG_Redoublant') 
-    st_3_EnseignementGeneral2HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General2HNombreClass') 
-    
-    # 3H
-    st_3_EnseignementGeneral3HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General3HF') 
-    st_3_EnseignementGeneral3HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementGeneral3HF_Redoublant') 
-    st_3_EnseignementGeneral3HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General3HG') 
-    st_3_EnseignementGeneral3HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General3HG_Redoublant') 
-    st_3_EnseignementGeneral3HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General3HNombreClass') 
 
-    # 4H
-    st_3_EnseignementGeneral4HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General4HF') 
-    st_3_EnseignementGeneral4HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General4HF_Redoublant') 
-    st_3_EnseignementGeneral4HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General4HG') 
-    st_3_EnseignementGeneral4HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General4HG_Redoublant') 
-    st_3_EnseignementGeneral4HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General4HNombreClass') 
-
-    # 7F/G & 8F/G
-    st_3_EnseignementGeneral7F = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General7F') 
-    st_3_EnseignementGeneral7FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General7FRedoublant') 
-    st_3_EnseignementGeneral7G = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General7G') 
-    st_3_EnseignementGeneral7GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General7GRedoublant') 
-    st_3_EnseignementGeneral7NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General7NombreClass') 
-    st_3_EnseignementGeneral8F = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General8F') 
-    st_3_EnseignementGeneral8FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General8FRedoublant') 
-    st_3_EnseignementGeneral8G = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General8G') 
-    st_3_EnseignementGeneral8GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General8GRedoublant') 
-    st_3_EnseignementGeneral8NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement General8NombreClass') 
-
-    # --- Enseignement Normal ---
-    # 1H
-    st_3_EnseignementNormal1HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal1HF') 
-    st_3_EnseignementNormal1HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal1HF_Redoublant') 
-    st_3_EnseignementNormal1HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal1HG') 
-    st_3_EnseignementNormal1HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal1HG_Redoublant') 
-    st_3_EnseignementNormal1HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementNormal1HNombreClass') 
-
-    # 2H
-    st_3_EnseignementNormal2HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal2HF') 
-    st_3_EnseignementNormal2HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal2HF_Redoublant') 
-    st_3_EnseignementNormal2HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal2HG') 
-    st_3_EnseignementNormal2HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal2HG_Redoublant') 
-    st_3_EnseignementNormal2HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal2HNombreClass') 
-
-    # 3H
-    st_3_EnseignementNormal3HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal3HF') 
-    st_3_EnseignementNormal3HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal3HF_Redoublant') 
-    st_3_EnseignementNormal3HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal3HG') 
-    st_3_EnseignementNormal3HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal3HG_Redoublant') 
-    st_3_EnseignementNormal3HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal3HNombreClass') 
-
-    # 4H
-    st_3_EnseignementNormal4HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal4HF') 
-    st_3_EnseignementNormal4HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal4HF_Redoublant') 
-    st_3_EnseignementNormal4HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal4HG') 
-    st_3_EnseignementNormal4HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal4HG_Redoublant') 
-    st_3_EnseignementNormal4HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal4HNombreClass') 
-
-    # 7F/G & 8F/G
-    st_3_EnseignementNormal7F = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementNormal7F') 
-    st_3_EnseignementNormal7FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_EnseignementNormal7FRedoublant') 
-    st_3_EnseignementNormal7G = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal7G') 
-    st_3_EnseignementNormal7GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal7GRedoublant') 
-    st_3_EnseignementNormal7NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal7NombreClass') 
-    st_3_EnseignementNormal8F = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal8F') 
-    st_3_EnseignementNormal8FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal8FRedoublant') 
-    st_3_EnseignementNormal8G = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal8G') 
-    st_3_EnseignementNormal8GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal8GRedoublant') 
-    st_3_EnseignementNormal8NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Normal8NombreClass') 
-
-    # --- Enseignement Technique ---
-    # 1H
-    st_3_EnseignementTechnique1HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique1HF') 
-    st_3_EnseignementTechnique1HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique1HF_Redoublant') 
-    st_3_EnseignementTechnique1HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique1HG') 
-    st_3_EnseignementTechnique1HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique1HG_Redoublant') 
-    st_3_EnseignementTechnique1HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique1HNombreClass') 
-
-    # 2H
-    st_3_EnseignementTechnique2HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique2HF') 
-    st_3_EnseignementTechnique2HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique2HF_Redoublant') 
-    st_3_EnseignementTechnique2HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique2HG') 
-    st_3_EnseignementTechnique2HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique2HG_Redoublant') 
-    st_3_EnseignementTechnique2HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique2HNombreClass') 
-
-    # 3H
-    st_3_EnseignementTechnique3HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique3HF') 
-    st_3_EnseignementTechnique3HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique3HF_Redoublant') 
-    st_3_EnseignementTechnique3HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique3HG') 
-    st_3_EnseignementTechnique3HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique3HG_Redoublant') 
-    st_3_EnseignementTechnique3HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique3HNombre Class') 
-
-    # 4H
-    st_3_EnseignementTechnique4HF = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique4HF') 
-    st_3_EnseignementTechnique4HF_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique4HF_Redoublant') 
-    st_3_EnseignementTechnique4HG = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique4HG') 
-    st_3_EnseignementTechnique4HG_Redoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique4HG_Redoublant') 
-    st_3_EnseignementTechnique4HNombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique4HNombreClass') 
-
-    # 7F/G & 8F/G
-    st_3_EnseignementTechnique7F = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique7F') 
-    st_3_EnseignementTechnique7FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique 7FRedoublant') 
-    st_3_EnseignementTechnique7G = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique7G') 
-    st_3_EnseignementTechnique7GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique7GRedoublant') 
-    st_3_EnseignementTechnique7NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique7NombreClass') 
-    st_3_EnseignementTechnique8F = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique8F') 
-    st_3_EnseignementTechnique8FRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique8FRedoublant') 
-    st_3_EnseignementTechnique8G = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique8G') 
-    st_3_EnseignementTechnique8GRedoublant = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique8GRedoublant') 
-    st_3_EnseignementTechnique8NombreClass = models.IntegerField(null=True, blank=True, db_column='st_3_Enseignement Technique8NombreClass') 
+class St3EffectifEleveTypeEnseignement(models.Model):
+    st_3_enseignementartsetmetiers1hf = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers1HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers1hf_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers1HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers1hg = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers1HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers1hg_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers1HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers1hnombreclass = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers1HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers2hf = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers2HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers2hf_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers2HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers2hg = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers2HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers2hg_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers2HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers2hnombreclass = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers2HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers3hf = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers3HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers3hf_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers3HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers3hg = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers3HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers3hg_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers3HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers3hnombreclass = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers3HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers4hf = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers4HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers4hf_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers4HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers4hg = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers4HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers4hg_redoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers4HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers4hnombreclass = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers4HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers7f = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers7F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers7fredoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers7FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers7g = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers7G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers7gredoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers7GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers7nombreclass = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers7NombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers8f = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers8F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers8fredoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers8FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers8g = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers8G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers8gredoublant = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers8GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementartsetmetiers8nombreclass = models.IntegerField(db_column='st_3_EnseignementArtsEtMetiers8NombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral1hf = models.IntegerField(db_column='st_3_EnseignementGeneral1HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral1hf_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral1HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral1hg = models.IntegerField(db_column='st_3_EnseignementGeneral1HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral1hg_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral1HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral1hnombreclass = models.IntegerField(db_column='st_3_EnseignementGeneral1HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral2hf = models.IntegerField(db_column='st_3_EnseignementGeneral2HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral2hf_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral2HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral2hg = models.IntegerField(db_column='st_3_EnseignementGeneral2HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral2hg_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral2HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral2hnombreclass = models.IntegerField(db_column='st_3_EnseignementGeneral2HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral3hf = models.IntegerField(db_column='st_3_EnseignementGeneral3HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral3hf_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral3HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral3hg = models.IntegerField(db_column='st_3_EnseignementGeneral3HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral3hg_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral3HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral3hnombreclass = models.IntegerField(db_column='st_3_EnseignementGeneral3HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral4hf = models.IntegerField(db_column='st_3_EnseignementGeneral4HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral4hf_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral4HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral4hg = models.IntegerField(db_column='st_3_EnseignementGeneral4HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral4hg_redoublant = models.IntegerField(db_column='st_3_EnseignementGeneral4HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral4hnombreclass = models.IntegerField(db_column='st_3_EnseignementGeneral4HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral7f = models.IntegerField(db_column='st_3_EnseignementGeneral7F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral7fredoublant = models.IntegerField(db_column='st_3_EnseignementGeneral7FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral7g = models.IntegerField(db_column='st_3_EnseignementGeneral7G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral7gredoublant = models.IntegerField(db_column='st_3_EnseignementGeneral7GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral7nombreclass = models.IntegerField(db_column='st_3_EnseignementGeneral7NombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral8f = models.IntegerField(db_column='st_3_EnseignementGeneral8F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral8fredoublant = models.IntegerField(db_column='st_3_EnseignementGeneral8FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral8g = models.IntegerField(db_column='st_3_EnseignementGeneral8G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral8gredoublant = models.IntegerField(db_column='st_3_EnseignementGeneral8GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementgeneral8nombreclass = models.IntegerField(db_column='st_3_EnseignementGeneral8NombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal1hf = models.IntegerField(db_column='st_3_EnseignementNormal1HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal1hf_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal1HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal1hg = models.IntegerField(db_column='st_3_EnseignementNormal1HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal1hg_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal1HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal1hnombreclass = models.IntegerField(db_column='st_3_EnseignementNormal1HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal2hf = models.IntegerField(db_column='st_3_EnseignementNormal2HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal2hf_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal2HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal2hg = models.IntegerField(db_column='st_3_EnseignementNormal2HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal2hg_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal2HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal2hnombreclass = models.IntegerField(db_column='st_3_EnseignementNormal2HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal3hf = models.IntegerField(db_column='st_3_EnseignementNormal3HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal3hf_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal3HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal3hg = models.IntegerField(db_column='st_3_EnseignementNormal3HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal3hg_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal3HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal3hnombreclass = models.IntegerField(db_column='st_3_EnseignementNormal3HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal4hf = models.IntegerField(db_column='st_3_EnseignementNormal4HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal4hf_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal4HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal4hg = models.IntegerField(db_column='st_3_EnseignementNormal4HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal4hg_redoublant = models.IntegerField(db_column='st_3_EnseignementNormal4HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal4hnombreclass = models.IntegerField(db_column='st_3_EnseignementNormal4HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal7f = models.IntegerField(db_column='st_3_EnseignementNormal7F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal7fredoublant = models.IntegerField(db_column='st_3_EnseignementNormal7FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal7g = models.IntegerField(db_column='st_3_EnseignementNormal7G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal7gredoublant = models.IntegerField(db_column='st_3_EnseignementNormal7GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal7nombreclass = models.IntegerField(db_column='st_3_EnseignementNormal7NombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal8f = models.IntegerField(db_column='st_3_EnseignementNormal8F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal8fredoublant = models.IntegerField(db_column='st_3_EnseignementNormal8FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal8g = models.IntegerField(db_column='st_3_EnseignementNormal8G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal8gredoublant = models.IntegerField(db_column='st_3_EnseignementNormal8GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementnormal8nombreclass = models.IntegerField(db_column='st_3_EnseignementNormal8NombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique1hf = models.IntegerField(db_column='st_3_EnseignementTechnique1HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique1hf_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique1HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique1hg = models.IntegerField(db_column='st_3_EnseignementTechnique1HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique1hg_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique1HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique1hnombreclass = models.IntegerField(db_column='st_3_EnseignementTechnique1HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique2hf = models.IntegerField(db_column='st_3_EnseignementTechnique2HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique2hf_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique2HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique2hg = models.IntegerField(db_column='st_3_EnseignementTechnique2HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique2hg_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique2HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique2hnombreclass = models.IntegerField(db_column='st_3_EnseignementTechnique2HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique3hf = models.IntegerField(db_column='st_3_EnseignementTechnique3HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique3hf_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique3HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique3hg = models.IntegerField(db_column='st_3_EnseignementTechnique3HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique3hg_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique3HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique3hnombreclass = models.IntegerField(db_column='st_3_EnseignementTechnique3HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique4hf = models.IntegerField(db_column='st_3_EnseignementTechnique4HF', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique4hf_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique4HF_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique4hg = models.IntegerField(db_column='st_3_EnseignementTechnique4HG', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique4hg_redoublant = models.IntegerField(db_column='st_3_EnseignementTechnique4HG_Redoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique4hnombreclass = models.IntegerField(db_column='st_3_EnseignementTechnique4HNombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique7f = models.IntegerField(db_column='st_3_EnseignementTechnique7F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique7fredoublant = models.IntegerField(db_column='st_3_EnseignementTechnique7FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique7g = models.IntegerField(db_column='st_3_EnseignementTechnique7G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique7gredoublant = models.IntegerField(db_column='st_3_EnseignementTechnique7GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique7nombreclass = models.IntegerField(db_column='st_3_EnseignementTechnique7NombreClass', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique8f = models.IntegerField(db_column='st_3_EnseignementTechnique8F', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique8fredoublant = models.IntegerField(db_column='st_3_EnseignementTechnique8FRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique8g = models.IntegerField(db_column='st_3_EnseignementTechnique8G', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique8gredoublant = models.IntegerField(db_column='st_3_EnseignementTechnique8GRedoublant', blank=True, null=True)  # Field name made lowercase.
+    st_3_enseignementtechnique8nombreclass = models.IntegerField(db_column='st_3_EnseignementTechnique8NombreClass', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        # Correspondance avec le nom de la table dans la base de données
-        db_table = 'st3_effectif_eleve_type_enseignement' 
-        managed = True
-        verbose_name = 'Effectif Élève par Type Enseignement'
-        verbose_name_plural = 'Effectifs Élèves par Type Enseignement'
-
-    def __str__(self):
-        return f"Effectif ID: {self.id}"
-# ok
-class St3_personnel_administratif_fonction_sexe(BaseModel):
-    # Clés de référence
-    # 133. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    ) #
-
-    # 134. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # --- Conseiller Pédagogique (F) ---
-    st_3_Nombre_Conseiller_PedagogiqueF_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueF_P6 = models.IntegerField(null=True) #
-
-    # --- Conseiller Pédagogique (H) ---
-    st_3_Nombre_Conseiller_PedagogiqueH_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Conseiller_PedagogiqueH_P6 = models.IntegerField(null=True) #
-
-    # --- Directeur de Discipline (F) ---
-    st_3_Nombre_Directeur_DisciplineF_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineF_P6 = models.IntegerField(null=True) #
-
-    # --- Directeur de Discipline (H) ---
-    st_3_Nombre_Directeur_DisciplineH_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_DisciplineH_P6 = models.IntegerField(null=True) #
-    
-    # --- Directeur d'Études (F) ---
-    st_3_Nombre_Directeur_EtudesF_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesF_P6 = models.IntegerField(null=True) #
-
-    # --- Directeur d'Études (H) ---
-    st_3_Nombre_Directeur_EtudesH_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Directeur_EtudesH_P6 = models.IntegerField(null=True) #
-
-    # --- Ouvriers et Autres (F) ---
-    st_3_Nombre_Ouvriers_EtAutresF_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresF_P6 = models.IntegerField(null=True) #
-
-    # --- Ouvriers et Autres (H) ---
-    st_3_Nombre_Ouvriers_EtAutresH_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Ouvriers_EtAutresH_P6 = models.IntegerField(null=True) #
-
-    # --- Préfet d'Études (F) ---
-    st_3_Nombre_Prefet_EtudesF_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesF_P6 = models.IntegerField(null=True) #
-
-    # --- Préfet d'Études (H) ---
-    st_3_Nombre_Prefet_EtudesH_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_DR = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_IR = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_LA = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_Prefet_EtudesH_P6 = models.IntegerField(null=True) #
-
-    # --- Surveillant (F) ---
-    st_3_Nombre_SurveillantF_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_DR = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_IR = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_LA = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantF_P6 = models.IntegerField(null=True) #
-
-    # --- Surveillant (H) ---
-    st_3_Nombre_SurveillantH_A1 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_Autres = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_D6 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_DR = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_G3 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_IR = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_L2 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_L2A = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_LA = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_MoinsD6 = models.IntegerField(null=True) #
-    st_3_Nombre_SurveillantH_P6 = models.IntegerField(null=True) #
+        managed = False
+        db_table = 'st3_effectif_eleve_type_enseignement'
 
 
-    def __str__(self):
-        return f"Personnel Administratif ST3 (ID: {self.id})"
+class St3EffectifParAgeSexe(models.Model):
+    effectifeleves1hf12 = models.IntegerField(db_column='effectifEleves1HF12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hf13 = models.IntegerField(db_column='effectifEleves1HF13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hf14 = models.IntegerField(db_column='effectifEleves1HF14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hf15 = models.IntegerField(db_column='effectifEleves1HF15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hf16 = models.IntegerField(db_column='effectifEleves1HF16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hf17 = models.IntegerField(db_column='effectifEleves1HF17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfmoins12 = models.IntegerField(db_column='effectifEleves1HFMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfplus17 = models.IntegerField(db_column='effectifEleves1HFPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hg12 = models.IntegerField(db_column='effectifEleves1HG12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hg13 = models.IntegerField(db_column='effectifEleves1HG13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hg14 = models.IntegerField(db_column='effectifEleves1HG14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hg15 = models.IntegerField(db_column='effectifEleves1HG15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hg16 = models.IntegerField(db_column='effectifEleves1HG16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hg17 = models.IntegerField(db_column='effectifEleves1HG17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgmoins12 = models.IntegerField(db_column='effectifEleves1HGMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgplus17 = models.IntegerField(db_column='effectifEleves1HGPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hf12 = models.IntegerField(db_column='effectifEleves2HF12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hf13 = models.IntegerField(db_column='effectifEleves2HF13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hf14 = models.IntegerField(db_column='effectifEleves2HF14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hf15 = models.IntegerField(db_column='effectifEleves2HF15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hf16 = models.IntegerField(db_column='effectifEleves2HF16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hf17 = models.IntegerField(db_column='effectifEleves2HF17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfmoins12 = models.IntegerField(db_column='effectifEleves2HFMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfplus17 = models.IntegerField(db_column='effectifEleves2HFPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hg12 = models.IntegerField(db_column='effectifEleves2HG12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hg13 = models.IntegerField(db_column='effectifEleves2HG13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hg14 = models.IntegerField(db_column='effectifEleves2HG14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hg15 = models.IntegerField(db_column='effectifEleves2HG15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hg16 = models.IntegerField(db_column='effectifEleves2HG16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hg17 = models.IntegerField(db_column='effectifEleves2HG17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgmoins12 = models.IntegerField(db_column='effectifEleves2HGMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgplus17 = models.IntegerField(db_column='effectifEleves2HGPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hf12 = models.IntegerField(db_column='effectifEleves3HF12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hf13 = models.IntegerField(db_column='effectifEleves3HF13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hf14 = models.IntegerField(db_column='effectifEleves3HF14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hf15 = models.IntegerField(db_column='effectifEleves3HF15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hf16 = models.IntegerField(db_column='effectifEleves3HF16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hf17 = models.IntegerField(db_column='effectifEleves3HF17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfmoins12 = models.IntegerField(db_column='effectifEleves3HFMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfplus17 = models.IntegerField(db_column='effectifEleves3HFPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hg12 = models.IntegerField(db_column='effectifEleves3HG12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hg13 = models.IntegerField(db_column='effectifEleves3HG13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hg14 = models.IntegerField(db_column='effectifEleves3HG14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hg15 = models.IntegerField(db_column='effectifEleves3HG15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hg16 = models.IntegerField(db_column='effectifEleves3HG16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hg17 = models.IntegerField(db_column='effectifEleves3HG17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgmoins12 = models.IntegerField(db_column='effectifEleves3HGMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgplus17 = models.IntegerField(db_column='effectifEleves3HGPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hf12 = models.IntegerField(db_column='effectifEleves4HF12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hf13 = models.IntegerField(db_column='effectifEleves4HF13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hf14 = models.IntegerField(db_column='effectifEleves4HF14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hf15 = models.IntegerField(db_column='effectifEleves4HF15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hf16 = models.IntegerField(db_column='effectifEleves4HF16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hf17 = models.IntegerField(db_column='effectifEleves4HF17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfmoins12 = models.IntegerField(db_column='effectifEleves4HFMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfplus17 = models.IntegerField(db_column='effectifEleves4HFPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hg12 = models.IntegerField(db_column='effectifEleves4HG12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hg13 = models.IntegerField(db_column='effectifEleves4HG13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hg14 = models.IntegerField(db_column='effectifEleves4HG14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hg15 = models.IntegerField(db_column='effectifEleves4HG15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hg16 = models.IntegerField(db_column='effectifEleves4HG16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hg17 = models.IntegerField(db_column='effectifEleves4HG17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgmoins12 = models.IntegerField(db_column='effectifEleves4HGMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgplus17 = models.IntegerField(db_column='effectifEleves4HGPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7f12 = models.IntegerField(db_column='effectifEleves7F12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7f13 = models.IntegerField(db_column='effectifEleves7F13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7f14 = models.IntegerField(db_column='effectifEleves7F14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7f15 = models.IntegerField(db_column='effectifEleves7F15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7f16 = models.IntegerField(db_column='effectifEleves7F16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7f17 = models.IntegerField(db_column='effectifEleves7F17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7fmoins12 = models.IntegerField(db_column='effectifEleves7FMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7fplus17 = models.IntegerField(db_column='effectifEleves7FPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7g12 = models.IntegerField(db_column='effectifEleves7G12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7g13 = models.IntegerField(db_column='effectifEleves7G13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7g14 = models.IntegerField(db_column='effectifEleves7G14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7g15 = models.IntegerField(db_column='effectifEleves7G15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7g16 = models.IntegerField(db_column='effectifEleves7G16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7g17 = models.IntegerField(db_column='effectifEleves7G17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gmoins12 = models.IntegerField(db_column='effectifEleves7GMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gplus17 = models.IntegerField(db_column='effectifEleves7GPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8f12 = models.IntegerField(db_column='effectifEleves8F12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8f13 = models.IntegerField(db_column='effectifEleves8F13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8f14 = models.IntegerField(db_column='effectifEleves8F14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8f15 = models.IntegerField(db_column='effectifEleves8F15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8f16 = models.IntegerField(db_column='effectifEleves8F16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8f17 = models.IntegerField(db_column='effectifEleves8F17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8fmoins12 = models.IntegerField(db_column='effectifEleves8FMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8fplus17 = models.IntegerField(db_column='effectifEleves8FPlus17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8g12 = models.IntegerField(db_column='effectifEleves8G12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8g13 = models.IntegerField(db_column='effectifEleves8G13', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8g14 = models.IntegerField(db_column='effectifEleves8G14', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8g15 = models.IntegerField(db_column='effectifEleves8G15', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8g16 = models.IntegerField(db_column='effectifEleves8G16', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8g17 = models.IntegerField(db_column='effectifEleves8G17', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gmoins12 = models.IntegerField(db_column='effectifEleves8GMoins12', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gplus17 = models.IntegerField(db_column='effectifEleves8GPlus17', blank=True, null=True)  # Field name made lowercase.
+    id = models.BigAutoField(primary_key=True)
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Personnel Administratif Fonction Sexe ST3"
-        verbose_name_plural = "Personnel Administratif Fonction Sexe ST3"
-# ok
-class St3_effectif_par_age_sexe(BaseModel):
-    # Clé de référence
-    # form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_effectif_par_age_sexe'
 
-    # id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # --- NIVEAU 1H ---
-    # Filles
-    effectifEleves1HFMoins12 = models.IntegerField(null=True, verbose_name="1H F < 12 ans")
-    effectifEleves1HF12 = models.IntegerField(null=True, verbose_name="1H F 12 ans")
-    effectifEleves1HF13 = models.IntegerField(null=True, verbose_name="1H F 13 ans")
-    effectifEleves1HF14 = models.IntegerField(null=True, verbose_name="1H F 14 ans")
-    effectifEleves1HF15 = models.IntegerField(null=True, verbose_name="1H F 15 ans")
-    effectifEleves1HF16 = models.IntegerField(null=True, verbose_name="1H F 16 ans")
-    effectifEleves1HF17 = models.IntegerField(null=True, verbose_name="1H F 17 ans")
-    effectifEleves1HFPlus17 = models.IntegerField(null=True, verbose_name="1H F > 17 ans")
-    # Garçons
-    effectifEleves1HGMoins12 = models.IntegerField(null=True, verbose_name="1H G < 12 ans")
-    effectifEleves1HG12 = models.IntegerField(null=True, verbose_name="1H G 12 ans")
-    effectifEleves1HG13 = models.IntegerField(null=True, verbose_name="1H G 13 ans")
-    effectifEleves1HG14 = models.IntegerField(null=True, verbose_name="1H G 14 ans")
-    effectifEleves1HG15 = models.IntegerField(null=True, verbose_name="1H G 15 ans")
-    effectifEleves1HG16 = models.IntegerField(null=True, verbose_name="1H G 16 ans")
-    effectifEleves1HG17 = models.IntegerField(null=True, verbose_name="1H G 17 ans")
-    effectifEleves1HGPlus17 = models.IntegerField(null=True, verbose_name="1H G > 17 ans")
-
-    # --- NIVEAU 2H ---
-    # Filles
-    effectifEleves2HFMoins12 = models.IntegerField(null=True, verbose_name="2H F < 12 ans")
-    effectifEleves2HF12 = models.IntegerField(null=True, verbose_name="2H F 12 ans")
-    effectifEleves2HF13 = models.IntegerField(null=True, verbose_name="2H F 13 ans")
-    effectifEleves2HF14 = models.IntegerField(null=True, verbose_name="2H F 14 ans")
-    effectifEleves2HF15 = models.IntegerField(null=True, verbose_name="2H F 15 ans")
-    effectifEleves2HF16 = models.IntegerField(null=True, verbose_name="2H F 16 ans")
-    effectifEleves2HF17 = models.IntegerField(null=True, verbose_name="2H F 17 ans")
-    effectifEleves2HFPlus17 = models.IntegerField(null=True, verbose_name="2H F > 17 ans")
-    # Garçons
-    effectifEleves2HGMoins12 = models.IntegerField(null=True, verbose_name="2H G < 12 ans")
-    effectifEleves2HG12 = models.IntegerField(null=True, verbose_name="2H G 12 ans")
-    effectifEleves2HG13 = models.IntegerField(null=True, verbose_name="2H G 13 ans")
-    effectifEleves2HG14 = models.IntegerField(null=True, verbose_name="2H G 14 ans")
-    effectifEleves2HG15 = models.IntegerField(null=True, verbose_name="2H G 15 ans")
-    effectifEleves2HG16 = models.IntegerField(null=True, verbose_name="2H G 16 ans")
-    effectifEleves2HG17 = models.IntegerField(null=True, verbose_name="2H G 17 ans")
-    effectifEleves2HGPlus17 = models.IntegerField(null=True, verbose_name="2H G > 17 ans")
-    
-    # --- NIVEAU 3H ---
-    # Filles
-    effectifEleves3HFMoins12 = models.IntegerField(null=True, verbose_name="3H F < 12 ans")
-    effectifEleves3HF12 = models.IntegerField(null=True, verbose_name="3H F 12 ans")
-    effectifEleves3HF13 = models.IntegerField(null=True, verbose_name="3H F 13 ans")
-    effectifEleves3HF14 = models.IntegerField(null=True, verbose_name="3H F 14 ans")
-    effectifEleves3HF15 = models.IntegerField(null=True, verbose_name="3H F 15 ans")
-    effectifEleves3HF16 = models.IntegerField(null=True, verbose_name="3H F 16 ans")
-    effectifEleves3HF17 = models.IntegerField(null=True, verbose_name="3H F 17 ans")
-    effectifEleves3HFPlus17 = models.IntegerField(null=True, verbose_name="3H F > 17 ans")
-    # Garçons
-    effectifEleves3HGMoins12 = models.IntegerField(null=True, verbose_name="3H G < 12 ans")
-    effectifEleves3HG12 = models.IntegerField(null=True, verbose_name="3H G 12 ans")
-    effectifEleves3HG13 = models.IntegerField(null=True, verbose_name="3H G 13 ans")
-    effectifEleves3HG14 = models.IntegerField(null=True, verbose_name="3H G 14 ans")
-    effectifEleves3HG15 = models.IntegerField(null=True, verbose_name="3H G 15 ans")
-    effectifEleves3HG16 = models.IntegerField(null=True, verbose_name="3H G 16 ans")
-    effectifEleves3HG17 = models.IntegerField(null=True, verbose_name="3H G 17 ans")
-    effectifEleves3HGPlus17 = models.IntegerField(null=True, verbose_name="3H G > 17 ans")
-
-    # --- NIVEAU 4H ---
-    # Filles
-    effectifEleves4HFMoins12 = models.IntegerField(null=True, verbose_name="4H F < 12 ans")
-    effectifEleves4HF12 = models.IntegerField(null=True, verbose_name="4H F 12 ans")
-    effectifEleves4HF13 = models.IntegerField(null=True, verbose_name="4H F 13 ans")
-    effectifEleves4HF14 = models.IntegerField(null=True, verbose_name="4H F 14 ans")
-    effectifEleves4HF15 = models.IntegerField(null=True, verbose_name="4H F 15 ans")
-    effectifEleves4HF16 = models.IntegerField(null=True, verbose_name="4H F 16 ans")
-    effectifEleves4HF17 = models.IntegerField(null=True, verbose_name="4H F 17 ans")
-    effectifEleves4HFPlus17 = models.IntegerField(null=True, verbose_name="4H F > 17 ans")
-    # Garçons
-    effectifEleves4HGMoins12 = models.IntegerField(null=True, verbose_name="4H G < 12 ans")
-    effectifEleves4HG12 = models.IntegerField(null=True, verbose_name="4H G 12 ans")
-    effectifEleves4HG13 = models.IntegerField(null=True, verbose_name="4H G 13 ans")
-    effectifEleves4HG14 = models.IntegerField(null=True, verbose_name="4H G 14 ans")
-    effectifEleves4HG15 = models.IntegerField(null=True, verbose_name="4H G 15 ans")
-    effectifEleves4HG16 = models.IntegerField(null=True, verbose_name="4H G 16 ans")
-    effectifEleves4HG17 = models.IntegerField(null=True, verbose_name="4H G 17 ans")
-    effectifEleves4HGPlus17 = models.IntegerField(null=True, verbose_name="4H G > 17 ans")
-
-    # --- NIVEAU 5H ---
-    # Filles
-    effectifEleves5HFMoins12 = models.IntegerField(null=True, verbose_name="5H F < 12 ans")
-    effectifEleves5HF12 = models.IntegerField(null=True, verbose_name="5H F 12 ans")
-    effectifEleves5HF13 = models.IntegerField(null=True, verbose_name="5H F 13 ans")
-    effectifEleves5HF14 = models.IntegerField(null=True, verbose_name="5H F 14 ans")
-    effectifEleves5HF15 = models.IntegerField(null=True, verbose_name="5H F 15 ans")
-    effectifEleves5HF16 = models.IntegerField(null=True, verbose_name="5H F 16 ans")
-    effectifEleves5HF17 = models.IntegerField(null=True, verbose_name="5H F 17 ans")
-    effectifEleves5HFPlus17 = models.IntegerField(null=True, verbose_name="5H F > 17 ans")
-    # Garçons
-    effectifEleves5HGMoins12 = models.IntegerField(null=True, verbose_name="5H G < 12 ans")
-    effectifEleves5HG12 = models.IntegerField(null=True, verbose_name="5H G 12 ans")
-    effectifEleves5HG13 = models.IntegerField(null=True, verbose_name="5H G 13 ans")
-    effectifEleves5HG14 = models.IntegerField(null=True, verbose_name="5H G 14 ans")
-    effectifEleves5HG15 = models.IntegerField(null=True, verbose_name="5H G 15 ans")
-    effectifEleves5HG16 = models.IntegerField(null=True, verbose_name="5H G 16 ans")
-    effectifEleves5HG17 = models.IntegerField(null=True, verbose_name="5H G 17 ans")
-    effectifEleves5HGPlus17 = models.IntegerField(null=True, verbose_name="5H G > 17 ans")
-
-    # --- NIVEAU 6H ---
-    # Filles
-    effectifEleves6HFMoins12 = models.IntegerField(null=True, verbose_name="6H F < 12 ans")
-    effectifEleves6HF12 = models.IntegerField(null=True, verbose_name="6H F 12 ans")
-    effectifEleves6HF13 = models.IntegerField(null=True, verbose_name="6H F 13 ans")
-    effectifEleves6HF14 = models.IntegerField(null=True, verbose_name="6H F 14 ans")
-    effectifEleves6HF15 = models.IntegerField(null=True, verbose_name="6H F 15 ans")
-    effectifEleves6HF16 = models.IntegerField(null=True, verbose_name="6H F 16 ans")
-    effectifEleves6HF17 = models.IntegerField(null=True, verbose_name="6H F 17 ans")
-    effectifEleves6HFPlus17 = models.IntegerField(null=True, verbose_name="6H F > 17 ans")
-    # Garçons
-    effectifEleves6HGMoins12 = models.IntegerField(null=True, verbose_name="6H G < 12 ans")
-    effectifEleves6HG12 = models.IntegerField(null=True, verbose_name="6H G 12 ans")
-    effectifEleves6HG13 = models.IntegerField(null=True, verbose_name="6H G 13 ans")
-    effectifEleves6HG14 = models.IntegerField(null=True, verbose_name="6H G 14 ans")
-    effectifEleves6HG15 = models.IntegerField(null=True, verbose_name="6H G 15 ans")
-    effectifEleves6HG16 = models.IntegerField(null=True, verbose_name="6H G 16 ans")
-    effectifEleves6HG17 = models.IntegerField(null=True, verbose_name="6H G 17 ans")
-    effectifEleves6HGPlus17 = models.IntegerField(null=True, verbose_name="6H G > 17 ans")
-
-    # --- NIVEAU 7H ---
-    # Filles
-    effectifEleves7HFMoins12 = models.IntegerField(null=True, verbose_name="7H F < 12 ans")
-    effectifEleves7HF12 = models.IntegerField(null=True, verbose_name="7H F 12 ans")
-    effectifEleves7HF13 = models.IntegerField(null=True, verbose_name="7H F 13 ans")
-    effectifEleves7HF14 = models.IntegerField(null=True, verbose_name="7H F 14 ans")
-    effectifEleves7HF15 = models.IntegerField(null=True, verbose_name="7H F 15 ans")
-    effectifEleves7HF16 = models.IntegerField(null=True, verbose_name="7H F 16 ans")
-    effectifEleves7HF17 = models.IntegerField(null=True, verbose_name="7H F 17 ans")
-    effectifEleves7HFPlus17 = models.IntegerField(null=True, verbose_name="7H F > 17 ans")
-    # Garçons
-    effectifEleves7HGMoins12 = models.IntegerField(null=True, verbose_name="7H G < 12 ans")
-    effectifEleves7HG12 = models.IntegerField(null=True, verbose_name="7H G 12 ans")
-    effectifEleves7HG13 = models.IntegerField(null=True, verbose_name="7H G 13 ans")
-    effectifEleves7HG14 = models.IntegerField(null=True, verbose_name="7H G 14 ans")
-    effectifEleves7HG15 = models.IntegerField(null=True, verbose_name="7H G 15 ans")
-    effectifEleves7HG16 = models.IntegerField(null=True, verbose_name="7H G 16 ans")
-    effectifEleves7HG17 = models.IntegerField(null=True, verbose_name="7H G 17 ans")
-    effectifEleves7HGPlus17 = models.IntegerField(null=True, verbose_name="7H G > 17 ans")
-
-    # --- NIVEAU 8H ---
-    # Filles
-    effectifEleves8HFMoins12 = models.IntegerField(null=True, verbose_name="8H F < 12 ans")
-    effectifEleves8HF12 = models.IntegerField(null=True, verbose_name="8H F 12 ans")
-    effectifEleves8HF13 = models.IntegerField(null=True, verbose_name="8H F 13 ans")
-    effectifEleves8HF14 = models.IntegerField(null=True, verbose_name="8H F 14 ans")
-    effectifEleves8HF15 = models.IntegerField(null=True, verbose_name="8H F 15 ans")
-    effectifEleves8HF16 = models.IntegerField(null=True, verbose_name="8H F 16 ans")
-    effectifEleves8HF17 = models.IntegerField(null=True, verbose_name="8H F 17 ans")
-    effectifEleves8HFPlus17 = models.IntegerField(null=True, verbose_name="8H F > 17 ans")
-    # Garçons
-    effectifEleves8HGMoins12 = models.IntegerField(null=True, verbose_name="8H G < 12 ans")
-    effectifEleves8HG12 = models.IntegerField(null=True, verbose_name="8H G 12 ans")
-    effectifEleves8HG13 = models.IntegerField(null=True, verbose_name="8H G 13 ans")
-    effectifEleves8HG14 = models.IntegerField(null=True, verbose_name="8H G 14 ans")
-    effectifEleves8HG15 = models.IntegerField(null=True, verbose_name="8H G 15 ans")
-    effectifEleves8HG16 = models.IntegerField(null=True, verbose_name="8H G 16 ans")
-    effectifEleves8HG17 = models.IntegerField(null=True, verbose_name="8H G 17 ans")
-    effectifEleves8HGPlus17 = models.IntegerField(null=True, verbose_name="8H G > 17 ans")
-
-    def __str__(self):
-        return f"Effectif par Âge et Sexe ST3 (Formulaire ID: {self.form_st_id})"
+class St3EffectifParCategorieParticuliere(models.Model):
+    effectifeleves1hfautochtone = models.IntegerField(db_column='effectifEleves1HFAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfavechandicap = models.IntegerField(db_column='effectifEleves1HFAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfdeplacesexternes = models.IntegerField(db_column='effectifEleves1HFDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfdeplacesinternes = models.IntegerField(db_column='effectifEleves1HFDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfetrangers = models.IntegerField(db_column='effectifEleves1HFEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfinternat = models.IntegerField(db_column='effectifEleves1HFInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hforphelins = models.IntegerField(db_column='effectifEleves1HFOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfreintegrant = models.IntegerField(db_column='effectifEleves1HFReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfredoublons = models.IntegerField(db_column='effectifEleves1HFRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hfrefugies = models.IntegerField(db_column='effectifEleves1HFRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgautochtone = models.IntegerField(db_column='effectifEleves1HGAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgavechandicap = models.IntegerField(db_column='effectifEleves1HGAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgdeplacesexternes = models.IntegerField(db_column='effectifEleves1HGDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgdeplacesinternes = models.IntegerField(db_column='effectifEleves1HGDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgetrangers = models.IntegerField(db_column='effectifEleves1HGEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hginternat = models.IntegerField(db_column='effectifEleves1HGInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgorphelins = models.IntegerField(db_column='effectifEleves1HGOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgreintegrant = models.IntegerField(db_column='effectifEleves1HGReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgredoublons = models.IntegerField(db_column='effectifEleves1HGRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves1hgrefugies = models.IntegerField(db_column='effectifEleves1HGRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfautochtone = models.IntegerField(db_column='effectifEleves2HFAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfavechandicap = models.IntegerField(db_column='effectifEleves2HFAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfdeplacesexternes = models.IntegerField(db_column='effectifEleves2HFDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfdeplacesinternes = models.IntegerField(db_column='effectifEleves2HFDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfetrangers = models.IntegerField(db_column='effectifEleves2HFEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfinternat = models.IntegerField(db_column='effectifEleves2HFInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hforphelins = models.IntegerField(db_column='effectifEleves2HFOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfreintegrant = models.IntegerField(db_column='effectifEleves2HFReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfredoublons = models.IntegerField(db_column='effectifEleves2HFRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hfrefugies = models.IntegerField(db_column='effectifEleves2HFRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgautochtone = models.IntegerField(db_column='effectifEleves2HGAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgavechandicap = models.IntegerField(db_column='effectifEleves2HGAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgdeplacesexternes = models.IntegerField(db_column='effectifEleves2HGDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgdeplacesinternes = models.IntegerField(db_column='effectifEleves2HGDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgetrangers = models.IntegerField(db_column='effectifEleves2HGEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hginternat = models.IntegerField(db_column='effectifEleves2HGInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgorphelins = models.IntegerField(db_column='effectifEleves2HGOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgreintegrant = models.IntegerField(db_column='effectifEleves2HGReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgredoublons = models.IntegerField(db_column='effectifEleves2HGRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves2hgrefugies = models.IntegerField(db_column='effectifEleves2HGRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfautochtone = models.IntegerField(db_column='effectifEleves3HFAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfavechandicap = models.IntegerField(db_column='effectifEleves3HFAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfdeplacesexternes = models.IntegerField(db_column='effectifEleves3HFDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfdeplacesinternes = models.IntegerField(db_column='effectifEleves3HFDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfetrangers = models.IntegerField(db_column='effectifEleves3HFEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfinternat = models.IntegerField(db_column='effectifEleves3HFInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hforphelins = models.IntegerField(db_column='effectifEleves3HFOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfreintegrant = models.IntegerField(db_column='effectifEleves3HFReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfredoublons = models.IntegerField(db_column='effectifEleves3HFRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hfrefugies = models.IntegerField(db_column='effectifEleves3HFRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgautochtone = models.IntegerField(db_column='effectifEleves3HGAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgavechandicap = models.IntegerField(db_column='effectifEleves3HGAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgdeplacesexternes = models.IntegerField(db_column='effectifEleves3HGDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgdeplacesinternes = models.IntegerField(db_column='effectifEleves3HGDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgetrangers = models.IntegerField(db_column='effectifEleves3HGEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hginternat = models.IntegerField(db_column='effectifEleves3HGInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgorphelins = models.IntegerField(db_column='effectifEleves3HGOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgreintegrant = models.IntegerField(db_column='effectifEleves3HGReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgredoublons = models.IntegerField(db_column='effectifEleves3HGRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves3hgrefugies = models.IntegerField(db_column='effectifEleves3HGRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfautochtone = models.IntegerField(db_column='effectifEleves4HFAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfavechandicap = models.IntegerField(db_column='effectifEleves4HFAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfdeplacesexternes = models.IntegerField(db_column='effectifEleves4HFDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfdeplacesinternes = models.IntegerField(db_column='effectifEleves4HFDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfetrangers = models.IntegerField(db_column='effectifEleves4HFEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfinternat = models.IntegerField(db_column='effectifEleves4HFInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hforphelins = models.IntegerField(db_column='effectifEleves4HFOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfreintegrant = models.IntegerField(db_column='effectifEleves4HFReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfredoublons = models.IntegerField(db_column='effectifEleves4HFRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hfrefugies = models.IntegerField(db_column='effectifEleves4HFRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgautochtone = models.IntegerField(db_column='effectifEleves4HGAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgavechandicap = models.IntegerField(db_column='effectifEleves4HGAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgdeplacesexternes = models.IntegerField(db_column='effectifEleves4HGDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgdeplacesinternes = models.IntegerField(db_column='effectifEleves4HGDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgetrangers = models.IntegerField(db_column='effectifEleves4HGEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hginternat = models.IntegerField(db_column='effectifEleves4HGInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgorphelins = models.IntegerField(db_column='effectifEleves4HGOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgreintegrant = models.IntegerField(db_column='effectifEleves4HGReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgredoublons = models.IntegerField(db_column='effectifEleves4HGRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves4hgrefugies = models.IntegerField(db_column='effectifEleves4HGRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7fautochtone = models.IntegerField(db_column='effectifEleves7FAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7favechandicap = models.IntegerField(db_column='effectifEleves7FAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7fdeplacesexternes = models.IntegerField(db_column='effectifEleves7FDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7fdeplacesinternes = models.IntegerField(db_column='effectifEleves7FDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7fetrangers = models.IntegerField(db_column='effectifEleves7FEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7finternat = models.IntegerField(db_column='effectifEleves7FInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7forphelins = models.IntegerField(db_column='effectifEleves7FOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7freintegrant = models.IntegerField(db_column='effectifEleves7FReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7fredoublons = models.IntegerField(db_column='effectifEleves7FRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7frefugies = models.IntegerField(db_column='effectifEleves7FRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gautochtone = models.IntegerField(db_column='effectifEleves7GAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gavechandicap = models.IntegerField(db_column='effectifEleves7GAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gdeplacesexternes = models.IntegerField(db_column='effectifEleves7GDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gdeplacesinternes = models.IntegerField(db_column='effectifEleves7GDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7getrangers = models.IntegerField(db_column='effectifEleves7GEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7ginternat = models.IntegerField(db_column='effectifEleves7GInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gorphelins = models.IntegerField(db_column='effectifEleves7GOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7greintegrant = models.IntegerField(db_column='effectifEleves7GReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7gredoublons = models.IntegerField(db_column='effectifEleves7GRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves7grefugies = models.IntegerField(db_column='effectifEleves7GRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8fautochtone = models.IntegerField(db_column='effectifEleves8FAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8favechandicap = models.IntegerField(db_column='effectifEleves8FAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8fdeplacesexternes = models.IntegerField(db_column='effectifEleves8FDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8fdeplacesinternes = models.IntegerField(db_column='effectifEleves8FDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8fetrangers = models.IntegerField(db_column='effectifEleves8FEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8finternat = models.IntegerField(db_column='effectifEleves8FInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8forphelins = models.IntegerField(db_column='effectifEleves8FOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8freintegrant = models.IntegerField(db_column='effectifEleves8FReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8fredoublons = models.IntegerField(db_column='effectifEleves8FRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8frefugies = models.IntegerField(db_column='effectifEleves8FRefugies', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gautochtone = models.IntegerField(db_column='effectifEleves8GAutochtone', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gavechandicap = models.IntegerField(db_column='effectifEleves8GAvecHandicap', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gdeplacesexternes = models.IntegerField(db_column='effectifEleves8GDeplacesExternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gdeplacesinternes = models.IntegerField(db_column='effectifEleves8GDeplacesInternes', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8getrangers = models.IntegerField(db_column='effectifEleves8GEtrangers', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8ginternat = models.IntegerField(db_column='effectifEleves8GInternat', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gorphelins = models.IntegerField(db_column='effectifEleves8GOrphelins', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8greintegrant = models.IntegerField(db_column='effectifEleves8GReIntegrant', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8gredoublons = models.IntegerField(db_column='effectifEleves8GRedoublons', blank=True, null=True)  # Field name made lowercase.
+    effectifeleves8grefugies = models.IntegerField(db_column='effectifEleves8GRefugies', blank=True, null=True)  # Field name made lowercase.
+    id = models.BigAutoField(primary_key=True)
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Effectif par Âge et Sexe ST3"
-        verbose_name_plural = "Effectifs par Âge et Sexe ST3"
-# ok
-class St3_effectif_par_categorie_particuliere(BaseModel):
-    # Clé de référence
-    # form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_effectif_par_categorie_particuliere'
 
-    # id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # --- NIVEAU 1H (Hommes) ---
-    effectifEleves1HFAutochtone = models.IntegerField(null=True, verbose_name="1H F - Autochtone")
-    effectifEleves1HFAvecHandicap = models.IntegerField(null=True, verbose_name="1H F - Avec Handicap")
-    effectifEleves1HFDeplacesExternes = models.IntegerField(null=True, verbose_name="1H F - Déplacés Externes")
-    effectifEleves1HFDeplacesInternes = models.IntegerField(null=True, verbose_name="1H F - Déplacés Internes")
-    effectifEleves1HFEtrangers = models.IntegerField(null=True, verbose_name="1H F - Étrangers")
-    effectifEleves1HFInternat = models.IntegerField(null=True, verbose_name="1H F - Internat")
-    effectifEleves1HFOrphelins = models.IntegerField(null=True, verbose_name="1H F - Orphelins")
-    effectifEleves1HFReIntegrant = models.IntegerField(null=True, verbose_name="1H F - Réintégrant")
-    effectifEleves1HFRedoublons = models.IntegerField(null=True, verbose_name="1H F - Redoublons")
-    effectifEleves1HFRefugies = models.IntegerField(null=True, verbose_name="1H F - Réfugiés") # Ajouté pour consistance
-
-    effectifEleves1HGAutochtone = models.IntegerField(null=True, verbose_name="1H G - Autochtone")
-    effectifEleves1HGAvecHandicap = models.IntegerField(null=True, verbose_name="1H G - Avec Handicap")
-    effectifEleves1HGDeplacesExternes = models.IntegerField(null=True, verbose_name="1H G - Déplacés Externes")
-    effectifEleves1HGDeplacesInternes = models.IntegerField(null=True, verbose_name="1H G - Déplacés Internes")
-    effectifEleves1HGEtrangers = models.IntegerField(null=True, verbose_name="1H G - Étrangers")
-    effectifEleves1HGInternat = models.IntegerField(null=True, verbose_name="1H G - Internat")
-    effectifEleves1HGOrphelins = models.IntegerField(null=True, verbose_name="1H G - Orphelins")
-    effectifEleves1HGReIntegrant = models.IntegerField(null=True, verbose_name="1H G - Réintégrant")
-    effectifEleves1HGRedoublons = models.IntegerField(null=True, verbose_name="1H G - Redoublons")
-    effectifEleves1HGRefugies = models.IntegerField(null=True, verbose_name="1H G - Réfugiés") # Ajouté pour consistance
-
-    # --- NIVEAU 2H (Hommes) ---
-    effectifEleves2HFAutochtone = models.IntegerField(null=True, verbose_name="2H F - Autochtone")
-    effectifEleves2HFAvecHandicap = models.IntegerField(null=True, verbose_name="2H F - Avec Handicap")
-    effectifEleves2HFDeplacesExternes = models.IntegerField(null=True, verbose_name="2H F - Déplacés Externes")
-    effectifEleves2HFDeplacesInternes = models.IntegerField(null=True, verbose_name="2H F - Déplacés Internes")
-    effectifEleves2HFEtrangers = models.IntegerField(null=True, verbose_name="2H F - Étrangers")
-    effectifEleves2HFInternat = models.IntegerField(null=True, verbose_name="2H F - Internat")
-    effectifEleves2HFOrphelins = models.IntegerField(null=True, verbose_name="2H F - Orphelins")
-    effectifEleves2HFReIntegrant = models.IntegerField(null=True, verbose_name="2H F - Réintégrant")
-    effectifEleves2HFRedoublons = models.IntegerField(null=True, verbose_name="2H F - Redoublons")
-    effectifEleves2HFRefugies = models.IntegerField(null=True, verbose_name="2H F - Réfugiés")
-
-    effectifEleves2HGAutochtone = models.IntegerField(null=True, verbose_name="2H G - Autochtone")
-    effectifEleves2HGAvecHandicap = models.IntegerField(null=True, verbose_name="2H G - Avec Handicap")
-    effectifEleves2HGDeplacesExternes = models.IntegerField(null=True, verbose_name="2H G - Déplacés Externes")
-    effectifEleves2HGDeplacesInternes = models.IntegerField(null=True, verbose_name="2H G - Déplacés Internes")
-    effectifEleves2HGEtrangers = models.IntegerField(null=True, verbose_name="2H G - Étrangers")
-    effectifEleves2HGInternat = models.IntegerField(null=True, verbose_name="2H G - Internat")
-    effectifEleves2HGOrphelins = models.IntegerField(null=True, verbose_name="2H G - Orphelins")
-    effectifEleves2HGReIntegrant = models.IntegerField(null=True, verbose_name="2H G - Réintégrant")
-    effectifEleves2HGRedoublons = models.IntegerField(null=True, verbose_name="2H G - Redoublons")
-    effectifEleves2HGRefugies = models.IntegerField(null=True, verbose_name="2H G - Réfugiés")
-    
-    # --- NIVEAU 3H (Hommes) ---
-    effectifEleves3HFAutochtone = models.IntegerField(null=True, verbose_name="3H F - Autochtone")
-    effectifEleves3HFAvecHandicap = models.IntegerField(null=True, verbose_name="3H F - Avec Handicap")
-    effectifEleves3HFDeplacesExternes = models.IntegerField(null=True, verbose_name="3H F - Déplacés Externes")
-    effectifEleves3HFDeplacesInternes = models.IntegerField(null=True, verbose_name="3H F - Déplacés Internes")
-    effectifEleves3HFEtrangers = models.IntegerField(null=True, verbose_name="3H F - Étrangers")
-    effectifEleves3HFInternat = models.IntegerField(null=True, verbose_name="3H F - Internat")
-    effectifEleves3HFOrphelins = models.IntegerField(null=True, verbose_name="3H F - Orphelins")
-    effectifEleves3HFReIntegrant = models.IntegerField(null=True, verbose_name="3H F - Réintégrant")
-    effectifEleves3HFRedoublons = models.IntegerField(null=True, verbose_name="3H F - Redoublons")
-    effectifEleves3HFRefugies = models.IntegerField(null=True, verbose_name="3H F - Réfugiés")
-
-    effectifEleves3HGAutochtone = models.IntegerField(null=True, verbose_name="3H G - Autochtone")
-    effectifEleves3HGAvecHandicap = models.IntegerField(null=True, verbose_name="3H G - Avec Handicap")
-    effectifEleves3HGDeplacesExternes = models.IntegerField(null=True, verbose_name="3H G - Déplacés Externes")
-    effectifEleves3HGDeplacesInternes = models.IntegerField(null=True, verbose_name="3H G - Déplacés Internes")
-    effectifEleves3HGEtrangers = models.IntegerField(null=True, verbose_name="3H G - Étrangers")
-    effectifEleves3HGInternat = models.IntegerField(null=True, verbose_name="3H G - Internat")
-    effectifEleves3HGOrphelins = models.IntegerField(null=True, verbose_name="3H G - Orphelins")
-    effectifEleves3HGReIntegrant = models.IntegerField(null=True, verbose_name="3H G - Réintégrant")
-    effectifEleves3HGRedoublons = models.IntegerField(null=True, verbose_name="3H G - Redoublons")
-    effectifEleves3HGRefugies = models.IntegerField(null=True, verbose_name="3H G - Réfugiés")
-
-    # --- NIVEAU 4H (Hommes) ---
-    effectifEleves4HFAutochtone = models.IntegerField(null=True, verbose_name="4H F - Autochtone")
-    effectifEleves4HFAvecHandicap = models.IntegerField(null=True, verbose_name="4H F - Avec Handicap")
-    effectifEleves4HFDeplacesExternes = models.IntegerField(null=True, verbose_name="4H F - Déplacés Externes")
-    effectifEleves4HFDeplacesInternes = models.IntegerField(null=True, verbose_name="4H F - Déplacés Internes")
-    effectifEleves4HFEtrangers = models.IntegerField(null=True, verbose_name="4H F - Étrangers")
-    effectifEleves4HFInternat = models.IntegerField(null=True, verbose_name="4H F - Internat")
-    effectifEleves4HFOrphelins = models.IntegerField(null=True, verbose_name="4H F - Orphelins")
-    effectifEleves4HFReIntegrant = models.IntegerField(null=True, verbose_name="4H F - Réintégrant")
-    effectifEleves4HFRedoublons = models.IntegerField(null=True, verbose_name="4H F - Redoublons")
-    effectifEleves4HFRefugies = models.IntegerField(null=True, verbose_name="4H F - Réfugiés")
-
-    effectifEleves4HGAutochtone = models.IntegerField(null=True, verbose_name="4H G - Autochtone")
-    effectifEleves4HGAvecHandicap = models.IntegerField(null=True, verbose_name="4H G - Avec Handicap")
-    effectifEleves4HGDeplacesExternes = models.IntegerField(null=True, verbose_name="4H G - Déplacés Externes")
-    effectifEleves4HGDeplacesInternes = models.IntegerField(null=True, verbose_name="4H G - Déplacés Internes")
-    effectifEleves4HGEtrangers = models.IntegerField(null=True, verbose_name="4H G - Étrangers")
-    effectifEleves4HGInternat = models.IntegerField(null=True, verbose_name="4H G - Internat")
-    effectifEleves4HGOrphelins = models.IntegerField(null=True, verbose_name="4H G - Orphelins")
-    effectifEleves4HGReIntegrant = models.IntegerField(null=True, verbose_name="4H G - Réintégrant")
-    effectifEleves4HGRedoublons = models.IntegerField(null=True, verbose_name="4H G - Redoublons")
-    effectifEleves4HGRefugies = models.IntegerField(null=True, verbose_name="4H G - Réfugiés")
-
-    # --- NIVEAU 5H (Hommes) ---
-    effectifEleves5HFAutochtone = models.IntegerField(null=True, verbose_name="5H F - Autochtone")
-    effectifEleves5HFAvecHandicap = models.IntegerField(null=True, verbose_name="5H F - Avec Handicap")
-    effectifEleves5HFDeplacesExternes = models.IntegerField(null=True, verbose_name="5H F - Déplacés Externes")
-    effectifEleves5HFDeplacesInternes = models.IntegerField(null=True, verbose_name="5H F - Déplacés Internes")
-    effectifEleves5HFEtrangers = models.IntegerField(null=True, verbose_name="5H F - Étrangers")
-    effectifEleves5HFInternat = models.IntegerField(null=True, verbose_name="5H F - Internat")
-    effectifEleves5HFOrphelins = models.IntegerField(null=True, verbose_name="5H F - Orphelins")
-    effectifEleves5HFReIntegrant = models.IntegerField(null=True, verbose_name="5H F - Réintégrant")
-    effectifEleves5HFRedoublons = models.IntegerField(null=True, verbose_name="5H F - Redoublons")
-    effectifEleves5HFRefugies = models.IntegerField(null=True, verbose_name="5H F - Réfugiés")
-
-    effectifEleves5HGAutochtone = models.IntegerField(null=True, verbose_name="5H G - Autochtone")
-    effectifEleves5HGAvecHandicap = models.IntegerField(null=True, verbose_name="5H G - Avec Handicap")
-    effectifEleves5HGDeplacesExternes = models.IntegerField(null=True, verbose_name="5H G - Déplacés Externes")
-    effectifEleves5HGDeplacesInternes = models.IntegerField(null=True, verbose_name="5H G - Déplacés Internes")
-    effectifEleves5HGEtrangers = models.IntegerField(null=True, verbose_name="5H G - Étrangers")
-    effectifEleves5HGInternat = models.IntegerField(null=True, verbose_name="5H G - Internat")
-    effectifEleves5HGOrphelins = models.IntegerField(null=True, verbose_name="5H G - Orphelins")
-    effectifEleves5HGReIntegrant = models.IntegerField(null=True, verbose_name="5H G - Réintégrant")
-    effectifEleves5HGRedoublons = models.IntegerField(null=True, verbose_name="5H G - Redoublons")
-    effectifEleves5HGRefugies = models.IntegerField(null=True, verbose_name="5H G - Réfugiés")
-    
-    # --- NIVEAU 6H (Hommes) ---
-    effectifEleves6HFAutochtone = models.IntegerField(null=True, verbose_name="6H F - Autochtone")
-    effectifEleves6HFAvecHandicap = models.IntegerField(null=True, verbose_name="6H F - Avec Handicap")
-    effectifEleves6HFDeplacesExternes = models.IntegerField(null=True, verbose_name="6H F - Déplacés Externes")
-    effectifEleves6HFDeplacesInternes = models.IntegerField(null=True, verbose_name="6H F - Déplacés Internes")
-    effectifEleves6HFEtrangers = models.IntegerField(null=True, verbose_name="6H F - Étrangers")
-    effectifEleves6HFInternat = models.IntegerField(null=True, verbose_name="6H F - Internat")
-    effectifEleves6HFOrphelins = models.IntegerField(null=True, verbose_name="6H F - Orphelins")
-    effectifEleves6HFReIntegrant = models.IntegerField(null=True, verbose_name="6H F - Réintégrant")
-    effectifEleves6HFRedoublons = models.IntegerField(null=True, verbose_name="6H F - Redoublons")
-    effectifEleves6HFRefugies = models.IntegerField(null=True, verbose_name="6H F - Réfugiés")
-
-    effectifEleves6HGAutochtone = models.IntegerField(null=True, verbose_name="6H G - Autochtone")
-    effectifEleves6HGAvecHandicap = models.IntegerField(null=True, verbose_name="6H G - Avec Handicap")
-    effectifEleves6HGDeplacesExternes = models.IntegerField(null=True, verbose_name="6H G - Déplacés Externes")
-    effectifEleves6HGDeplacesInternes = models.IntegerField(null=True, verbose_name="6H G - Déplacés Internes")
-    effectifEleves6HGEtrangers = models.IntegerField(null=True, verbose_name="6H G - Étrangers")
-    effectifEleves6HGInternat = models.IntegerField(null=True, verbose_name="6H G - Internat")
-    effectifEleves6HGOrphelins = models.IntegerField(null=True, verbose_name="6H G - Orphelins")
-    effectifEleves6HGReIntegrant = models.IntegerField(null=True, verbose_name="6H G - Réintégrant")
-    effectifEleves6HGRedoublons = models.IntegerField(null=True, verbose_name="6H G - Redoublons")
-    effectifEleves6HGRefugies = models.IntegerField(null=True, verbose_name="6H G - Réfugiés")
-    
-    # --- NIVEAU 7H (Hommes) ---
-    effectifEleves7HFAutochtone = models.IntegerField(null=True, verbose_name="7H F - Autochtone")
-    effectifEleves7HFAvecHandicap = models.IntegerField(null=True, verbose_name="7H F - Avec Handicap")
-    effectifEleves7HFDeplacesExternes = models.IntegerField(null=True, verbose_name="7H F - Déplacés Externes")
-    effectifEleves7HFDeplacesInternes = models.IntegerField(null=True, verbose_name="7H F - Déplacés Internes")
-    effectifEleves7HFEtrangers = models.IntegerField(null=True, verbose_name="7H F - Étrangers")
-    effectifEleves7HFInternat = models.IntegerField(null=True, verbose_name="7H F - Internat")
-    effectifEleves7HFOrphelins = models.IntegerField(null=True, verbose_name="7H F - Orphelins")
-    effectifEleves7HFReIntegrant = models.IntegerField(null=True, verbose_name="7H F - Réintégrant")
-    effectifEleves7HFRedoublons = models.IntegerField(null=True, verbose_name="7H F - Redoublons")
-    effectifEleves7HFRefugies = models.IntegerField(null=True, verbose_name="7H F - Réfugiés")
-
-    effectifEleves7HGAutochtone = models.IntegerField(null=True, verbose_name="7H G - Autochtone")
-    effectifEleves7HGAvecHandicap = models.IntegerField(null=True, verbose_name="7H G - Avec Handicap")
-    effectifEleves7HGDeplacesExternes = models.IntegerField(null=True, verbose_name="7H G - Déplacés Externes")
-    effectifEleves7HGDeplacesInternes = models.IntegerField(null=True, verbose_name="7H G - Déplacés Internes")
-    effectifEleves7HGEtrangers = models.IntegerField(null=True, verbose_name="7H G - Étrangers")
-    effectifEleves7HGInternat = models.IntegerField(null=True, verbose_name="7H G - Internat")
-    effectifEleves7HGOrphelins = models.IntegerField(null=True, verbose_name="7H G - Orphelins")
-    effectifEleves7HGReIntegrant = models.IntegerField(null=True, verbose_name="7H G - Réintégrant")
-    effectifEleves7HGRedoublons = models.IntegerField(null=True, verbose_name="7H G - Redoublons")
-    effectifEleves7HGRefugies = models.IntegerField(null=True, verbose_name="7H G - Réfugiés")
-
-    # --- NIVEAU 8H (Hommes) ---
-    effectifEleves8HFAutochtone = models.IntegerField(null=True, verbose_name="8H F - Autochtone")
-    effectifEleves8HFAvecHandicap = models.IntegerField(null=True, verbose_name="8H F - Avec Handicap")
-    effectifEleves8HFDeplacesExternes = models.IntegerField(null=True, verbose_name="8H F - Déplacés Externes")
-    effectifEleves8HFDeplacesInternes = models.IntegerField(null=True, verbose_name="8H F - Déplacés Internes")
-    effectifEleves8HFEtrangers = models.IntegerField(null=True, verbose_name="8H F - Étrangers")
-    effectifEleves8HFInternat = models.IntegerField(null=True, verbose_name="8H F - Internat")
-    effectifEleves8HFOrphelins = models.IntegerField(null=True, verbose_name="8H F - Orphelins")
-    effectifEleves8HFReIntegrant = models.IntegerField(null=True, verbose_name="8H F - Réintégrant")
-    effectifEleves8HFRedoublons = models.IntegerField(null=True, verbose_name="8H F - Redoublons")
-    effectifEleves8HFRefugies = models.IntegerField(null=True, verbose_name="8H F - Réfugiés")
-
-    effectifEleves8HGAutochtone = models.IntegerField(null=True, verbose_name="8H G - Autochtone")
-    effectifEleves8HGAvecHandicap = models.IntegerField(null=True, verbose_name="8H G - Avec Handicap")
-    effectifEleves8HGDeplacesExternes = models.IntegerField(null=True, verbose_name="8H G - Déplacés Externes")
-    effectifEleves8HGDeplacesInternes = models.IntegerField(null=True, verbose_name="8H G - Déplacés Internes")
-    effectifEleves8HGEtrangers = models.IntegerField(null=True, verbose_name="8H G - Étrangers")
-    effectifEleves8HGInternat = models.IntegerField(null=True, verbose_name="8H G - Internat")
-    effectifEleves8HGOrphelins = models.IntegerField(null=True, verbose_name="8H G - Orphelins")
-    effectifEleves8HGReIntegrant = models.IntegerField(null=True, verbose_name="8H G - Réintégrant")
-    effectifEleves8HGRedoublons = models.IntegerField(null=True, verbose_name="8H G - Redoublons")
-    effectifEleves8HGRefugies = models.IntegerField(null=True, verbose_name="8H G - Réfugiés")
-
-    def __str__(self):
-        return f"Effectif Catégorie Particulière ST3 (Formulaire ID: {self.form_st_id})"
+class St3Eleve(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    adresse = models.CharField(db_column='Adresse', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    datenaissance = models.CharField(db_column='DateNaissance', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    edition = models.CharField(db_column='Edition', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    filiere = models.CharField(db_column='Filiere', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    nom = models.CharField(db_column='Nom', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    observation = models.CharField(db_column='Observation', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    sexe = models.CharField(db_column='Sexe', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    telephone = models.CharField(db_column='Telephone', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    telephoneparent = models.CharField(db_column='TelephoneParent', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Effectif par Catégorie Particulière ST3"
-        verbose_name_plural = "Effectifs par Catégories Particulières ST3"
-# ok
-class St3_eleve(BaseModel):
-    # 1. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_eleve'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3. Adresse (varchar(255), Oui)
-    adresse = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Adresse de l'Élève"
-    )
-
-    # 4. DateNaissance (varchar(255), Oui)
-    DateNaissance = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Date de Naissance"
-    )
-
-    # 5. Edition (varchar(255), Oui)
-    Edition = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Édition"
-    )
-
-    # 6. Filiere (varchar(255), Oui)
-    Filiere = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Filière"
-    )
-
-    # 7. Nom (varchar(255), Oui)
-    Nom = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom de l'Élève"
-    )
-
-    # 8. Observation (varchar(255), Oui)
-    Observation = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Observation"
-    )
-
-    # 9. Sexe (varchar(255), Oui)
-    Sexe = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Sexe"
-    )
-
-    # 10. Telephone (varchar(255), Oui)
-    Telephone = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Téléphone Élève"
-    )
-
-    # 11. TelephoneParent (varchar(255), Oui)
-    TelephoneParent = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Téléphone Parent"
-    )
-
-    def __str__(self):
-        return f"Élève ST3 - {self.nom} (ID: {self.id})"
+class St3EnregistrementEquipement(models.Model):
+    nombreequipementsbon = models.IntegerField(db_column='NombreEquipementsBon', blank=True, null=True)  # Field name made lowercase.
+    nombreequipementsmauvais = models.IntegerField(db_column='NombreEquipementsMauvais', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nomequipement = models.CharField(db_column='NomEquipement', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    typeatelieroulabo = models.CharField(db_column='TypeAtelierOuLabo', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Élève ST3"
-        verbose_name_plural = "Élèves ST3"
-# ok
-class St3_enregistrement_equipement(BaseModel):
-    # 3. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_enregistrement_equipement'
 
-    # 4. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. NombreEquipementsBon (int(11), Oui)
-    NombreEquipementsBon = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre Équipements Bon État"
-    )
-
-    # 2. NombreEquipementsMauvais (int(11), Oui)
-    NombreEquipementsMauvais = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre Équipements Mauvais État"
-    )
-
-    # 5. NomEquipement (varchar(255), Oui)
-    NomEquipement = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom de l'Équipement"
-    )
-    
-    # 6. TypeAtelierOuLabo (varchar(255), Oui)
-    TypeAtelierOuLabo = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Type d'Atelier ou Laboratoire"
-    )
-
-    def __str__(self):
-        return f"Équipement ST3 - {self.nom_equipement} (ID: {self.id})"
+class St3EquipementExistant(models.Model):
+    nombreequipementsbon = models.IntegerField(db_column='NombreEquipementsBon', blank=True, null=True)  # Field name made lowercase.
+    nombreequipementsmauvais = models.IntegerField(db_column='NombreEquipementsMauvais', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nomequipement = models.CharField(db_column='NomEquipement', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Enregistrement Équipement ST3"
-        verbose_name_plural = "Enregistrements Équipement ST3"
-# ok
-class St3_equipement_existant(BaseModel):
-    # 3. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_equipement_existant'
 
-    # 4. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. NombreEquipementsBon (int(11), Oui)
-    NombreEquipementsBon = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre Équipements Bon État"
-    ) #
-
-    # 2. NombreEquipementsMauvais (int(11), Oui)
-    NombreEquipementsMauvais = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre Équipements Mauvais État"
-    ) #
-
-    # 5. NomEquipement (varchar(255), Oui)
-    NomEquipement = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom de l'Équipement"
-    ) #
-    
-    # Le champ TypeAtelierOuLabo est absent ici
-
-    def __str__(self):
-        return f"Équipement Existant ST3 - {self.nom_equipement} (ID: {self.id})"
+class St3Formation(models.Model):
+    st3_enseignants_formes_genre = models.IntegerField(blank=True, null=True)
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Équipement Existant ST3"
-        verbose_name_plural = "Équipements Existants ST3"
-# ok
-class St3_formation(BaseModel):
-    # 2. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    ) #
+        managed = False
+        db_table = 'st3_formation'
 
-    # 3. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. st3_enseignants_formes_genre (int(11), Oui)
-    st3_enseignants_formes_genre = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre d'Enseignants Formés (Genre)"
-    ) #
-
-    def __str__(self):
-        return f"Formation ST3 (ID: {self.id})"
+class St3InfrastructureActivites(models.Model):
+    st3_activites_parascolaires = models.TextField(blank=True, null=True)  # This field type is a guess.
+    st3_gouvernement_eleves = models.TextField(blank=True, null=True)  # This field type is a guess.
+    st3_unite_pedagogique = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st3_pv_reunions = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Formation ST"
-# ok
-class St3_infrastructure_activites(BaseModel):
-    # 4. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-
-    # 5. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 1. st3_activites_parascolaires (bit(1), Oui)
-    st3_activites_parascolaires = models.BooleanField(
-        null=True, 
-        verbose_name="Activités Parascolaires"
-    )
-
-    # 2. st3_gouvernement_eleves (bit(1), Oui)
-    st3_gouvernement_eleves = models.BooleanField(
-        null=True, 
-        verbose_name="Gouvernement des Élèves"
-    )
-
-    # 3. st3_unite_pedagogique (bit(1), Oui)
-    st3_unite_pedagogique = models.BooleanField(
-        null=True, 
-        verbose_name="Unité Pédagogique"
-    )
-
-    # 6. st3_pv_reunions (varchar(255), Oui)
-    st3_pv_reunions = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Procès-verbaux des Réunions (PV)"
-    )
-
-    def __str__(self):
-        return f"Infrastructure et Activités ST3 (ID: {self.id})"
-
-    class Meta:
-        verbose_name = "Infrastructure et Activités ST3"
-        verbose_name_plural = "Infrastructures et Activités ST3"
-# ok
-class St3_manuel_disponible_niveau(BaseModel):
-    # Champs d'identification
-    # 'id' est la clé primaire auto-incrémentée (bigint(20), Non Null)
-    id = models.BigAutoField(primary_key=True, db_column='id')
-    
-    # 'form_st_id' est la clé étrangère potentielle (bigint(20), Oui Null)
-    form_st_id = models.BigIntegerField(null=True, blank=True, db_column='form_st_id')
-    
- 
-    
-    # --- Manuels d'Autre ---
-    st_3_manuel_Autre_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Autre_1eme_H_annee')
-    st_3_manuel_Autre_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Autre_2eme_H_annee')
-    st_3_manuel_Autre_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Autre_3eme_H_annee')
-    st_3_manuel_Autre_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Autre_4eme_H_annee')
-    st_3_manuel_Autre_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Autre_7eme_annee')
-    st_3_manuel_Autre_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Autre_8eme_annee')
-
-    # --- Manuels d'Éducation Civique et Morale ---
-    st_3_manuel_EducationCiviqueMorale_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_EducationCivique Morale_1eme_H_annee')
-    st_3_manuel_EducationCiviqueMorale_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_EducationCiviqueMorale_2eme_H_annee')
-    st_3_manuel_EducationCiviqueMorale_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_EducationCiviqueMorale_3eme_H_annee')
-    st_3_manuel_EducationCiviqueMorale_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_EducationCiviqueMorale_4eme_H_annee')
-    st_3_manuel_EducationCiviqueMorale_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_EducationCiviqueMorale_7eme_annee')
-    st_3_manuel_EducationCiviqueMorale_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_EducationCiviqueMorale_8eme_annee')
-
-    st_3_manuel_Mathematique_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Mathematique_1eme_H_annee')
-    st_3_manuel_Mathematique_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Mathematique_2eme_H_annee')
-    st_3_manuel_Mathematique_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Mathematique_3eme_H_annee')
-    st_3_manuel_Mathematique_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Mathematique_4eme_H_annee')
-    st_3_manuel_Mathematique_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Mathematique_7eme_annee')
-    st_3_manuel_Mathematique_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Mathematique_8eme_annee')
-
-    # --- Manuels d'Anglais ---
-    st_3_manuel_PourFiliere_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourFiliere_1eme_H_annee')
-    st_3_manuel_PourFiliere_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourFiliere_2eme_H_annee')
-    st_3_manuel_PourFiliere_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourFiliere_3eme_H_annee')
-    st_3_manuel_PourFiliere_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourFiliere_4eme_H_annee')
-    st_3_manuel_PourFiliere_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourFiliere_7eme_annee')
-    st_3_manuel_PourFiliere_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourFiliere_8eme_annee')
-
-    # --- Manuels de Géographie ---
-    st_3_manuel_PourLapaix_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourLapaix_1eme_H_annee')
-    st_3_manuel_PourLapaix_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourLapaix_2eme_H_annee')
-    st_3_manuel_PourLapaix_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourLapaix_3eme_H_annee')
-    st_3_manuel_PourLapaix_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourLapaix_4eme_H_annee')
-    st_3_manuel_PourLapaix_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourLapaix_7eme_annee')
-    st_3_manuel_PourLapaix_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_PourLapaix_8eme_annee')
-
-    # --- Manuels d'Histoire ---
-    st_3_manuel_Sciences_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Sciences_1eme_H_annee')
-    st_3_manuel_Sciences_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Sciences_2eme_H_annee')
-    st_3_manuel_Sciences_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Sciences_3eme_H_annee')
-    st_3_manuel_Sciences_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Sciences_4eme_H_annee')
-    st_3_manuel_Sciences_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Sciences_7eme_annee')
-    st_3_manuel_Sciences_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_Sciences_8eme_annee')
-
-    st_3_manuel_ThemesTransversaux_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_ThemesTransversaux_1eme_H_annee')
-    st_3_manuel_ThemesTransversaux_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_ThemesTransversaux_2eme_H_annee')
-    st_3_manuel_ThemesTransversaux_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_ThemesTransversaux_3eme_H_annee')
-    st_3_manuel_ThemesTransversaux_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_ThemesTransversaux_4eme_H_annee')
-    st_3_manuel_ThemesTransversaux_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_ThemesTransversaux_7eme_annee')
-    st_3_manuel_ThemesTransversaux_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_ThemesTransversaux_8eme_annee')
+        managed = False
+        db_table = 'st3_infrastructure_activites'
 
 
-    # --- Manuels de Français ---
-    st_3_manuel_francais_1eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_francais_1eme_H_annee')
-    st_3_manuel_francais_2eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_francais_2eme_H_annee')
-    st_3_manuel_francais_3eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_francais_3eme_H_annee')
-    st_3_manuel_francais_4eme_H_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_francais_4eme_H_annee')
-    st_3_manuel_francais_7eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_francais_7eme_annee')
-    st_3_manuel_francais_8eme_annee = models.IntegerField(null=True, blank=True, db_column='st_3_manuel_francais_8eme_annee')
+class St3ManuelDisponibleNiveau(models.Model):
+    st_3_manuel_autre_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_Autre_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_autre_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_Autre_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_autre_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_Autre_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_autre_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_Autre_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_autre_7eme_annee = models.IntegerField(db_column='st_3_manuel_Autre_7eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_autre_8eme_annee = models.IntegerField(db_column='st_3_manuel_Autre_8eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_educationciviquemorale_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_EducationCiviqueMorale_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_educationciviquemorale_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_EducationCiviqueMorale_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_educationciviquemorale_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_EducationCiviqueMorale_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_educationciviquemorale_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_EducationCiviqueMorale_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_educationciviquemorale_7eme_annee = models.IntegerField(db_column='st_3_manuel_EducationCiviqueMorale_7eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_educationciviquemorale_8eme_annee = models.IntegerField(db_column='st_3_manuel_EducationCiviqueMorale_8eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_mathematique_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_Mathematique_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_mathematique_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_Mathematique_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_mathematique_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_Mathematique_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_mathematique_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_Mathematique_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_mathematique_7eme_annee = models.IntegerField(db_column='st_3_manuel_Mathematique_7eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_mathematique_8eme_annee = models.IntegerField(db_column='st_3_manuel_Mathematique_8eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourfiliere_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourFiliere_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourfiliere_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourFiliere_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourfiliere_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourFiliere_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourfiliere_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourFiliere_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourfiliere_7eme_annee = models.IntegerField(db_column='st_3_manuel_PourFiliere_7eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourfiliere_8eme_annee = models.IntegerField(db_column='st_3_manuel_PourFiliere_8eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourlapaix_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourLapaix_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourlapaix_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourLapaix_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourlapaix_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourLapaix_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourlapaix_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_PourLapaix_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourlapaix_7eme_annee = models.IntegerField(db_column='st_3_manuel_PourLapaix_7eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_pourlapaix_8eme_annee = models.IntegerField(db_column='st_3_manuel_PourLapaix_8eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_sciences_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_Sciences_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_sciences_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_Sciences_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_sciences_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_Sciences_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_sciences_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_Sciences_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_sciences_7eme_annee = models.IntegerField(db_column='st_3_manuel_Sciences_7eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_sciences_8eme_annee = models.IntegerField(db_column='st_3_manuel_Sciences_8eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_themestransversaux_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_ThemesTransversaux_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_themestransversaux_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_ThemesTransversaux_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_themestransversaux_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_ThemesTransversaux_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_themestransversaux_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_ThemesTransversaux_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_themestransversaux_7eme_annee = models.IntegerField(db_column='st_3_manuel_ThemesTransversaux_7eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_themestransversaux_8eme_annee = models.IntegerField(db_column='st_3_manuel_ThemesTransversaux_8eme_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_francais_1eme_h_annee = models.IntegerField(db_column='st_3_manuel_francais_1eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_francais_2eme_h_annee = models.IntegerField(db_column='st_3_manuel_francais_2eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_francais_3eme_h_annee = models.IntegerField(db_column='st_3_manuel_francais_3eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_francais_4eme_h_annee = models.IntegerField(db_column='st_3_manuel_francais_4eme_H_annee', blank=True, null=True)  # Field name made lowercase.
+    st_3_manuel_francais_7eme_annee = models.IntegerField(blank=True, null=True)
+    st_3_manuel_francais_8eme_annee = models.IntegerField(blank=True, null=True)
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        # Correspondance avec le nom de la table dans la base de données
+        managed = False
         db_table = 'st3_manuel_disponible_niveau'
-        managed = True
-        verbose_name = 'Manuel Disponible par Niveau'
-        verbose_name_plural = 'Manuels Disponibles par Niveau'
 
-    def __str__(self):
-        return f"Manuels ID: {self.id} (Niveau: {self.niveau})"
-# ok
-class St3_nombre_locaux_caracteristique_etat_mur(BaseModel):
-    # Champs d'identification
-    # Note: L'ID 'id' est généralement créé automatiquement par Django, 
-    # mais il est inclus ici pour refléter la structure de la table source.
-    id = models.BigAutoField(primary_key=True) # bigint(20) - Non Null - Auc (Auto-increment implicite)
-    form_st_id = models.BigIntegerField(null=True, blank=True) # bigint(20) - Null Oui
 
-    # Chambres de service (BurAdm - Bureau Administratif ; SC - Salle de Classe)
-    # Les premiers champs (1 à 4) ne correspondent pas au pattern 'NombreLocaux' mais sont inclus
-    st3_BurAdm_PF_BE = models.IntegerField(null=True, blank=True) # PF - Paille/Feuillage, BE - Bon État
-    st3_BurAdm_PF_ME = models.IntegerField(null=True, blank=True) # ME - Mauvais État
-    st3_SC_PF_BE = models.IntegerField(null=True, blank=True) # SC - Salle de Classe, PF - Paille/Feuillage, BE - Bon État
-    st3_SC_PF_ME = models.IntegerField(null=True, blank=True) # ME - Mauvais État
-
-    # Autres Locaux
-    st_3_NombreLocaux_AutresEndur_Bon_Etat = models.IntegerField(null=True, blank=True) # Endur - Endurci, Bon_Etat
-    st_3_NombreLocaux_AutresEndur_Mauvais_Etat = models.IntegerField(null=True, blank=True) # Mauvais_Etat
-    st_3_NombreLocaux_AutresPaille_Feuillage_Bon_Etat = models.IntegerField(null=True, blank=True) # Paille_Feuillage, Bon_Etat
-    st_3_NombreLocaux_AutresPaille_Feuillage_Mauvais_Etat = models.IntegerField(null=True, blank=True) # Paille_Feuillage, Mauvais_Etat
-    st_3_NombreLocaux_AutresSemi_dur_Bon_Etat = models.IntegerField(null=True, blank=True) # Semi_dur, Bon_Etat
-    st_3_NombreLocaux_AutresSemi_dur_Mauvais_Etat = models.IntegerField(null=True, blank=True) # Semi_dur, Mauvais_Etat
-    st_3_NombreLocaux_AutresTerre_Battu_Bon_Etat = models.IntegerField(null=True, blank=True) # Terre_Battu, Bon_Etat
-    st_3_NombreLocaux_AutresTerre_Mauvais_Etat = models.IntegerField(null=True, blank=True) # Terre_Battu (implicite), Mauvais_Etat
-    st_3_NombreLocaux_Autres_dontDetruite_occupees = models.IntegerField(null=True, blank=True) # dont Detruite, occupées
-
-    # Bureau Administratif
-    st_3_NombreLocaux_BureauAdministratifEndur_Bon_Etat = models.IntegerField(null=True, blank=True) # Endur, Bon_Etat
-    st_3_NombreLocaux_BureauAdministratifEndur_Mauvais_Etat = models.IntegerField(null=True, blank=True) # Endur, Mauvais_Etat
-    st_3_NombreLocaux_BureauAdministratifSemi_dur_Bon_Etat = models.IntegerField(null=True, blank=True) # Semi_dur, Bon_Etat
-    st_3_NombreLocaux_BureauAdministratifSemi_dur_Mauvais_Etat = models.IntegerField(null=True, blank=True) # Semi_dur, Mauvais_Etat
-    st_3_NombreLocaux_BureauAdministratifTerre_Battu_Bon_Etat = models.IntegerField(null=True, blank=True) # Terre_Battu, Bon_Etat
-    st_3_NombreLocaux_BureauAdministratifTerre_Mauvais_Etat = models.IntegerField(null=True, blank=True) # Terre_Battu (implicite), Mauvais_Etat
-    st_3_NombreLocaux_BureauAdministratif_dontDetruite_occupees = models.IntegerField(null=True, blank=True) # dont Detruite, occupées
-
-    # Laboratoire
-    st_3_NombreLocaux_LaboratoireEndur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LaboratoireEndur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LaboratoirePaille_Feuillage_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LaboratoirePaille_Feuillage_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LaboratoireSemi_dur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LaboratoireSemi_dur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LaboratoireTerre_Battu_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LaboratoireTerre_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_Laboratoire_dontDetruite_occupees = models.IntegerField(null=True, blank=True)
-
-    # Latrine/WC
-    st_3_NombreLocaux_LatrineWCEndur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWCEndur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWCPaille_Feuillage_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWCPaille_Feuillage_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWCSemi_dur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWCSemi_dur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWCTerre_Battu_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWCTerre_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_LatrineWC_dontDetruite_occupees = models.IntegerField(null=True, blank=True)
-
-    # Magasin
-    st_3_NombreLocaux_MagasinEndur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_MagasinEndur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_MagasinPaille_Feuillage_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_MagasinPaille_Feuillage_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_MagasinSemi_dur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_MagasinSemi_dur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_MagasinTerre_Battu_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_MagasinTerre_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_Magasin_dontDetruite_occupees = models.IntegerField(null=True, blank=True)
-
-    # Salle de Cours
-    st_3_NombreLocaux_salleCoursEndur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_salleCoursEndur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_salleCoursSemi_dur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_salleCoursSemi_dur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_salleCoursTerre_Battu_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_salleCoursTerre_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_salleCours_dontDetruite_occupees = models.IntegerField(null=True, blank=True)
-
-    # Salle Spécialisée
-    st_3_NombreLocaux_specialiseeEndur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialiseeEndur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialiseePaille_Feuillage_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialiseePaille_Feuillage_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialiseeSemi_dur_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialiseeSemi_dur_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialiseeTerre_Battu_Bon_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialiseeTerre_Mauvais_Etat = models.IntegerField(null=True, blank=True)
-    st_3_NombreLocaux_specialisee_dontDetruite_occupees = models.IntegerField(null=True, blank=True)
+class St3NombreLocauxCaracteristiqueEtatMur(models.Model):
+    st3_buradm_pf_be = models.IntegerField(db_column='st3_BurAdm_PF_BE', blank=True, null=True)  # Field name made lowercase.
+    st3_buradm_pf_me = models.IntegerField(db_column='st3_BurAdm_PF_ME', blank=True, null=True)  # Field name made lowercase.
+    st3_sc_pf_be = models.IntegerField(db_column='st3_SC_PF_BE', blank=True, null=True)  # Field name made lowercase.
+    st3_sc_pf_me = models.IntegerField(db_column='st3_SC_PF_ME', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autresendur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresEndur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autresendur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresEndur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autrespaille_feuillage_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresPaille_Feuillage_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autrespaille_feuillage_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresPaille_Feuillage_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autressemi_dur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresSemi_dur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autressemi_dur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresSemi_dur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autresterre_battu_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresTerre_Battu_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autresterre_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_AutresTerre_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_autres_dontdetruite_occupees = models.IntegerField(db_column='st_3_NombreLocaux_Autres_dontDetruite_occupees', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_bureauadministratifendur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_BureauAdministratifEndur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_bureauadministratifendur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_BureauAdministratifEndur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_bureauadministratifsemi_dur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_BureauAdministratifSemi_dur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_bureauadministratifsemi_dur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_BureauAdministratifSemi_dur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_bureauadministratifterre_battu_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_BureauAdministratifTerre_Battu_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_bureauadministratifterre_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_BureauAdministratifTerre_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_bureauadministratif_dontdetruite_occupees = models.IntegerField(db_column='st_3_NombreLocaux_BureauAdministratif_dontDetruite_occupees', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoireendur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoireEndur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoireendur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoireEndur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoirepaille_feuillage_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoirePaille_Feuillage_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoirepaille_feuillage_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoirePaille_Feuillage_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoiresemi_dur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoireSemi_dur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoiresemi_dur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoireSemi_dur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoireterre_battu_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoireTerre_Battu_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoireterre_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LaboratoireTerre_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_laboratoire_dontdetruite_occupees = models.IntegerField(db_column='st_3_NombreLocaux_Laboratoire_dontDetruite_occupees', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcendur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCEndur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcendur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCEndur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcpaille_feuillage_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCPaille_Feuillage_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcpaille_feuillage_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCPaille_Feuillage_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcsemi_dur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCSemi_dur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcsemi_dur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCSemi_dur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcterre_battu_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCTerre_Battu_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewcterre_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWCTerre_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_latrinewc_dontdetruite_occupees = models.IntegerField(db_column='st_3_NombreLocaux_LatrineWC_dontDetruite_occupees', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinendur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinEndur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinendur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinEndur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinpaille_feuillage_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinPaille_Feuillage_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinpaille_feuillage_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinPaille_Feuillage_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinsemi_dur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinSemi_dur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinsemi_dur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinSemi_dur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinterre_battu_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinTerre_Battu_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasinterre_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_MagasinTerre_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_magasin_dontdetruite_occupees = models.IntegerField(db_column='st_3_NombreLocaux_Magasin_dontDetruite_occupees', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_sallecoursendur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_salleCoursEndur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_sallecoursendur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_salleCoursEndur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_sallecourssemi_dur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_salleCoursSemi_dur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_sallecourssemi_dur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_salleCoursSemi_dur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_sallecoursterre_battu_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_salleCoursTerre_Battu_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_sallecoursterre_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_salleCoursTerre_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_sallecours_dontdetruite_occupees = models.IntegerField(db_column='st_3_NombreLocaux_salleCours_dontDetruite_occupees', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseeendur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseeEndur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseeendur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseeEndur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseepaille_feuillage_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseePaille_Feuillage_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseepaille_feuillage_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseePaille_Feuillage_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseesemi_dur_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseeSemi_dur_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseesemi_dur_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseeSemi_dur_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseeterre_battu_bon_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseeTerre_Battu_Bon_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialiseeterre_mauvais_etat = models.IntegerField(db_column='st_3_NombreLocaux_specialiseeTerre_Mauvais_Etat', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombrelocaux_specialisee_dontdetruite_occupees = models.IntegerField(db_column='st_3_NombreLocaux_specialisee_dontDetruite_occupees', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        # Remplacez 'app_name' par le nom réel de votre application Django
-        db_table = 'st3_nombre_locaux_caracteristique_etat_mur' 
+        managed = False
+        db_table = 'st3_nombre_locaux_caracteristique_etat_mur'
 
-    def __str__(self):
-        return f"Caractéristiques du mur ID: {self.id}"
-#ok
-class St3_nombre_locaux_caracteristique_etat_nature_toilette(BaseModel):
-    # 22. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
 
-    # 23. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # --- Locaux Autres (Paille/Feuillage) ---
-    st3_NLoc_Autres_DetOcc = models.IntegerField(null=True, verbose_name="Autres Locaux Détruits/Occupés")
-    st3_NLoc_Autres_PF_Bon = models.IntegerField(null=True, verbose_name="Autres Locaux Paille/Feuillage Bon État")
-    st3_NLoc_Autres_PF_Mauv = models.IntegerField(null=True, verbose_name="Autres Locaux Paille/Feuillage Mauvais État")
-
-    # --- Locaux Bureau Administratif (Paille/Feuillage) ---
-    st3_NLoc_BurAdm_DetOcc = models.IntegerField(null=True, verbose_name="Bureau Administratif Détruits/Occupés")
-    st3_NLoc_BurAdm_PF_Bon = models.IntegerField(null=True, verbose_name="Bureau Administratif Paille/Feuillage Bon État")
-    st3_NLoc_BurAdm_PF_Mauv = models.IntegerField(null=True, verbose_name="Bureau Administratif Paille/Feuillage Mauvais État")
-    
-    # --- Locaux Salles de Cours (Paille/Feuillage) ---
-    st3_NLoc_Cours_DetOcc = models.IntegerField(null=True, verbose_name="Salles de Cours Détruits/Occupés")
-    st3_NLoc_Cours_PF_Bon = models.IntegerField(null=True, verbose_name="Salles de Cours Paille/Feuillage Bon État")
-    st3_NLoc_Cours_PF_Mauv = models.IntegerField(null=True, verbose_name="Salles de Cours Paille/Feuillage Mauvais État")
-
-    # --- Locaux Laboratoire (Paille/Feuillage) ---
-    st3_NLoc_Labo_DetOcc = models.IntegerField(null=True, verbose_name="Laboratoire Détruits/Occupés")
-    st3_NLoc_Labo_PF_Bon = models.IntegerField(null=True, verbose_name="Laboratoire Paille/Feuillage Bon État")
-    st3_NLoc_Labo_PF_Mauv = models.IntegerField(null=True, verbose_name="Laboratoire Paille/Feuillage Mauvais État")
-
-    # --- Locaux Latrines/Toilettes (Paille/Feuillage) ---
-    st3_NLoc_Latrine_DetOcc = models.IntegerField(null=True, verbose_name="Latrines Détruits/Occupés")
-    st3_NLoc_Latrine_PF_Bon = models.IntegerField(null=True, verbose_name="Latrines Paille/Feuillage Bon État")
-    st3_NLoc_Latrine_PF_Mauv = models.IntegerField(null=True, verbose_name="Latrines Paille/Feuillage Mauvais État")
-
-    # --- Locaux Magasin/Entrepôt (Paille/Feuillage) ---
-    st3_NLoc_Mag_DetOcc = models.IntegerField(null=True, verbose_name="Magasin Détruits/Occupés")
-    st3_NLoc_Mag_PF_Bon = models.IntegerField(null=True, verbose_name="Magasin Paille/Feuillage Bon État")
-    st3_NLoc_Mag_PF_Mauv = models.IntegerField(null=True, verbose_name="Magasin Paille/Feuillage Mauvais État")
-
-    # --- Locaux Spécialisés (Paille/Feuillage) ---
-    st3_NLoc_Spec_DetOcc = models.IntegerField(null=True, verbose_name="Locaux Spécialisés Détruits/Occupés")
-    st3_NLoc_Spec_PF_Bon = models.IntegerField(null=True, verbose_name="Locaux Spécialisés Paille/Feuillage Bon État")
-    st3_NLoc_Spec_PF_Mauv = models.IntegerField(null=True, verbose_name="Locaux Spécialisés Paille/Feuillage Mauvais État")
-
-    def __str__(self):
-        return f"Locaux Toilettes/Nature Murs ST3 (ID: {self.id})"
+class St3NombreLocauxCaracteristiqueEtatNatureToillette(models.Model):
+    st3_nloc_autres_detocc = models.IntegerField(db_column='st3_NLoc_Autres_DetOcc', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_autres_pf_bon = models.IntegerField(db_column='st3_NLoc_Autres_PF_Bon', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_autres_pf_mauv = models.IntegerField(db_column='st3_NLoc_Autres_PF_Mauv', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_buradm_detocc = models.IntegerField(db_column='st3_NLoc_BurAdm_DetOcc', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_buradm_pf_bon = models.IntegerField(db_column='st3_NLoc_BurAdm_PF_Bon', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_buradm_pf_mauv = models.IntegerField(db_column='st3_NLoc_BurAdm_PF_Mauv', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_cours_detocc = models.IntegerField(db_column='st3_NLoc_Cours_DetOcc', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_cours_pf_bon = models.IntegerField(db_column='st3_NLoc_Cours_PF_Bon', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_cours_pf_mauv = models.IntegerField(db_column='st3_NLoc_Cours_PF_Mauv', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_labo_detocc = models.IntegerField(db_column='st3_NLoc_Labo_DetOcc', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_labo_pf_bon = models.IntegerField(db_column='st3_NLoc_Labo_PF_Bon', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_labo_pf_mauv = models.IntegerField(db_column='st3_NLoc_Labo_PF_Mauv', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_latrine_detocc = models.IntegerField(db_column='st3_NLoc_Latrine_DetOcc', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_latrine_pf_bon = models.IntegerField(db_column='st3_NLoc_Latrine_PF_Bon', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_latrine_pf_mauv = models.IntegerField(db_column='st3_NLoc_Latrine_PF_Mauv', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_mag_detocc = models.IntegerField(db_column='st3_NLoc_Mag_DetOcc', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_mag_pf_bon = models.IntegerField(db_column='st3_NLoc_Mag_PF_Bon', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_mag_pf_mauv = models.IntegerField(db_column='st3_NLoc_Mag_PF_Mauv', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_spec_detocc = models.IntegerField(db_column='st3_NLoc_Spec_DetOcc', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_spec_pf_bon = models.IntegerField(db_column='st3_NLoc_Spec_PF_Bon', blank=True, null=True)  # Field name made lowercase.
+    st3_nloc_spec_pf_mauv = models.IntegerField(db_column='st3_NLoc_Spec_PF_Mauv', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Locaux Toilettes/Nature Murs ST3"
-        verbose_name_plural = "Locaux Toilettes/Nature Murs ST3"
-# ok
-class St3_note_section(BaseModel):
-    # 1. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    ) #
+        managed = False
+        db_table = 'st3_nombre_locaux_caracteristique_etat_nature_toillette'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3. st3_note (varchar(255), Oui)
-    st3_note = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Note de Section ST3"
-    ) #
-
-    # 4. st3_pv_reunions (varchar(255), Oui)
-    st3_pv_reunions = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Références PV Réunions"
-    ) #
-
-    def __str__(self):
-        return f"Note de Section ST3 (ID: {self.id})"
+class St3NoteSection(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    st3_note = models.CharField(max_length=255, blank=True, null=True)
+    st3_pv_reunions = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Note de Section ST3"
-        verbose_name_plural = "Notes de Section ST3"
-# ok
-class St3_personnel_administratif_fonction_sexe(BaseModel):
-    # Clés de référence
-    # form_st_id (bigint(20), Oui)
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
-    # id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # --- Conseiller Pédagogique (F) ---
-    st_3_Nombre_Conseiller_PedagogiqueF_A1 = models.IntegerField(null=True, verbose_name="CP F - Qualif A1")
-    st_3_Nombre_Conseiller_PedagogiqueF_Autres = models.IntegerField(null=True, verbose_name="CP F - Autres Qualif")
-    st_3_Nombre_Conseiller_PedagogiqueF_D6 = models.IntegerField(null=True, verbose_name="CP F - Qualif D6")
-    st_3_Nombre_Conseiller_PedagogiqueF_DR = models.IntegerField(null=True, verbose_name="CP F - Qualif DR")
-    st_3_Nombre_Conseiller_PedagogiqueF_G3 = models.IntegerField(null=True, verbose_name="CP F - Qualif G3")
-    st_3_Nombre_Conseiller_PedagogiqueF_IR = models.IntegerField(null=True, verbose_name="CP F - Qualif IR")
-    st_3_Nombre_Conseiller_PedagogiqueF_L2 = models.IntegerField(null=True, verbose_name="CP F - Qualif L2")
-    st_3_Nombre_Conseiller_PedagogiqueF_L2A = models.IntegerField(null=True, verbose_name="CP F - Qualif L2A")
-    st_3_Nombre_Conseiller_PedagogiqueF_LA = models.IntegerField(null=True, verbose_name="CP F - Qualif LA")
-    st_3_Nombre_Conseiller_PedagogiqueF_MoinsD6 = models.IntegerField(null=True, verbose_name="CP F - Moins de D6")
-    st_3_Nombre_Conseiller_PedagogiqueF_P6 = models.IntegerField(null=True, verbose_name="CP F - Qualif P6")
-
-    # --- Conseiller Pédagogique (H) ---
-    st_3_Nombre_Conseiller_PedagogiqueH_A1 = models.IntegerField(null=True, verbose_name="CP H - Qualif A1")
-    st_3_Nombre_Conseiller_PedagogiqueH_Autres = models.IntegerField(null=True, verbose_name="CP H - Autres Qualif")
-    st_3_Nombre_Conseiller_PedagogiqueH_D6 = models.IntegerField(null=True, verbose_name="CP H - Qualif D6")
-    st_3_Nombre_Conseiller_PedagogiqueH_DR = models.IntegerField(null=True, verbose_name="CP H - Qualif DR")
-    st_3_Nombre_Conseiller_PedagogiqueH_G3 = models.IntegerField(null=True, verbose_name="CP H - Qualif G3")
-    st_3_Nombre_Conseiller_PedagogiqueH_IR = models.IntegerField(null=True, verbose_name="CP H - Qualif IR")
-    st_3_Nombre_Conseiller_PedagogiqueH_L2 = models.IntegerField(null=True, verbose_name="CP H - Qualif L2")
-    st_3_Nombre_Conseiller_PedagogiqueH_L2A = models.IntegerField(null=True, verbose_name="CP H - Qualif L2A")
-    st_3_Nombre_Conseiller_PedagogiqueH_LA = models.IntegerField(null=True, verbose_name="CP H - Qualif LA")
-    st_3_Nombre_Conseiller_PedagogiqueH_MoinsD6 = models.IntegerField(null=True, verbose_name="CP H - Moins de D6")
-    st_3_Nombre_Conseiller_PedagogiqueH_P6 = models.IntegerField(null=True, verbose_name="CP H - Qualif P6")
-
-    # --- Directeur de Discipline (F) ---
-    st_3_Nombre_Directeur_DisciplineF_A1 = models.IntegerField(null=True, verbose_name="DD F - Qualif A1")
-    st_3_Nombre_Directeur_DisciplineF_Autres = models.IntegerField(null=True, verbose_name="DD F - Autres Qualif")
-    st_3_Nombre_Directeur_DisciplineF_D6 = models.IntegerField(null=True, verbose_name="DD F - Qualif D6")
-    st_3_Nombre_Directeur_DisciplineF_DR = models.IntegerField(null=True, verbose_name="DD F - Qualif DR")
-    st_3_Nombre_Directeur_DisciplineF_G3 = models.IntegerField(null=True, verbose_name="DD F - Qualif G3")
-    st_3_Nombre_Directeur_DisciplineF_IR = models.IntegerField(null=True, verbose_name="DD F - Qualif IR")
-    st_3_Nombre_Directeur_DisciplineF_L2 = models.IntegerField(null=True, verbose_name="DD F - Qualif L2")
-    st_3_Nombre_Directeur_DisciplineF_L2A = models.IntegerField(null=True, verbose_name="DD F - Qualif L2A")
-    st_3_Nombre_Directeur_DisciplineF_LA = models.IntegerField(null=True, verbose_name="DD F - Qualif LA")
-    st_3_Nombre_Directeur_DisciplineF_MoinsD6 = models.IntegerField(null=True, verbose_name="DD F - Moins de D6")
-    st_3_Nombre_Directeur_DisciplineF_P6 = models.IntegerField(null=True, verbose_name="DD F - Qualif P6")
-
-    # --- Directeur de Discipline (H) ---
-    st_3_Nombre_Directeur_DisciplineH_A1 = models.IntegerField(null=True, verbose_name="DD H - Qualif A1")
-    st_3_Nombre_Directeur_DisciplineH_Autres = models.IntegerField(null=True, verbose_name="DD H - Autres Qualif")
-    st_3_Nombre_Directeur_DisciplineH_D6 = models.IntegerField(null=True, verbose_name="DD H - Qualif D6")
-    st_3_Nombre_Directeur_DisciplineH_DR = models.IntegerField(null=True, verbose_name="DD H - Qualif DR")
-    st_3_Nombre_Directeur_DisciplineH_G3 = models.IntegerField(null=True, verbose_name="DD H - Qualif G3")
-    st_3_Nombre_Directeur_DisciplineH_IR = models.IntegerField(null=True, verbose_name="DD H - Qualif IR")
-    st_3_Nombre_Directeur_DisciplineH_L2 = models.IntegerField(null=True, verbose_name="DD H - Qualif L2")
-    st_3_Nombre_Directeur_DisciplineH_L2A = models.IntegerField(null=True, verbose_name="DD H - Qualif L2A")
-    st_3_Nombre_Directeur_DisciplineH_LA = models.IntegerField(null=True, verbose_name="DD H - Qualif LA")
-    st_3_Nombre_Directeur_DisciplineH_MoinsD6 = models.IntegerField(null=True, verbose_name="DD H - Moins de D6")
-    st_3_Nombre_Directeur_DisciplineH_P6 = models.IntegerField(null=True, verbose_name="DD H - Qualif P6")
-    
-    # --- Directeur d'Études (F) ---
-    st_3_Nombre_Directeur_EtudesF_A1 = models.IntegerField(null=True, verbose_name="DE F - Qualif A1")
-    st_3_Nombre_Directeur_EtudesF_Autres = models.IntegerField(null=True, verbose_name="DE F - Autres Qualif")
-    st_3_Nombre_Directeur_EtudesF_D6 = models.IntegerField(null=True, verbose_name="DE F - Qualif D6")
-    st_3_Nombre_Directeur_EtudesF_DR = models.IntegerField(null=True, verbose_name="DE F - Qualif DR")
-    st_3_Nombre_Directeur_EtudesF_G3 = models.IntegerField(null=True, verbose_name="DE F - Qualif G3")
-    st_3_Nombre_Directeur_EtudesF_IR = models.IntegerField(null=True, verbose_name="DE F - Qualif IR")
-    st_3_Nombre_Directeur_EtudesF_L2 = models.IntegerField(null=True, verbose_name="DE F - Qualif L2")
-    st_3_Nombre_Directeur_EtudesF_L2A = models.IntegerField(null=True, verbose_name="DE F - Qualif L2A")
-    st_3_Nombre_Directeur_EtudesF_LA = models.IntegerField(null=True, verbose_name="DE F - Qualif LA")
-    st_3_Nombre_Directeur_EtudesF_MoinsD6 = models.IntegerField(null=True, verbose_name="DE F - Moins de D6")
-    st_3_Nombre_Directeur_EtudesF_P6 = models.IntegerField(null=True, verbose_name="DE F - Qualif P6")
-
-    # --- Directeur d'Études (H) ---
-    st_3_Nombre_Directeur_EtudesH_A1 = models.IntegerField(null=True, verbose_name="DE H - Qualif A1")
-    st_3_Nombre_Directeur_EtudesH_Autres = models.IntegerField(null=True, verbose_name="DE H - Autres Qualif")
-    st_3_Nombre_Directeur_EtudesH_D6 = models.IntegerField(null=True, verbose_name="DE H - Qualif D6")
-    st_3_Nombre_Directeur_EtudesH_DR = models.IntegerField(null=True, verbose_name="DE H - Qualif DR")
-    st_3_Nombre_Directeur_EtudesH_G3 = models.IntegerField(null=True, verbose_name="DE H - Qualif G3")
-    st_3_Nombre_Directeur_EtudesH_IR = models.IntegerField(null=True, verbose_name="DE H - Qualif IR")
-    st_3_Nombre_Directeur_EtudesH_L2 = models.IntegerField(null=True, verbose_name="DE H - Qualif L2")
-    st_3_Nombre_Directeur_EtudesH_L2A = models.IntegerField(null=True, verbose_name="DE H - Qualif L2A")
-    st_3_Nombre_Directeur_EtudesH_LA = models.IntegerField(null=True, verbose_name="DE H - Qualif LA")
-    st_3_Nombre_Directeur_EtudesH_MoinsD6 = models.IntegerField(null=True, verbose_name="DE H - Moins de D6")
-    st_3_Nombre_Directeur_EtudesH_P6 = models.IntegerField(null=True, verbose_name="DE H - Qualif P6")
-
-    # --- Ouvriers et Autres (F) ---
-    st_3_Nombre_Ouvriers_EtAutresF_A1 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif A1")
-    st_3_Nombre_Ouvriers_EtAutresF_Autres = models.IntegerField(null=True, verbose_name="Ouvriers F - Autres Qualif")
-    st_3_Nombre_Ouvriers_EtAutresF_D6 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif D6")
-    st_3_Nombre_Ouvriers_EtAutresF_DR = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif DR")
-    st_3_Nombre_Ouvriers_EtAutresF_G3 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif G3")
-    st_3_Nombre_Ouvriers_EtAutresF_IR = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif IR")
-    st_3_Nombre_Ouvriers_EtAutresF_L2 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif L2")
-    st_3_Nombre_Ouvriers_EtAutresF_L2A = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif L2A")
-    st_3_Nombre_Ouvriers_EtAutresF_LA = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif LA")
-    st_3_Nombre_Ouvriers_EtAutresF_MoinsD6 = models.IntegerField(null=True, verbose_name="Ouvriers F - Moins de D6")
-    st_3_Nombre_Ouvriers_EtAutresF_P6 = models.IntegerField(null=True, verbose_name="Ouvriers F - Qualif P6")
-
-    # --- Ouvriers et Autres (H) ---
-    st_3_Nombre_Ouvriers_EtAutresH_A1 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif A1")
-    st_3_Nombre_Ouvriers_EtAutresH_Autres = models.IntegerField(null=True, verbose_name="Ouvriers H - Autres Qualif")
-    st_3_Nombre_Ouvriers_EtAutresH_D6 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif D6")
-    st_3_Nombre_Ouvriers_EtAutresH_DR = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif DR")
-    st_3_Nombre_Ouvriers_EtAutresH_G3 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif G3")
-    st_3_Nombre_Ouvriers_EtAutresH_IR = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif IR")
-    st_3_Nombre_Ouvriers_EtAutresH_L2 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif L2")
-    st_3_Nombre_Ouvriers_EtAutresH_L2A = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif L2A")
-    st_3_Nombre_Ouvriers_EtAutresH_LA = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif LA")
-    st_3_Nombre_Ouvriers_EtAutresH_MoinsD6 = models.IntegerField(null=True, verbose_name="Ouvriers H - Moins de D6")
-    st_3_Nombre_Ouvriers_EtAutresH_P6 = models.IntegerField(null=True, verbose_name="Ouvriers H - Qualif P6")
-
-    # --- Préfet d'Études (F) ---
-    st_3_Nombre_Prefet_EtudesF_A1 = models.IntegerField(null=True, verbose_name="PE F - Qualif A1")
-    st_3_Nombre_Prefet_EtudesF_Autres = models.IntegerField(null=True, verbose_name="PE F - Autres Qualif")
-    st_3_Nombre_Prefet_EtudesF_D6 = models.IntegerField(null=True, verbose_name="PE F - Qualif D6")
-    st_3_Nombre_Prefet_EtudesF_DR = models.IntegerField(null=True, verbose_name="PE F - Qualif DR")
-    st_3_Nombre_Prefet_EtudesF_G3 = models.IntegerField(null=True, verbose_name="PE F - Qualif G3")
-    st_3_Nombre_Prefet_EtudesF_IR = models.IntegerField(null=True, verbose_name="PE F - Qualif IR")
-    st_3_Nombre_Prefet_EtudesF_L2 = models.IntegerField(null=True, verbose_name="PE F - Qualif L2")
-    st_3_Nombre_Prefet_EtudesF_L2A = models.IntegerField(null=True, verbose_name="PE F - Qualif L2A")
-    st_3_Nombre_Prefet_EtudesF_LA = models.IntegerField(null=True, verbose_name="PE F - Qualif LA")
-    st_3_Nombre_Prefet_EtudesF_MoinsD6 = models.IntegerField(null=True, verbose_name="PE F - Moins de D6")
-    st_3_Nombre_Prefet_EtudesF_P6 = models.IntegerField(null=True, verbose_name="PE F - Qualif P6")
-
-    # --- Préfet d'Études (H) ---
-    st_3_Nombre_Prefet_EtudesH_A1 = models.IntegerField(null=True, verbose_name="PE H - Qualif A1")
-    st_3_Nombre_Prefet_EtudesH_Autres = models.IntegerField(null=True, verbose_name="PE H - Autres Qualif")
-    st_3_Nombre_Prefet_EtudesH_D6 = models.IntegerField(null=True, verbose_name="PE H - Qualif D6")
-    st_3_Nombre_Prefet_EtudesH_DR = models.IntegerField(null=True, verbose_name="PE H - Qualif DR")
-    st_3_Nombre_Prefet_EtudesH_G3 = models.IntegerField(null=True, verbose_name="PE H - Qualif G3")
-    st_3_Nombre_Prefet_EtudesH_IR = models.IntegerField(null=True, verbose_name="PE H - Qualif IR")
-    st_3_Nombre_Prefet_EtudesH_L2 = models.IntegerField(null=True, verbose_name="PE H - Qualif L2")
-    st_3_Nombre_Prefet_EtudesH_L2A = models.IntegerField(null=True, verbose_name="PE H - Qualif L2A")
-    st_3_Nombre_Prefet_EtudesH_LA = models.IntegerField(null=True, verbose_name="PE H - Qualif LA")
-    st_3_Nombre_Prefet_EtudesH_MoinsD6 = models.IntegerField(null=True, verbose_name="PE H - Moins de D6")
-    st_3_Nombre_Prefet_EtudesH_P6 = models.IntegerField(null=True, verbose_name="PE H - Qualif P6")
-
-    # --- Surveillant (F) ---
-    st_3_Nombre_SurveillantF_A1 = models.IntegerField(null=True, verbose_name="Surv F - Qualif A1")
-    st_3_Nombre_SurveillantF_Autres = models.IntegerField(null=True, verbose_name="Surv F - Autres Qualif")
-    st_3_Nombre_SurveillantF_D6 = models.IntegerField(null=True, verbose_name="Surv F - Qualif D6")
-    st_3_Nombre_SurveillantF_DR = models.IntegerField(null=True, verbose_name="Surv F - Qualif DR")
-    st_3_Nombre_SurveillantF_G3 = models.IntegerField(null=True, verbose_name="Surv F - Qualif G3")
-    st_3_Nombre_SurveillantF_IR = models.IntegerField(null=True, verbose_name="Surv F - Qualif IR")
-    st_3_Nombre_SurveillantF_L2 = models.IntegerField(null=True, verbose_name="Surv F - Qualif L2")
-    st_3_Nombre_SurveillantF_L2A = models.IntegerField(null=True, verbose_name="Surv F - Qualif L2A")
-    st_3_Nombre_SurveillantF_LA = models.IntegerField(null=True, verbose_name="Surv F - Qualif LA")
-    st_3_Nombre_SurveillantF_MoinsD6 = models.IntegerField(null=True, verbose_name="Surv F - Moins de D6")
-    st_3_Nombre_SurveillantF_P6 = models.IntegerField(null=True, verbose_name="Surv F - Qualif P6")
-
-    # --- Surveillant (H) ---
-    st_3_Nombre_SurveillantH_A1 = models.IntegerField(null=True, verbose_name="Surv H - Qualif A1")
-    st_3_Nombre_SurveillantH_Autres = models.IntegerField(null=True, verbose_name="Surv H - Autres Qualif")
-    st_3_Nombre_SurveillantH_D6 = models.IntegerField(null=True, verbose_name="Surv H - Qualif D6")
-    st_3_Nombre_SurveillantH_DR = models.IntegerField(null=True, verbose_name="Surv H - Qualif DR")
-    st_3_Nombre_SurveillantH_G3 = models.IntegerField(null=True, verbose_name="Surv H - Qualif G3")
-    st_3_Nombre_SurveillantH_IR = models.IntegerField(null=True, verbose_name="Surv H - Qualif IR")
-    st_3_Nombre_SurveillantH_L2 = models.IntegerField(null=True, verbose_name="Surv H - Qualif L2")
-    st_3_Nombre_SurveillantH_L2A = models.IntegerField(null=True, verbose_name="Surv H - Qualif L2A")
-    st_3_Nombre_SurveillantH_LA = models.IntegerField(null=True, verbose_name="Surv H - Qualif LA")
-    st_3_Nombre_SurveillantH_MoinsD6 = models.IntegerField(null=True, verbose_name="Surv H - Moins de D6")
-    st_3_Nombre_SurveillantH_P6 = models.IntegerField(null=True, verbose_name="Surv H - Qualif P6")
+        managed = False
+        db_table = 'st3_note_section'
 
 
-    def __str__(self):
-        return f"Personnel Administratif ST3 (ID: {self.id})"
+class St3PersonnelAdministratifFonctionSexe(models.Model):
+    st_3_nombreconseillerpedagogiquef_a1 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_autres = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_d6 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_dr = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_g3 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_ir = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_l2 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_l2a = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_la = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_moinsd6 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiquef_p6 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueF_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_a1 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_autres = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_d6 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_dr = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_g3 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_ir = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_l2 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_l2a = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_la = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_moinsd6 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreconseillerpedagogiqueh_p6 = models.IntegerField(db_column='st_3_NombreConseillerPedagogiqueH_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_a1 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_autres = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_d6 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_dr = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_g3 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_ir = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_l2 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_l2a = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_la = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_moinsd6 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplinef_p6 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineF_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_a1 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_autres = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_d6 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_dr = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_g3 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_ir = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_l2 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_l2a = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_la = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_moinsd6 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteurdisciplineh_p6 = models.IntegerField(db_column='st_3_NombreDirecteurDisciplineH_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_a1 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_autres = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_d6 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_dr = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_g3 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_ir = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_l2 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_l2a = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_la = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_moinsd6 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesf_p6 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesF_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_a1 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_autres = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_d6 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_dr = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_g3 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_ir = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_l2 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_l2a = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_la = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_moinsd6 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombredirecteuretudesh_p6 = models.IntegerField(db_column='st_3_NombreDirecteurEtudesH_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_a1 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_autres = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_d6 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_dr = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_g3 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_ir = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_l2 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_l2a = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_la = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_moinsd6 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresf_p6 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresF_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_a1 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_autres = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_d6 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_dr = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_g3 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_ir = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_l2 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_l2a = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_la = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_moinsd6 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreouvriersetautresh_p6 = models.IntegerField(db_column='st_3_NombreOuvriersEtAutresH_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_a1 = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_autres = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_d6 = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_dr = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_g3 = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_ir = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_l2 = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_l2a = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_la = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_moinsd6 = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesf_p6 = models.IntegerField(db_column='st_3_NombrePrefetEtudesF_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_a1 = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_autres = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_d6 = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_dr = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_g3 = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_ir = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_l2 = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_l2a = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_la = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_moinsd6 = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreprefetetudesh_p6 = models.IntegerField(db_column='st_3_NombrePrefetEtudesH_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_a1 = models.IntegerField(db_column='st_3_NombreSurveillantF_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_autres = models.IntegerField(db_column='st_3_NombreSurveillantF_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_d6 = models.IntegerField(db_column='st_3_NombreSurveillantF_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_dr = models.IntegerField(db_column='st_3_NombreSurveillantF_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_g3 = models.IntegerField(db_column='st_3_NombreSurveillantF_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_ir = models.IntegerField(db_column='st_3_NombreSurveillantF_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_l2 = models.IntegerField(db_column='st_3_NombreSurveillantF_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_l2a = models.IntegerField(db_column='st_3_NombreSurveillantF_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_la = models.IntegerField(db_column='st_3_NombreSurveillantF_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_moinsd6 = models.IntegerField(db_column='st_3_NombreSurveillantF_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillantf_p6 = models.IntegerField(db_column='st_3_NombreSurveillantF_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_a1 = models.IntegerField(db_column='st_3_NombreSurveillantH_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_autres = models.IntegerField(db_column='st_3_NombreSurveillantH_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_d6 = models.IntegerField(db_column='st_3_NombreSurveillantH_D6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_dr = models.IntegerField(db_column='st_3_NombreSurveillantH_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_g3 = models.IntegerField(db_column='st_3_NombreSurveillantH_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_ir = models.IntegerField(db_column='st_3_NombreSurveillantH_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_l2 = models.IntegerField(db_column='st_3_NombreSurveillantH_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_l2a = models.IntegerField(db_column='st_3_NombreSurveillantH_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_la = models.IntegerField(db_column='st_3_NombreSurveillantH_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_moinsd6 = models.IntegerField(db_column='st_3_NombreSurveillantH_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombresurveillanth_p6 = models.IntegerField(db_column='st_3_NombreSurveillantH_P6', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Personnel Administratif Fonction Sexe ST3"
-        verbose_name_plural = "Personnel Administratif Fonction Sexe ST3"
-# ok
-class St3_personnel_enseignant(BaseModel):
-    # 1. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_personnel_administratif_fonction_sexe'
 
-    # 2. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 3. chef_cote_positif (varchar(255), Oui)
-    chef_cote_positif = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Chef - Côté Positif"
-    )
-
-    # 4. chef_formation (varchar(255), Oui)
-    chef_formation = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Chef - Formation Reçue"
-    )
-
-    # 5. educateurs_cotes_positifs (varchar(255), Oui)
-    educateurs_cotes_positifs = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Éducateurs - Côtés Positifs"
-    )
-
-    # 6. educateurs_formes (varchar(255), Oui)
-    educateurs_formes = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Éducateurs Formés"
-    )
-
-    # 7. educateurs_inspectes (varchar(255), Oui)
-    educateurs_inspectes = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Éducateurs Inspectés"
-    )
-
-    def __str__(self):
-        return f"Personnel Enseignant ST3 (ID: {self.id})"
+class St3PersonnelEnseignant(models.Model):
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    chef_cote_positif = models.CharField(max_length=255, blank=True, null=True)
+    chef_formation = models.CharField(max_length=255, blank=True, null=True)
+    educateurs_cotes_positifs = models.CharField(max_length=255, blank=True, null=True)
+    educateurs_formes = models.CharField(max_length=255, blank=True, null=True)
+    educateurs_inspectes = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        verbose_name = "Personnel Enseignant ST3"
-        verbose_name_plural = "Personnel Enseignant ST3"
-# ok
-class St3_personnel_enseignant_sexe_qualification(BaseModel):
-    # 23. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_personnel_enseignant'
 
-    # 24. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # --- Nombre Enseignants Secondaire F (Femmes) ---
-    st3_NombreEnseignantSecondaireF_A1 = models.IntegerField(null=True, verbose_name="F - Qualification A1")
-    st3_NombreEnseignantSecondaireF_Autres = models.IntegerField(null=True, verbose_name="F - Autres Qualifications")
-    st3_NombreEnseignantSecondaireF_DR = models.IntegerField(null=True, verbose_name="F - Qualification DR")
-    st3_NombreEnseignantSecondaireF_G3 = models.IntegerField(null=True, verbose_name="F - Qualification G3")
-    st3_NombreEnseignantSecondaireF_IR = models.IntegerField(null=True, verbose_name="F - Qualification IR")
-    st3_NombreEnseignantSecondaireF_L2 = models.IntegerField(null=True, verbose_name="F - Qualification L2")
-    st3_NombreEnseignantSecondaireF_L2A = models.IntegerField(null=True, verbose_name="F - Qualification L2A")
-    st3_NombreEnseignantSecondaireF_LA = models.IntegerField(null=True, verbose_name="F - Qualification LA")
-    st3_NombreEnseignantSecondaireF_MoinsD6 = models.IntegerField(null=True, verbose_name="F - Moins de D6")
-    st3_NombreEnseignantSecondaireF_P6 = models.IntegerField(null=True, verbose_name="F - Qualification P6")
-
-    # --- Nombre Enseignants Secondaire H (Hommes) ---
-    st3_NombreEnseignantSecondaireH_Autres = models.IntegerField(null=True, verbose_name="H - Autres Qualifications")
-    st3_NombreEnseignantSecondaireH_DR = models.IntegerField(null=True, verbose_name="H - Qualification DR")
-    st3_NombreEnseignantSecondaireH_G3 = models.IntegerField(null=True, verbose_name="H - Qualification G3")
-    st3_NombreEnseignantSecondaireH_IR = models.IntegerField(null=True, verbose_name="H - Qualification IR")
-    st3_NombreEnseignantSecondaireH_L2 = models.IntegerField(null=True, verbose_name="H - Qualification L2")
-    st3_NombreEnseignantSecondaireH_L2A = models.IntegerField(null=True, verbose_name="H - Qualification L2A")
-    st3_NombreEnseignantSecondaireH_LA = models.IntegerField(null=True, verbose_name="H - Qualification LA")
-    st3_NombreEnseignantSecondaireH_MoinsD6 = models.IntegerField(null=True, verbose_name="H - Moins de D6")
-    st3_NombreEnseignantSecondaireH_P6 = models.IntegerField(null=True, verbose_name="H - Qualification P6")
-
-    # --- Statut ---
-    st3_NombreEnseignantARetraite = models.IntegerField(null=True, verbose_name="Enseignants Proches Retraite")
-    st3_NombreEnseignantNonPaye = models.IntegerField(null=True, verbose_name="Enseignants Non Payés")
-
-    def __str__(self):
-        return f"Personnel Enseignant Qualification ST3 (ID: {self.id})"
+class St3PersonnelEnseignantSexeQualification(models.Model):
+    st_3_nombreenseigantsecondairef_a1 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_autres = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_dr = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_g3 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_ir = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_l2 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_l2a = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_la = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_moinsd6 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondairef_p6 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireF_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_a1 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_A1', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_autres = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_Autres', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_dr = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_DR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_g3 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_G3', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_ir = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_IR', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_l2 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_L2', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_l2a = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_L2A', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_la = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_LA', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_moinsd6 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_MoinsD6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseigantsecondaireh_p6 = models.IntegerField(db_column='st_3_NombreEnseigantSecondaireH_P6', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseignantaretraite = models.IntegerField(db_column='st_3_NombreEnseignantARetraite', blank=True, null=True)  # Field name made lowercase.
+    st_3_nombreenseignantnonpaye = models.IntegerField(db_column='st_3_NombreEnseignantNonPaye', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Personnel Enseignant Qualification ST3"
-        verbose_name_plural = "Personnel Enseignant Qualification ST3"
-# ok
-class St3_repartition_temps_formation(BaseModel):
-    # Répartition du temps de formation (en heures)
-    NombreHeureFormationPratique = models.IntegerField(
-        null=True, blank=True, verbose_name="Nombre d'heures de formation pratique"
-    ) # int(11), Null Oui, NULL par défaut 
-    
-    NombreHeureFormationStage = models.IntegerField(
-        null=True, blank=True, verbose_name="Nombre d'heures de stage"
-    ) # int(11), Null Oui, NULL par défaut 
-    
-    NombreHeureFormationTheorique = models.IntegerField(
-        null=True, blank=True, verbose_name="Nombre d'heures de formation théorique"
-    ) # int(11), Null Oui, NULL par défaut 
+        managed = False
+        db_table = 'st3_personnel_enseignant_sexe_qualification'
 
-    # Détails de la filière
-    NomFiliere = models.CharField(
-        max_length=255, null=True, blank=True, verbose_name="Nom de la filière"
-    ) # varchar(255), Null Oui, NULL par défaut 
 
-    # Champs d'identification
-    form_st_id = models.BigIntegerField(
-        null=True, blank=True, verbose_name="ID de formulaire ST"
-    ) # bigint(20), Null Oui, NULL par défaut 
-    
-    # Le champ 'id' est la clé primaire et est généralement créé automatiquement par Django
-    # L'inclure explicitement avec BigAutoField assure qu'il correspond à bigint(20) AUTO_INCREMENT
-    id = models.BigAutoField(
-        primary_key=True, verbose_name="ID"
-    ) # bigint(20), Non Null, AUTO_INCREMENT 
+class St3RepartitionTempsFormation(models.Model):
+    nombreheureformationpratique = models.IntegerField(db_column='NombreHeureFormationPratique', blank=True, null=True)  # Field name made lowercase.
+    nombreheureformationstage = models.IntegerField(db_column='NombreHeureFormationStage', blank=True, null=True)  # Field name made lowercase.
+    nombreheureformationtheorique = models.IntegerField(db_column='NombreHeureFormationTheorique', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nomfiliere = models.CharField(db_column='NomFiliere', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        # Spécifie le nom de la table dans la base de données
-        db_table = 'st3_repartition_temps_formation' 
-        verbose_name = "Répartition du temps de formation"
-        verbose_name_plural = "Répartitions du temps de formation"
+        managed = False
+        db_table = 'st3_repartition_temps_formation'
 
-    def __str__(self):
-        return f"Répartition du temps pour la filière: {self.NomFiliere if self.NomFiliere else self.id}"
-# ok
-class St3_reseaux_environnement(BaseModel):
-    # 8. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
 
-    # 9. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
-
-    # 1. st3_chef_participe_rld (bit(1), Oui)
-    st3_chef_participe_rld = models.BooleanField(
-        null=True, 
-        verbose_name="Chef participe Réseau Locaux Directeurs"
-    )
-
-    # 2. st3_coins_dechets (bit(1), Oui)
-    st3_coins_dechets = models.BooleanField(
-        null=True, 
-        verbose_name="Dispose de coins à déchets"
-    )
-
-    # 3. st3_dispose_arbres (bit(1), Oui)
-    st3_dispose_arbres = models.BooleanField(
-        null=True, 
-        verbose_name="Dispose d'arbres"
-    )
-
-    # 4. st3_nombre_arbres_plantes (int(11), Oui)
-    st3_nombre_arbres_plantes = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre d'arbres plantés"
-    )
-
-    # 5. st3_nombre_enseignant_formes_sur_administration_1_soin (int(11), Oui)
-    st3_nombre_enseignant_formes_sur_administration_1_soin = models.IntegerField(
-        null=True, 
-        verbose_name="Nb enseignants formés administration/1er soin"
-    )
-
-    # 6. st3_participation_rep (bit(1), Oui)
-    st3_participation_rep = models.BooleanField(
-        null=True, 
-        verbose_name="Participation aux réunions du REP"
-    )
-
-    # 7. st3_reseaux_locaux_directeurs (bit(1), Oui)
-    st3_reseaux_locaux_directeurs = models.BooleanField(
-        null=True, 
-        verbose_name="Participation aux réseaux locaux directeurs"
-    )
-
-    def __str__(self):
-        return f"Réseaux et Environnement ST3 (ID: {self.id})"
+class St3ReseauxEnvironnement(models.Model):
+    st3_chef_participe_rld = models.TextField(blank=True, null=True)  # This field type is a guess.
+    st3_coins_dechets = models.TextField(blank=True, null=True)  # This field type is a guess.
+    st3_dispose_arbres = models.TextField(blank=True, null=True)  # This field type is a guess.
+    st3_nombre_arbres_plantes = models.IntegerField(blank=True, null=True)
+    st3_nombre_enseignant_formes_sur_administration_1_soin = models.IntegerField(blank=True, null=True)
+    st3_participation_rep = models.TextField(blank=True, null=True)  # This field type is a guess.
+    st3_reseaux_locaux_directeurs = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
 
     class Meta:
-        verbose_name = "Réseaux et Environnement ST3"
-        verbose_name_plural = "Réseaux et Environnement ST3"
-# ok
-class St3_resultat_examen_etat(BaseModel):
-    # 6. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    )
+        managed = False
+        db_table = 'st3_reseaux_environnement'
 
-    # 7. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. ElevesInscritsF (int(11), Oui)
-    ElevesInscritsF = models.IntegerField(
-        null=True, 
-        verbose_name="Élèves Filles Inscrites"
-    )
-
-    # 2. ElevesInscritsG (int(11), Oui)
-    ElevesInscritsG = models.IntegerField(
-        null=True, 
-        verbose_name="Élèves Garçons Inscrits"
-    )
-
-    # 3. ElevesPresentesF (int(11), Oui)
-    ElevesPresentesF = models.IntegerField(
-        null=True, 
-        verbose_name="Élèves Filles Présentées"
-    )
-
-    # 4. ElevesPresentesG (int(11), Oui)
-    ElevesPresentesG = models.IntegerField(
-        null=True, 
-        verbose_name="Élèves Garçons Présentés"
-    )
-
-    # 5. equipement (int(11), Oui)
-    # Le libellé est ambigu, mais semble lié au contexte.
-    equipement = models.IntegerField(
-        null=True, 
-        verbose_name="Équipement (Code/Statut)"
-    )
-
-    # 8. NomDuFiliere (varchar(255), Oui)
-    NomDuFiliere = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom de la Filière"
-    )
-
-    def __str__(self):
-        return f"Résultat Examen État ST3 (Filière: {self.nom_du_filiere})"
+class St3ResultatExamenEtat(models.Model):
+    elevesinscritsf = models.IntegerField(db_column='ElevesInscritsF', blank=True, null=True)  # Field name made lowercase.
+    elevesinscritsg = models.IntegerField(db_column='ElevesInscritsG', blank=True, null=True)  # Field name made lowercase.
+    elevespresentesf = models.IntegerField(db_column='ElevesPresentesF', blank=True, null=True)  # Field name made lowercase.
+    elevespresentesg = models.IntegerField(db_column='ElevesPresentesG', blank=True, null=True)  # Field name made lowercase.
+    equipement = models.IntegerField(blank=True, null=True)
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nomdufiliere = models.CharField(db_column='NomDuFiliere', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Résultat Examen État ST3"
-        verbose_name_plural = "Résultats Examens État ST3"
-# ok
-class St3_resultat_jury_national(BaseModel):
-    # 5. form_st_id (bigint(20), Oui) - Clé étrangère vers le formulaire d'enquête
-    form_st_id = models.BigIntegerField(
-        null=True, 
-        verbose_name="Formulaire ST ID"
-    ) #
+        managed = False
+        db_table = 'st3_resultat_examen_etat'
 
-    # 6. id (bigint(20), AUTO_INCREMENT, Non)
-    # Géré automatiquement par Django.
 
-    # 1. NombreParticipantsF (int(11), Oui)
-    NombreParticipantsF = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre de Participantes Filles"
-    ) #
-
-    # 2. NombreParticipantsG (int(11), Oui)
-    NombreParticipantsG = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre de Participants Garçons"
-    ) #
-
-    # 3. NombreReussitesF (int(11), Oui)
-    NombreReussitesF = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre de Réussites Filles"
-    ) #
-
-    # 4. NombreReussitesG (int(11), Oui)
-    NombreReussitesG = models.IntegerField(
-        null=True, 
-        verbose_name="Nombre de Réussites Garçons"
-    ) #
-
-    # 7. NomFiliere (varchar(255), Oui)
-    NomFiliere = models.CharField(
-        max_length=255, 
-        null=True, 
-        verbose_name="Nom de la Filière"
-    ) #
-
-    def __str__(self):
-        return f"Résultat Jury National ST3 ({self.nom_filiere})"
+class St3ResultatJuryNational(models.Model):
+    nombreparticipantsf = models.IntegerField(db_column='NombreParticipantsF', blank=True, null=True)  # Field name made lowercase.
+    nombreparticipantsg = models.IntegerField(db_column='NombreParticipantsG', blank=True, null=True)  # Field name made lowercase.
+    nombrereussitesf = models.IntegerField(db_column='NombreReussitesF', blank=True, null=True)  # Field name made lowercase.
+    nombrereussitesg = models.IntegerField(db_column='NombreReussitesG', blank=True, null=True)  # Field name made lowercase.
+    form_st = models.OneToOneField(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nomfiliere = models.CharField(db_column='NomFiliere', max_length=255, blank=True, null=True)  # Field name made lowercase.
 
     class Meta:
-        verbose_name = "Résultat Jury National ST3"
-        verbose_name_plural = "Résultats Jury National ST3"
-# ok
-class Territoires(BaseModel):
-    # Champs d'identification et clés étrangères (probables)
-    
-    # [cite_start]Clé primaire auto-incrémentée (bigint(20) AUTO INCREMENT) [cite: 39, 40, 42, 52]
-    id = models.BigAutoField(primary_key=True) 
-    
-    # [cite_start]Clé étrangère vers la table "proved" (identifiant du... proviseur? ou entité) [cite: 27, 28]
-    # [cite_start]bigint(20), Null Oui [cite: 35]
-    fk_proved_id = models.BigIntegerField(
-        null=True, 
-        blank=True, 
-        verbose_name="ID de l'entité supérieure (proved)"
-    ) 
-    
-    # [cite_start]Clé étrangère vers la table "province" [cite: 36, 37]
-    # [cite_start]bigint(20), Null Oui [cite: 38]
-    fk_province_id = models.BigIntegerField(
-        null=True, 
-        blank=True, 
-        verbose_name="ID de la Province"
-    )
+        managed = False
+        db_table = 'st3_resultat_jury_national'
 
-    # Champs de données
-    
-    # [cite_start]Libellé ou nom du territoire (varchar(255), Null Oui) [cite: 43, 44, 45]
-    libelle = models.CharField(
-        max_length=255, 
-        null=True, 
-        blank=True, 
-        verbose_name="Libellé du territoire"
-    )
-    
-    # [cite_start]Slug pour l'URL (varchar(255), Null Oui) [cite: 46, 47, 48]
-    slug = models.CharField(
-        max_length=255, 
-        null=True, 
-        blank=True, 
-        verbose_name="Slug"
-    )
-    
-    # [cite_start]Horodatage de création (datetime(6), Null Oui) [cite: 25, 26, 34]
-    createdAt = models.DateTimeField(
-        null=True, 
-        blank=True, 
-        verbose_name="Date de création"
-    )
+
+class StatistiqueEnseignantsForme(models.Model):
+    nb_enseignants_evf = models.IntegerField(blank=True, null=True)
+    nb_enseignants_forme_f = models.IntegerField(blank=True, null=True)
+    nb_enseignants_forme_h = models.IntegerField(blank=True, null=True)
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    nb_enseignants_dispense_h = models.CharField(max_length=255, blank=True, null=True)
+    nb_enseignants_dispense_f = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
-        # Spécifie le nom exact de la table dans la base de données
+        managed = False
+        db_table = 'statistique_enseignants_forme'
+
+
+class Territoires(models.Model):
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    fk_proved = models.ForeignKey(Proveds, models.DO_NOTHING, blank=True, null=True)
+    fk_province = models.ForeignKey(Provinces, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    libelle = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
         db_table = 'territoires'
-        verbose_name = "Territoire"
-        verbose_name_plural = "Territoires"
 
-    def __str__(self):
-        return self.libelle if self.libelle else f"Territoire ID: {self.id}"
+
+class TypeEnseignement(models.Model):
+    libelle = models.CharField(unique=True, max_length=255)
+
+    class Meta:
+        managed = False
+        db_table = 'type_enseignement'
+
+
+class User(models.Model):
+    fk_province_id = models.BigIntegerField(blank=True, null=True)
+    fk_proved_id = models.BigIntegerField(blank=True, null=True)
+    fk_sous_proved_id = models.BigIntegerField(blank=True, null=True)
+    picture_id = models.BigIntegerField(blank=True, null=True)
+    fk_territoire_id = models.BigIntegerField(blank=True, null=True)
+    username = models.CharField(max_length=255, blank=True, null=True)
+    roles = models.CharField(max_length=255, blank=True, null=True)
+    password = models.CharField(max_length=255)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=255, blank=True, null=True)
+    active = models.IntegerField(blank=True, null=True)
+    name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    about = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    is_deleted = models.IntegerField(blank=True, null=True)
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    firstname = models.CharField(db_column='firstName', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    fkprovedid = models.BigIntegerField(db_column='fkProvedId', blank=True, null=True)  # Field name made lowercase.
+    fkprovinceid = models.BigIntegerField(db_column='fkProvinceId', blank=True, null=True)  # Field name made lowercase.
+    fksousprovedid = models.BigIntegerField(db_column='fkSousProvedId', blank=True, null=True)  # Field name made lowercase.
+    fkterritoireid = models.BigIntegerField(db_column='fkTerritoireId', blank=True, null=True)  # Field name made lowercase.
+    isdeleted = models.TextField(db_column='isDeleted', blank=True, null=True)  # Field name made lowercase. This field type is a guess.
+    pictureid = models.BigIntegerField(db_column='pictureId', blank=True, null=True)  # Field name made lowercase.
+    updatedat = models.DateTimeField(db_column='updatedAt', blank=True, null=True)  # Field name made lowercase.
+    mdp = models.CharField(max_length=255, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'user'
+
+
+class Users(models.Model):
+    active = models.TextField(blank=True, null=True)  # This field type is a guess.
+    is_deleted = models.TextField(blank=True, null=True)  # This field type is a guess.
+    created_at = models.DateTimeField(blank=True, null=True)
+    fk_proved_id = models.BigIntegerField(blank=True, null=True)
+    fk_province_id = models.BigIntegerField(blank=True, null=True)
+    fk_sous_proved_id = models.BigIntegerField(blank=True, null=True)
+    fk_territoire_id = models.BigIntegerField(blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    picture_id = models.BigIntegerField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    about = models.TextField(blank=True, null=True)
+    email = models.CharField(max_length=255, blank=True, null=True)
+    first_name = models.CharField(max_length=255, blank=True, null=True)
+    last_name = models.CharField(max_length=255, blank=True, null=True)
+    mdp = models.CharField(max_length=255, blank=True, null=True)
+    password = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=255, blank=True, null=True)
+    roles = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+    username = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'users'
+
+
+class VEffectifsSt1ProvinceSexe(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    sexe = models.CharField(max_length=1)
+    premiere_maternelle = models.DecimalField(db_column='Premiere_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    deuxieme_maternelle = models.DecimalField(db_column='Deuxieme_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    troisieme_maternelle = models.DecimalField(db_column='Troisieme_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    total_general = models.DecimalField(db_column='Total_General', max_digits=52, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'v_effectifs_st1_province_sexe'
+
+
+class VEffectifsSt1RegimeSexe(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    regime = models.CharField(max_length=1)
+    secteur = models.CharField(max_length=1)
+    sexe = models.CharField(max_length=1)
+    premiere_maternelle = models.DecimalField(db_column='Premiere_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    deuxieme_maternelle = models.DecimalField(db_column='Deuxieme_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    troisieme_maternelle = models.DecimalField(db_column='Troisieme_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    total_general = models.DecimalField(db_column='Total_General', max_digits=52, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'v_effectifs_st1_regime_sexe'
+
+
+class VEffectifsSt1RegimeSexeProvince(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    regime = models.CharField(max_length=1)
+    secteur = models.CharField(max_length=1)
+    sexe = models.CharField(max_length=1)
+    premiere_maternelle = models.DecimalField(db_column='Premiere_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    deuxieme_maternelle = models.DecimalField(db_column='Deuxieme_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    troisieme_maternelle = models.DecimalField(db_column='Troisieme_Maternelle', max_digits=48, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+    total_general = models.DecimalField(db_column='Total_General', max_digits=52, decimal_places=0, blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'v_effectifs_st1_regime_sexe_province'
+
+
+class VEffectifsSt2ParAge(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    niveau = models.CharField(max_length=1)
+    moins_6 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_6 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_7 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_8 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_9 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_10 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_11 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    plus_11 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    total_general = models.DecimalField(max_digits=51, decimal_places=0, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_effectifs_st2_par_age'
+
+
+class VEffectifsSt2ParAgeProvinceSexe(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    niveau = models.CharField(max_length=1)
+    sexe = models.CharField(max_length=1)
+    moins_6 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_6 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_7 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_8 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_9 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_10 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_11 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    plus_11 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    total_general = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_effectifs_st2_par_age_province_sexe'
+
+
+class VEffectifsSt2ParAgeSexe(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    niveau = models.CharField(max_length=1)
+    sexe = models.CharField(max_length=1)
+    moins_6 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_6 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_7 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_8 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_9 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_10 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    age_11 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    plus_11 = models.DecimalField(max_digits=44, decimal_places=0, blank=True, null=True)
+    total_general = models.FloatField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_effectifs_st2_par_age_sexe'
+
+
+class VEtablissementDetail(models.Model):
+    etab_id = models.BigIntegerField()
+    nometablissement = models.CharField(db_column='nomEtablissement', max_length=1)  # Field name made lowercase.
+    adresseetablissement = models.CharField(db_column='adresseEtablissement', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    telephoneetablissement = models.CharField(db_column='telephoneEtablissement', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    nomchefetablissement = models.CharField(db_column='nomChefEtablissement', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    annee_id = models.BigIntegerField()
+    anneescolaire = models.CharField(db_column='anneeScolaire', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    province_id = models.BigIntegerField()
+    province = models.CharField(max_length=1, blank=True, null=True)
+    proved_id = models.BigIntegerField()
+    proved = models.CharField(max_length=1, blank=True, null=True)
+    sousproved_id = models.BigIntegerField(db_column='sousProved_id')  # Field name made lowercase.
+    sousproved = models.CharField(db_column='sousProved', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    territoire_id = models.BigIntegerField()
+    territoire = models.CharField(max_length=1, blank=True, null=True)
+    typeenseignement = models.CharField(db_column='typeEnseignement', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    ville = models.CharField(max_length=1, blank=True, null=True)
+    secteur = models.CharField(max_length=1, blank=True, null=True)
+    code_adm_ets = models.CharField(max_length=1, blank=True, null=True)
+    territoire_txt = models.CharField(max_length=1, blank=True, null=True)
+    centre_regroupement = models.CharField(max_length=1, blank=True, null=True)
+    milieu = models.CharField(max_length=1, blank=True, null=True)
+    latitude = models.CharField(max_length=1, blank=True, null=True)
+    longitude = models.CharField(max_length=1, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=1, blank=True, null=True)
+    matricule_secope = models.CharField(max_length=1, blank=True, null=True)
+    reference_juridique = models.CharField(max_length=1, blank=True, null=True)
+    statut_occupation = models.CharField(max_length=1, blank=True, null=True)
+    isactive = models.IntegerField(db_column='isActive', blank=True, null=True)  # Field name made lowercase.
+    isdeleted = models.IntegerField(db_column='isDeleted', blank=True, null=True)  # Field name made lowercase.
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'v_etablissement_detail'
+
+
+class VEtablissementList(models.Model):
+    etab_id = models.BigIntegerField()
+    nometablissement = models.CharField(db_column='nomEtablissement', max_length=1)  # Field name made lowercase.
+    adresseetablissement = models.CharField(db_column='adresseEtablissement', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    telephoneetablissement = models.CharField(db_column='telephoneEtablissement', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    nomchefetablissement = models.CharField(db_column='nomChefEtablissement', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    anneescolaire = models.CharField(db_column='anneeScolaire', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    province = models.CharField(max_length=1, blank=True, null=True)
+    proved = models.CharField(max_length=1, blank=True, null=True)
+    sousproved = models.CharField(db_column='sousProved', max_length=1, blank=True, null=True)  # Field name made lowercase.
+    territoire = models.CharField(max_length=1, blank=True, null=True)
+    isactive = models.IntegerField(db_column='isActive', blank=True, null=True)  # Field name made lowercase.
+    isdeleted = models.IntegerField(db_column='isDeleted', blank=True, null=True)  # Field name made lowercase.
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+
+    class Meta:
+        managed = False
+        db_table = 'v_etablissement_list'
+
+
+class VGombeAutre(models.Model):
+    id = models.AutoField(primary_key=True)
+    sous_division = models.CharField(max_length=1)
+    nom_etablissement = models.CharField(max_length=1)
+    numero_dinacope = models.CharField(max_length=1, blank=True, null=True)
+    niveau = models.CharField(max_length=1, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=1, blank=True, null=True)
+    quartier = models.CharField(max_length=1, blank=True, null=True)
+    source_file = models.CharField(max_length=1, blank=True, null=True)
+    imported_at = models.DateTimeField(blank=True, null=True)
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId')  # Field name made lowercase.
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
+    nom_norm = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_gombe_autre'
+
+
+class VGombeNorm(models.Model):
+    id = models.AutoField(primary_key=True)
+    sous_division = models.CharField(max_length=1)
+    nom_etablissement = models.CharField(max_length=1)
+    numero_dinacope = models.CharField(max_length=1, blank=True, null=True)
+    niveau = models.CharField(max_length=1, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=1, blank=True, null=True)
+    quartier = models.CharField(max_length=1, blank=True, null=True)
+    source_file = models.CharField(max_length=1, blank=True, null=True)
+    imported_at = models.DateTimeField(blank=True, null=True)
+    sousprovedid = models.BigIntegerField(db_column='sousProvedId')  # Field name made lowercase.
+    provedid = models.BigIntegerField(db_column='provedId', blank=True, null=True)  # Field name made lowercase.
+    provinceid = models.BigIntegerField(db_column='provinceId', blank=True, null=True)  # Field name made lowercase.
+    nom_norm = models.TextField(blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_gombe_norm'
+
+
+class VReportingEtablissements(models.Model):
+    formulaire_id = models.BigIntegerField()
+    etablissement_id = models.BigIntegerField(blank=True, null=True)
+    nom_etablissement = models.CharField(max_length=1, blank=True, null=True)
+    chef_etablissement = models.CharField(max_length=1, blank=True, null=True)
+    telephone = models.CharField(max_length=1, blank=True, null=True)
+    adresse = models.CharField(max_length=1, blank=True, null=True)
+    annee_id = models.BigIntegerField(blank=True, null=True)
+    annee_scolaire = models.CharField(max_length=1, blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    proved = models.CharField(max_length=1, blank=True, null=True)
+    sous_proved = models.CharField(max_length=1, blank=True, null=True)
+    territoire = models.CharField(max_length=1, blank=True, null=True)
+    milieu = models.CharField(max_length=1, blank=True, null=True)
+    latitude = models.CharField(max_length=1, blank=True, null=True)
+    longitude = models.CharField(max_length=1, blank=True, null=True)
+    altitude = models.CharField(max_length=1, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=1, blank=True, null=True)
+    reference_juridique = models.CharField(max_length=1, blank=True, null=True)
+    matricule_secope = models.CharField(max_length=1, blank=True, null=True)
+    etat_etablissement = models.CharField(max_length=1, blank=True, null=True)
+    statut_occupation = models.CharField(max_length=1, blank=True, null=True)
+    internat = models.CharField(max_length=1, blank=True, null=True)
+    cloture = models.CharField(max_length=1, blank=True, null=True)
+    coges = models.CharField(max_length=1, blank=True, null=True)
+    coges_operationnel = models.CharField(max_length=1, blank=True, null=True)
+    copa = models.CharField(max_length=1, blank=True, null=True)
+    copa_operationnel = models.CharField(max_length=1, blank=True, null=True)
+    pris_en_charge_refugies = models.CharField(max_length=1, blank=True, null=True)
+    point_eau = models.CharField(max_length=1, blank=True, null=True)
+    type_point_eau = models.CharField(max_length=1, blank=True, null=True)
+    sources_energie = models.CharField(max_length=1, blank=True, null=True)
+    type_sources_energie = models.CharField(max_length=1, blank=True, null=True)
+    cellule_orientation_evf = models.TextField(blank=True, null=True)  # This field type is a guess.
+    enseignants_evf_formes = models.TextField(blank=True, null=True)  # This field type is a guess.
+    env_discipline = models.TextField(blank=True, null=True)  # This field type is a guess.
+    env_enseigne = models.TextField(blank=True, null=True)  # This field type is a guess.
+    env_programme = models.TextField(blank=True, null=True)  # This field type is a guess.
+    env_parascolaire = models.TextField(blank=True, null=True)  # This field type is a guess.
+    vih_discipline = models.TextField(blank=True, null=True)  # This field type is a guess.
+    vih_enseigne = models.TextField(blank=True, null=True)  # This field type is a guess.
+    vih_programme = models.TextField(blank=True, null=True)  # This field type is a guess.
+    vih_parascolaire = models.TextField(blank=True, null=True)  # This field type is a guess.
+    reglement_discrimination = models.TextField(blank=True, null=True)  # This field type is a guess.
+    reglement_harcelement = models.TextField(blank=True, null=True)  # This field type is a guess.
+    reglement_securite_physique = models.TextField(blank=True, null=True)  # This field type is a guess.
+    type_formulaire = models.CharField(max_length=1, blank=True, null=True)
+    formulaire_repondu = models.IntegerField()
+    formulaire_valide = models.IntegerField()
+    derniere_mise_a_jour = models.DateTimeField()
+    date_creation = models.DateTimeField()
+
+    class Meta:
+        managed = False
+        db_table = 'v_reporting_etablissements'
+
+
+class VStatistiquesClassesSt1(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=1)
+    nb_salles_organisees_1ere = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_salles_organisees_2eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_salles_organisees_3eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_statistiques_classes_st1'
+
+
+class VStatistiquesClassesSt1Province(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    nb_salles_organisees_1ere = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_salles_organisees_2eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_salles_organisees_3eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_statistiques_classes_st1_province'
+
+
+class VStatistiquesClassesSt2(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    regime_gestion = models.CharField(max_length=1)
+    nb_classes_1ere = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_2eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_3eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_4eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_5eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_6eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_statistiques_classes_st2'
+
+
+class VStatistiquesClassesSt2Province(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    nb_classes_1ere = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_2eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_3eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_4eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_5eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+    nb_classes_6eme = models.DecimalField(max_digits=43, decimal_places=0, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_statistiques_classes_st2_province'
+
+
+class VStatistiquesNombreEcoleParMilieuEtProvince(models.Model):
+    formulaire_id = models.BigIntegerField()
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    milieu = models.CharField(max_length=1, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_statistiques_nombre_ecole_par_milieu_et_province'
+
+
+class VStatistiquesNombreEcoleParRegimeEtProvince(models.Model):
+    formulaire_id = models.BigIntegerField()
+    idannee = models.BigIntegerField(blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    regime_code = models.CharField(max_length=1)
+
+    class Meta:
+        managed = False
+        db_table = 'v_statistiques_nombre_ecole_par_regime_et_province'
+
+
+class VTauxCouverture(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    province_id = models.BigIntegerField()
+    province = models.CharField(max_length=1, blank=True, null=True)
+    type = models.CharField(max_length=1, blank=True, null=True)
+    nb_ecoles_existantes = models.BigIntegerField()
+    nb_ecoles_repondues = models.BigIntegerField()
+    taux_couverture = models.DecimalField(max_digits=26, decimal_places=2, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_taux_couverture'
+
+
+class VTauxCouvertureRegime(models.Model):
+    idannee = models.BigIntegerField(blank=True, null=True)
+    province = models.CharField(max_length=1, blank=True, null=True)
+    niveau = models.CharField(max_length=1, blank=True, null=True)
+    regime = models.CharField(max_length=1, blank=True, null=True)
+    nb_ecoles_existantes = models.BigIntegerField()
+    nb_ecoles_repondues = models.BigIntegerField()
+    taux_couverture = models.DecimalField(max_digits=26, decimal_places=2, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'v_taux_couverture_regime'
+
+
+class VihSida(models.Model):
+    vih_sida_active_parascolaire = models.TextField(blank=True, null=True)  # This field type is a guess.
+    vih_sida_discipline = models.TextField(blank=True, null=True)  # This field type is a guess.
+    vih_sida_enseigne = models.TextField(blank=True, null=True)  # This field type is a guess.
+    vih_sida_programme = models.TextField(blank=True, null=True)  # This field type is a guess.
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'vih_sida'
+
+
+class Villes(models.Model):
+    createdat = models.DateTimeField(db_column='createdAt', blank=True, null=True)  # Field name made lowercase.
+    fkprovinceid = models.BigIntegerField(db_column='fkProvinceId', blank=True, null=True)  # Field name made lowercase.
+    id = models.BigAutoField(primary_key=True)
+    libelle = models.CharField(max_length=255, blank=True, null=True)
+    slug = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'villes'
+
+
+class Violences(models.Model):
+    abus_sexuels_f = models.IntegerField(blank=True, null=True)
+    abus_sexuels_g = models.IntegerField(blank=True, null=True)
+    autres_violences_f = models.IntegerField(blank=True, null=True)
+    autres_violences_g = models.IntegerField(blank=True, null=True)
+    chatiment_f = models.IntegerField(blank=True, null=True)
+    chatiment_g = models.IntegerField(blank=True, null=True)
+    discrimination_f = models.IntegerField(blank=True, null=True)
+    discrimination_g = models.IntegerField(blank=True, null=True)
+    harcelement_f = models.IntegerField(blank=True, null=True)
+    harcelement_g = models.IntegerField(blank=True, null=True)
+    intimidation_f = models.IntegerField(blank=True, null=True)
+    intimidation_g = models.IntegerField(blank=True, null=True)
+    form_st = models.ForeignKey(Formulaires, models.DO_NOTHING, blank=True, null=True)
+    id = models.BigAutoField(primary_key=True)
+    reunions_pv_violence = models.CharField(max_length=255, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'violences'

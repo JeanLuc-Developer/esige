@@ -14,11 +14,18 @@ ALLOWED_HOSTS = ['*']
 
 # Database PostgreSQL recommandée en production
 DATABASES = {
-    'default': dj_database_url.config(
-        default=config('DATABASE_URL'),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',  # ne pas changer
+        'NAME': 'dige_database',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',  # ou localhost
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'isolation_level': None,
+        },
+    }
 }
 
 # Security settings pour la production

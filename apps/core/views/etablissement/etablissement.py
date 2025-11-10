@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from apps.core.models import Etablissement
+#from apps.core.models import Etablissement
 from django.shortcuts import render
 from django.core.paginator import Paginator
 import csv
@@ -14,7 +14,7 @@ import pandas as pd
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.http import HttpResponse
-from apps.core.models import Etablissement, Annee_scolaire, Provinces, Proveds, Sous_proved
+#from apps.core.models import Etablissement, Annee_scolaire, Provinces, Proveds, Sous_proved
 import tempfile
 import os
 import csv

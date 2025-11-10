@@ -13,10 +13,19 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 # Database SQLite pour le développement
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',  # ne pas changer
+        'NAME': 'dige_database',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',  # ou localhost
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'isolation_level': None,
+        },
     }
 }
+
 
 # Configuration email pour le développement
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
