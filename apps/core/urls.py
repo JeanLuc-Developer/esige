@@ -10,10 +10,13 @@ urlpatterns = [
     
     #Annuaire URLs
     path('annuaires/classe/', annuaire.annuaire_table_classe, name='annuaire_classe'),
-    path('annuaires/ecole/', annuaire.annuaire_table_ecole, name='annuaire_ecole'),
+    path('annuaires/ecole/', annuaire.annuaire_ecoles, name='annuaire_ecole'),
     path('annuaires/eleve/', annuaire.annuaire_table_eleve, name='annuaire_eleve'),
     path('annuaires/enseignant/', annuaire.annuaire_table_enseignant, name='annuaire_enseignant'),
     path('annuaires/api/table-data/', annuaire.get_table_data, name='get_table_data'),
+    path('annuaires/export/excel/', annuaire.export_excel, name='export_excel'),
+    path('annuaires/export/pdf/', annuaire.export_pdf, name='export_pdf'),
+    path('annuaires/export/csv/', annuaire.export_csv, name='export_csv'),
 
     path('forms_annuaire/', annuaire.annuaire_form, name='forms_annuaire'),
 

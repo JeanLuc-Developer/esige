@@ -57,7 +57,8 @@
         font-size: 0.9rem;
     }
 
-    .filter-select, .filter-combo {
+    .filter-select,
+    .filter-combo {
         padding: 10px 12px;
         border: 1px solid #ddd;
         border-radius: 6px;
@@ -67,7 +68,8 @@
         transition: all 0.3s ease;
     }
 
-    .filter-select:focus, .filter-combo:focus {
+    .filter-select:focus,
+    .filter-combo:focus {
         outline: none;
         border-color: #4b6cb7;
         box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.2);
@@ -79,6 +81,28 @@
 
     .combo-container .filter-combo {
         width: 100%;
+    }
+
+    .filter-actions {
+        grid-column: 1 / -1;
+        margin-top: 15px;
+        text-align: right;
+    }
+
+    .btn-reset {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-reset:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
     }
 
     .export-buttons {
@@ -370,47 +394,111 @@
         transform: translateY(-1px);
     }
 
-    /* Style pour la pagination */
+    /* Style amélioré pour la pagination */
     .card-footer {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 20px;
         border-top: 1px solid #e9ecef;
+        background: #f8f9fa;
+    }
+
+    .pagination-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .pagination-info {
+        color: #6c757d;
+        font-size: 0.9rem;
+        font-weight: 500;
     }
 
     .pagination {
         display: flex;
-        gap: 8px;
-    }
-
-    .page-item {
+        gap: 5px;
+        margin: 0;
+        padding: 0;
         list-style: none;
     }
 
+    .page-item {
+        margin: 0;
+    }
+
     .page-link {
-        display: block;
-        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 8px 12px;
         border: 1px solid #dee2e6;
-        border-radius: 4px;
+        border-radius: 8px;
         color: #4b6cb7;
         text-decoration: none;
-        transition: all 0.2s ease;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        background: white;
     }
 
     .page-link:hover {
         background-color: #e9ecef;
+        border-color: #4b6cb7;
+        transform: translateY(-1px);
     }
 
     .page-item.active .page-link {
-        background-color: #4b6cb7;
+        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
         color: white;
         border-color: #4b6cb7;
+        box-shadow: 0 2px 8px rgba(75, 108, 183, 0.3);
     }
 
-    .entries-info {
+    .page-item.disabled .page-link {
         color: #6c757d;
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .page-size-selector {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .page-size-selector label {
         font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .page-size-select {
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        background: white;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    .pagination-nav {
+        display: flex;
+        gap: 10px;
+    }
+
+    .pagination-summary {
+        background: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+        font-size: 0.9rem;
+        color: #495057;
     }
 
     /* Styles spécifiques pour les différents tableaux */
@@ -452,22 +540,61 @@
     .loading-spinner {
         display: none;
         text-align: center;
-        padding: 20px;
+        padding: 40px;
     }
 
     .spinner {
         border: 4px solid #f3f3f3;
         border-top: 4px solid #4b6cb7;
         border-radius: 50%;
-        width: 40px;
-        height: 40px;
-        animation: spin 2s linear infinite;
-        margin: 0 auto;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
     }
 
     @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Filtres actifs */
+    .active-filters {
+        background: #e7f3ff;
+        border: 1px solid #b3d9ff;
+        border-radius: 6px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .active-filters strong {
+        color: #0066cc;
+    }
+
+    .filter-badge {
+        display: inline-block;
+        background: #4b6cb7;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin: 0 4px;
+    }
+
+    /* Badges pour les nombres */
+    .count-badge {
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
     }
 
     /* Responsive */
@@ -484,6 +611,11 @@
             grid-column: 1;
         }
 
+        .filter-actions {
+            grid-column: 1;
+            text-align: center;
+        }
+
         .export-buttons {
             flex-direction: column;
         }
@@ -493,7 +625,8 @@
             align-items: flex-start;
         }
 
-        .card-header-left, .card-header-right {
+        .card-header-left,
+        .card-header-right {
             width: 100%;
             justify-content: space-between;
         }
@@ -525,6 +658,20 @@
             padding: 5px 8px;
             font-size: 0.7rem;
         }
+
+        .card-footer {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .pagination-container {
+            justify-content: center;
+        }
+
+        .pagination-info {
+            text-align: center;
+        }
     }
 
     @media (max-width: 576px) {
@@ -533,14 +680,18 @@
             gap: 4px;
         }
 
-        .card-footer {
-            flex-direction: column;
-            gap: 15px;
-            align-items: flex-start;
-        }
-
         .table-export-buttons {
             flex-direction: column;
+        }
+
+        .pagination {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .page-size-selector {
+            flex-direction: column;
+            gap: 5px;
         }
     }
 </style>
@@ -553,16 +704,16 @@
             <h1>Annuaires des écoles</h1>
             <p>Gestion des annuaires des établissements scolaires</p>
         </div>
-        
+
         <div class="filter-container">
             <div class="filter-group combo-container">
                 <label for="regime-combo">Régime</label>
                 <select class="filter-combo" id="regime-combo">
                     <option value="">Sélectionnez un régime</option>
                     <option value="regime_national">Régime National</option>
-                    <option value="regimes_proved">Régimes par proved</option>
-                    <option value="milieu_proved">Milieu par proved</option>
-                    <option value="public_proved">Public par proved</option>
+                    <option value="regimes_proved">Régimes par Province</option>
+                    <option value="milieu_proved">Milieu par Province</option>
+                    <option value="public_proved">Public par Province</option>
                     <option value="milieu_public">Milieu public</option>
                 </select>
             </div>
@@ -575,7 +726,7 @@
             <h3>Filtres</h3>
             <p>Affinez votre recherche avec les filtres ci-dessous</p>
         </div>
-        
+
         <div class="filter-container">
             <div class="filter-group">
                 <label for="annee-scolaire">Année scolaire</label>
@@ -586,7 +737,7 @@
                     {% endfor %}
                 </select>
             </div>
-            
+
             <div class="filter-group">
                 <label for="type-enseignement">Type enseignement</label>
                 <select class="filter-select" id="type-enseignement">
@@ -596,7 +747,7 @@
                     {% endfor %}
                 </select>
             </div>
-            
+
             <div class="filter-group">
                 <label for="proved">Province</label>
                 <select class="filter-select" id="proved">
@@ -606,16 +757,21 @@
                     {% endfor %}
                 </select>
             </div>
-            
+
             <div class="filter-group">
                 <label for="milieu">Milieu</label>
                 <select class="filter-select" id="milieu">
                     <option value="">Tous les milieux</option>
                     <option value="urbain">Urbain</option>
                     <option value="rural">Rural</option>
+                    {% for milieu in milieux %}
+                    {% if milieu != 'URBAIN' and milieu != 'RURAL' %}
+                    <option value="{{ milieu }}">{{ milieu }}</option>
+                    {% endif %}
+                    {% endfor %}
                 </select>
             </div>
-            
+
             <div class="filter-group">
                 <label for="secteur">Secteur</label>
                 <select class="filter-select" id="secteur">
@@ -624,6 +780,17 @@
                     <option value="prive">Privé</option>
                 </select>
             </div>
+
+            <div class="filter-actions">
+                <button type="button" class="btn-reset" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i> Réinitialiser les filtres
+                </button>
+            </div>
+        </div>
+
+        <!-- Affichage des filtres actifs -->
+        <div class="active-filters" id="active-filters" style="display: none;">
+            <strong>Filtres actifs :</strong> <span id="filters-text"></span>
         </div>
     </div>
 
@@ -631,7 +798,8 @@
     <div class="card-block">
         <div class="card-header">
             <div class="card-header-left">
-                <h4><i class="fas fa-school"></i> <span id="table-title">Annuaires</span> </h4>
+                <h4><i class="fas fa-school"></i> <span id="table-title">Annuaires</span></h4>
+                <span class="count-badge" id="total-count-badge">0</span>
             </div>
             <div class="card-header-right">
                 <div class="table-export-buttons">
@@ -644,14 +812,14 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="loading-spinner" id="loading-spinner">
             <div class="spinner"></div>
             <p>Chargement des données...</p>
         </div>
-        
+
         <div class="table-responsive" id="table-container">
-            
+
             <!-- Tableau normal (par défaut) -->
             <table class="table" id="normal-table">
                 <thead>
@@ -688,12 +856,14 @@
                 </tbody>
             </table>
 
-            <!-- Tableau pour Régimes par Proved -->
+            <!-- Tableau pour Régimes par Province -->
             <table class="table regime-table" id="regimes-proved-table" style="display: none;">
                 <thead>
                     <tr>
                         <th class="number-col">N°</th>
                         <th class="proved-col">PROVINCE</th>
+                        <th>Année</th>
+                        <th>Type</th>
                         <th>ECC</th>
                         <th>ECF</th>
                         <th>ECI</th>
@@ -713,7 +883,7 @@
                 </tbody>
             </table>
 
-            <!-- Tableau pour Milieu par Proved -->
+            <!-- Tableau pour Milieu par Province -->
             <table class="table regime-table" id="milieu-proved-table" style="display: none;">
                 <thead>
                     <tr>
@@ -732,7 +902,7 @@
                 </tbody>
             </table>
 
-            <!-- Tableau pour Public par Proved -->
+            <!-- Tableau pour Public par Province -->
             <table class="table regime-table" id="public-proved-table" style="display: none;">
                 <thead>
                     <tr>
@@ -768,160 +938,378 @@
             </table>
 
         </div>
+        
+        <!-- Pied de page avec pagination améliorée -->
         <div class="card-footer">
-            <div class="entries-info" id="entries-info">
-                Sélectionnez un régime pour afficher les données
+            <div class="pagination-container">
+                <div class="pagination-info" id="pagination-info">
+                    Aucune donnée à afficher
+                </div>
+                
+                <div class="page-size-selector">
+                    <label for="page-size">Afficher :</label>
+                    <select class="page-size-select" id="page-size" onchange="changePageSize()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                
+                <nav aria-label="Pagination">
+                    <ul class="pagination" id="pagination">
+                        <!-- La pagination sera générée dynamiquement -->
+                    </ul>
+                </nav>
             </div>
-            <ul class="pagination" id="pagination">
-                <!-- La pagination sera gérée dynamiquement -->
-            </ul>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const regimeCombo = document.getElementById('regime-combo');
-    const anneeSelect = document.getElementById('annee-scolaire');
-    const typeSelect = document.getElementById('type-enseignement');
-    const provinceSelect = document.getElementById('proved');
-    const milieuSelect = document.getElementById('milieu');
-    const secteurSelect = document.getElementById('secteur');
-    
-    const filters = [anneeSelect, typeSelect, provinceSelect, milieuSelect, secteurSelect];
-    
-    // Charger les données initiales
-    loadTableData('normal');
-    
-    // Écouter les changements de filtre
-    regimeCombo.addEventListener('change', function() {
-        loadTableData(this.value);
-    });
-    
-    filters.forEach(filter => {
-        filter.addEventListener('change', function() {
-            const currentRegime = regimeCombo.value || 'normal';
-            loadTableData(currentRegime);
+    // Variables globales pour la pagination
+    let currentPage = 1;
+    let currentPageSize = 10;
+    let currentRegimeType = 'normal';
+    let currentFilters = {};
+    let totalPages = 1;
+    let totalCount = 0;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const regimeCombo = document.getElementById('regime-combo');
+        const anneeSelect = document.getElementById('annee-scolaire');
+        const typeSelect = document.getElementById('type-enseignement');
+        const provinceSelect = document.getElementById('proved');
+        const milieuSelect = document.getElementById('milieu');
+        const secteurSelect = document.getElementById('secteur');
+
+        const filters = [anneeSelect, typeSelect, provinceSelect, milieuSelect, secteurSelect];
+
+        // Charger les données initiales
+        loadTableData('normal', 1, currentPageSize);
+
+        // Écouter les changements de filtre
+        regimeCombo.addEventListener('change', function () {
+            currentRegimeType = this.value || 'normal';
+            currentPage = 1;
+            loadTableData(currentRegimeType, currentPage, currentPageSize);
+        });
+
+        filters.forEach(filter => {
+            filter.addEventListener('change', function () {
+                currentPage = 1;
+                loadTableData(currentRegimeType, currentPage, currentPageSize);
+            });
         });
     });
-});
 
-function showLoading() {
-    document.getElementById('loading-spinner').style.display = 'block';
-    document.getElementById('table-container').style.display = 'none';
-}
-
-function hideLoading() {
-    document.getElementById('loading-spinner').style.display = 'none';
-    document.getElementById('table-container').style.display = 'block';
-}
-
-function loadTableData(regimeType) {
-    showLoading();
-    
-    const filters = {
-        annee: document.getElementById('annee-scolaire').value,
-        type_enseignement: document.getElementById('type-enseignement').value,
-        province: document.getElementById('proved').value,
-        milieu: document.getElementById('milieu').value,
-        secteur: document.getElementById('secteur').value
-    };
-    
-    fetch('{% url "get_table_data" %}', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': getCsrfToken()
-        },
-        body: JSON.stringify({
-            regime_type: regimeType,
-            filters: filters
-        })
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            updateTableDisplay(regimeType, data.data);
-        } else {
-            console.error('Erreur:', data.error);
-            alert('Erreur lors du chargement des données: ' + data.error);
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Erreur lors du chargement des données');
-    })
-    .finally(() => {
-        hideLoading();
-    });
-}
-
-function updateTableDisplay(regimeType, data) {
-    // Cacher tous les tableaux
-    hideAllTables();
-    
-    const tableTitle = document.getElementById('table-title');
-    const entriesInfo = document.getElementById('entries-info');
-    
-    switch(regimeType) {
-        case 'regime_national':
-            displayRegimeNational(data);
-            tableTitle.textContent = 'Régime National - Statistiques par Secteur';
-            entriesInfo.textContent = `Affichage de ${data.length} secteurs`;
-            break;
-            
-        case 'regimes_proved':
-            displayRegimesProved(data);
-            tableTitle.textContent = 'Régimes par Province - Détail par catégorie';
-            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
-            break;
-            
-        case 'milieu_proved':
-            displayMilieuProved(data);
-            tableTitle.textContent = 'Milieu par Province - Répartition Urbain/Rural';
-            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
-            break;
-            
-        case 'public_proved':
-            displayPublicProved(data);
-            tableTitle.textContent = 'Public par Province - Total des établissements publics';
-            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
-            break;
-            
-        case 'milieu_public':
-            displayMilieuPublic(data);
-            tableTitle.textContent = 'Milieu Public - Répartition Urbain/Rural du Public';
-            entriesInfo.textContent = `Affichage de ${data.length} provinces`;
-            break;
-            
-        default:
-            displayNormalTable(data);
-            tableTitle.textContent = 'Annuaires - Liste des établissements';
-            entriesInfo.textContent = `Affichage de ${data.length} établissements`;
-            break;
+    function showLoading() {
+        document.getElementById('loading-spinner').style.display = 'block';
+        document.getElementById('table-container').style.display = 'none';
+        document.querySelector('.card-footer').style.display = 'none';
     }
-}
 
-function hideAllTables() {
-    const tables = [
-        'normal-table', 'regime-national-table', 'regimes-proved-table',
-        'milieu-proved-table', 'public-proved-table', 'milieu-public-table'
-    ];
-    
-    tables.forEach(tableId => {
-        document.getElementById(tableId).style.display = 'none';
-    });
-}
+    function hideLoading() {
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('table-container').style.display = 'block';
+        document.querySelector('.card-footer').style.display = 'flex';
+    }
 
-// Fonctions d'affichage pour chaque type de tableau
-function displayNormalTable(data) {
-    const table = document.getElementById('normal-table');
-    const tbody = document.getElementById('normal-table-body');
-    tbody.innerHTML = '';
-    
-    data.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+    function loadTableData(regimeType, page = 1, pageSize = 10) {
+        showLoading();
+
+        currentFilters = {
+            annee: document.getElementById('annee-scolaire').value,
+            type_enseignement: document.getElementById('type-enseignement').value,
+            province: document.getElementById('proved').value,
+            milieu: document.getElementById('milieu').value,
+            secteur: document.getElementById('secteur').value
+        };
+
+        // Afficher les filtres actifs
+        updateActiveFilters(currentFilters);
+
+        fetch('{% url "get_table_data" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                regime_type: regimeType,
+                filters: currentFilters,
+                page: page,
+                page_size: pageSize
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateTableDisplay(regimeType, data.data);
+                    updatePagination(data.pagination);
+                    updateEntriesInfo(data.pagination, regimeType);
+                } else {
+                    console.error('Erreur:', data.error);
+                    showError('Erreur lors du chargement des données: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                showError('Erreur lors du chargement des données');
+            })
+            .finally(() => {
+                hideLoading();
+            });
+    }
+
+    function updatePagination(pagination) {
+        currentPage = pagination.page;
+        totalPages = pagination.total_pages;
+        totalCount = pagination.total_count;
+        
+        const paginationElement = document.getElementById('pagination');
+        const paginationInfo = document.getElementById('pagination-info');
+        
+        // Mettre à jour les informations de pagination
+        if (totalCount > 0) {
+            paginationInfo.innerHTML = `
+                Affichage de <strong>${pagination.start_index}-${pagination.end_index}</strong> 
+                sur <strong>${totalCount.toLocaleString()}</strong> entrées
+            `;
+        } else {
+            paginationInfo.innerHTML = 'Aucune donnée à afficher';
+        }
+        
+        // Générer les boutons de pagination
+        let paginationHTML = '';
+        
+        // Bouton Précédent
+        if (pagination.has_previous) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${currentPage - 1})" aria-label="Précédent">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+        } else {
+            paginationHTML += `
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                </li>
+            `;
+        }
+        
+        // Calcul des pages à afficher
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        // Ajuster si on est près du début
+        if (currentPage <= 3) {
+            endPage = Math.min(5, totalPages);
+        }
+        
+        // Ajuster si on est près de la fin
+        if (currentPage >= totalPages - 2) {
+            startPage = Math.max(1, totalPages - 4);
+        }
+        
+        // Première page
+        if (startPage > 1) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(1)">1</a>
+                </li>
+            `;
+            if (startPage > 2) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
+        // Pages numérotées
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === currentPage) {
+                paginationHTML += `
+                    <li class="page-item active">
+                        <span class="page-link">${i}</span>
+                    </li>
+                `;
+            } else {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="goToPage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+        }
+        
+        // Dernière page
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${totalPages})">${totalPages}</a>
+                </li>
+            `;
+        }
+        
+        // Bouton Suivant
+        if (pagination.has_next) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${currentPage + 1})" aria-label="Suivant">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+        } else {
+            paginationHTML += `
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                </li>
+            `;
+        }
+        
+        paginationElement.innerHTML = paginationHTML;
+    }
+
+    function goToPage(page) {
+        if (page >= 1 && page <= totalPages && page !== currentPage) {
+            currentPage = page;
+            loadTableData(currentRegimeType, currentPage, currentPageSize);
+        }
+    }
+
+    function changePageSize() {
+        const newSize = parseInt(document.getElementById('page-size').value);
+        if (newSize !== currentPageSize) {
+            currentPageSize = newSize;
+            currentPage = 1;
+            loadTableData(currentRegimeType, currentPage, currentPageSize);
+        }
+    }
+
+    function updateActiveFilters(filters) {
+        const activeFilters = [];
+
+        if (filters.annee) activeFilters.push(`Année: ${filters.annee}`);
+        if (filters.type_enseignement) activeFilters.push(`Type: ${filters.type_enseignement}`);
+        if (filters.province) {
+            const provinceSelect = document.getElementById('proved');
+            const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
+            activeFilters.push(`Province: ${provinceText}`);
+        }
+        if (filters.milieu) activeFilters.push(`Milieu: ${filters.milieu}`);
+        if (filters.secteur) activeFilters.push(`Secteur: ${filters.secteur}`);
+
+        const activeFiltersDiv = document.getElementById('active-filters');
+        const filtersText = document.getElementById('filters-text');
+
+        if (activeFilters.length > 0) {
+            filtersText.innerHTML = activeFilters.map(filter => 
+                `<span class="filter-badge">${filter}</span>`
+            ).join(' ');
+            activeFiltersDiv.style.display = 'block';
+        } else {
+            activeFiltersDiv.style.display = 'none';
+        }
+    }
+
+    function updateEntriesInfo(pagination, regimeType) {
+        const totalCountBadge = document.getElementById('total-count-badge');
+        totalCountBadge.textContent = pagination.total_count.toLocaleString();
+        
+        // Mettre à jour le badge avec animation
+        totalCountBadge.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            totalCountBadge.style.transform = 'scale(1)';
+        }, 200);
+    }
+
+    function updateTableDisplay(regimeType, data) {
+        // Cacher tous les tableaux
+        hideAllTables();
+
+        const tableTitle = document.getElementById('table-title');
+
+        switch (regimeType) {
+            case 'regime_national':
+                displayRegimeNational(data);
+                tableTitle.textContent = 'Régime National - Statistiques par Secteur';
+                break;
+
+            case 'regimes_proved':
+                displayRegimesProved(data);
+                tableTitle.textContent = 'Régimes par Province - Détail par catégorie';
+                break;
+
+            case 'milieu_proved':
+                displayMilieuProved(data);
+                tableTitle.textContent = 'Milieu par Province - Répartition Urbain/Rural';
+                break;
+
+            case 'public_proved':
+                displayPublicProved(data);
+                tableTitle.textContent = 'Public par Province - Total des établissements publics';
+                break;
+
+            case 'milieu_public':
+                displayMilieuPublic(data);
+                tableTitle.textContent = 'Milieu Public - Répartition Urbain/Rural du Public';
+                break;
+
+            default:
+                displayNormalTable(data);
+                tableTitle.textContent = 'Annuaires - Liste des établissements';
+                break;
+        }
+    }
+
+    function hideAllTables() {
+        const tables = [
+            'normal-table', 'regime-national-table', 'regimes-proved-table',
+            'milieu-proved-table', 'public-proved-table', 'milieu-public-table'
+        ];
+
+        tables.forEach(tableId => {
+            document.getElementById(tableId).style.display = 'none';
+        });
+    }
+
+    function resetFilters() {
+        document.getElementById('annee-scolaire').value = '';
+        document.getElementById('type-enseignement').value = '';
+        document.getElementById('proved').value = '';
+        document.getElementById('milieu').value = '';
+        document.getElementById('secteur').value = '';
+        document.getElementById('page-size').value = '10';
+
+        // Masquer les filtres actifs
+        document.getElementById('active-filters').style.display = 'none';
+
+        currentPage = 1;
+        currentPageSize = 10;
+        currentRegimeType = document.getElementById('regime-combo').value || 'normal';
+        loadTableData(currentRegimeType, currentPage, currentPageSize);
+    }
+
+    function showError(message) {
+        // Vous pouvez implémenter une notification toast ou une alerte plus élégante
+        console.error(message);
+        alert(message);
+    }
+
+    // Fonctions d'affichage pour chaque type de tableau (restent identiques)
+    function displayNormalTable(data) {
+        const table = document.getElementById('normal-table');
+        const tbody = document.getElementById('normal-table-body');
+        tbody.innerHTML = '';
+
+        data.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
             <th scope="row">${index + 1}</th>
             <td>${row.nom_etablissement || 'N/A'}</td>
             <td>${row.annee_scolaire || 'N/A'}</td>
@@ -932,76 +1320,78 @@ function displayNormalTable(data) {
             <td><span class="status status-active">${row.statut || 'Actif'}</span></td>
             <td>${row.created_at ? new Date(row.created_at).toLocaleDateString() : 'N/A'}</td>
         `;
-        tbody.appendChild(tr);
-    });
-    
-    table.style.display = 'table';
-}
+            tbody.appendChild(tr);
+        });
 
-function displayRegimeNational(data) {
-    const table = document.getElementById('regime-national-table');
-    const tbody = document.getElementById('regime-national-table-body');
-    tbody.innerHTML = '';
-    
-    let secteurActuel = '';
-    let totalSecteurEtablissements = 0;
-    let totalSecteurPublic = 0;
-    let totalSecteurPrive = 0;
-    let totalGeneralEtablissements = 0;
-    let totalGeneralPublic = 0;
-    let totalGeneralPrive = 0;
-    
-    data.forEach((row, index) => {
-        if (row.secteur !== secteurActuel) {
-            // Ajouter le total du secteur précédent
-            if (secteurActuel !== '') {
-                addTotalRowRegimeNational(tbody, `Total ${secteurActuel}`, totalSecteurEtablissements, totalSecteurPublic, totalSecteurPrive);
-                totalSecteurEtablissements = 0;
-                totalSecteurPublic = 0;
-                totalSecteurPrive = 0;
-            }
-            
-            // Nouveau secteur
-            secteurActuel = row.secteur;
-            addSectorRow(tbody, secteurActuel);
-        }
-        
-        addRegimeRowRegimeNational(tbody, row.regime_gestion, row.total_etablissements, row.total_public, row.total_prive);
-        totalSecteurEtablissements += parseInt(row.total_etablissements) || 0;
-        totalSecteurPublic += parseInt(row.total_public) || 0;
-        totalSecteurPrive += parseInt(row.total_prive) || 0;
-        totalGeneralEtablissements += parseInt(row.total_etablissements) || 0;
-        totalGeneralPublic += parseInt(row.total_public) || 0;
-        totalGeneralPrive += parseInt(row.total_prive) || 0;
-    });
-    
-    // Dernier total de secteur
-    if (secteurActuel !== '') {
-        addTotalRowRegimeNational(tbody, `Total ${secteurActuel}`, totalSecteurEtablissements, totalSecteurPublic, totalSecteurPrive);
+        table.style.display = 'table';
     }
-    
-    // Total général
-    addGrandTotalRowRegimeNational(tbody, totalGeneralEtablissements, totalGeneralPublic, totalGeneralPrive);
-    
-    table.style.display = 'table';
-}
 
-function displayRegimesProved(data) {
-    const table = document.getElementById('regimes-proved-table');
-    const tbody = document.getElementById('regimes-proved-table-body');
-    tbody.innerHTML = '';
-    
-    let totals = {
-        ECC: 0, ECF: 0, ECI: 0, ECK: 0, 
-        ECP: 0, ECS: 0, ENC: 0, EPR: 0, NR: 0,
-        Total_Public: 0, Total_Prive: 0, Total_General: 0
-    };
-    
-    data.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+    function displayRegimeNational(data) {
+        const table = document.getElementById('regime-national-table');
+        const tbody = document.getElementById('regime-national-table-body');
+        tbody.innerHTML = '';
+
+        let secteurActuel = '';
+        let totalSecteurEtablissements = 0;
+        let totalSecteurPublic = 0;
+        let totalSecteurPrive = 0;
+        let totalGeneralEtablissements = 0;
+        let totalGeneralPublic = 0;
+        let totalGeneralPrive = 0;
+
+        data.forEach((row, index) => {
+            if (row.secteur !== secteurActuel) {
+                // Ajouter le total du secteur précédent
+                if (secteurActuel !== '') {
+                    addTotalRowRegimeNational(tbody, `Total ${secteurActuel}`, totalSecteurEtablissements, totalSecteurPublic, totalSecteurPrive);
+                    totalSecteurEtablissements = 0;
+                    totalSecteurPublic = 0;
+                    totalSecteurPrive = 0;
+                }
+
+                // Nouveau secteur
+                secteurActuel = row.secteur;
+                addSectorRow(tbody, secteurActuel);
+            }
+
+            addRegimeRowRegimeNational(tbody, row.regime_gestion, row.total_etablissements, row.total_public, row.total_prive);
+            totalSecteurEtablissements += parseInt(row.total_etablissements) || 0;
+            totalSecteurPublic += parseInt(row.total_public) || 0;
+            totalSecteurPrive += parseInt(row.total_prive) || 0;
+            totalGeneralEtablissements += parseInt(row.total_etablissements) || 0;
+            totalGeneralPublic += parseInt(row.total_public) || 0;
+            totalGeneralPrive += parseInt(row.total_prive) || 0;
+        });
+
+        // Dernier total de secteur
+        if (secteurActuel !== '') {
+            addTotalRowRegimeNational(tbody, `Total ${secteurActuel}`, totalSecteurEtablissements, totalSecteurPublic, totalSecteurPrive);
+        }
+
+        // Total général
+        addGrandTotalRowRegimeNational(tbody, totalGeneralEtablissements, totalGeneralPublic, totalGeneralPrive);
+
+        table.style.display = 'table';
+    }
+
+    function displayRegimesProved(data) {
+        const table = document.getElementById('regimes-proved-table');
+        const tbody = document.getElementById('regimes-proved-table-body');
+        tbody.innerHTML = '';
+
+        let totals = {
+            ECC: 0, ECF: 0, ECI: 0, ECK: 0,
+            ECP: 0, ECS: 0, ENC: 0, EPR: 0, NR: 0,
+            Total_Public: 0, Total_Prive: 0, Total_General: 0
+        };
+
+        data.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
             <td>${index + 1}</td>
             <td class="text-left">${row.province}</td>
+            <td>${row.idannee}</td>
+            <td>${row.type}</td>
             <td>${row.ECC || 0}</td>
             <td>${row.ECF || 0}</td>
             <td>${row.ECI || 0}</td>
@@ -1015,30 +1405,30 @@ function displayRegimesProved(data) {
             <td>${row.Total_Prive || 0}</td>
             <td>${row.Total_General || 0}</td>
         `;
-        tbody.appendChild(tr);
-        
-        // Calcul des totaux
-        Object.keys(totals).forEach(key => {
-            totals[key] += parseInt(row[key]) || 0;
-        });
-    });
-    
-    // Ligne de total
-    addTotalRowRegimes(tbody, totals);
-    table.style.display = 'table';
-}
+            tbody.appendChild(tr);
 
-function displayMilieuProved(data) {
-    const table = document.getElementById('milieu-proved-table');
-    const tbody = document.getElementById('milieu-proved-table-body');
-    tbody.innerHTML = '';
-    
-    let totals = { Urbain: 0, Rural: 0, NR: 0, Total_General: 0 };
-    let index = 1;
-    
-    data.forEach((row) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+            // Calcul des totaux
+            Object.keys(totals).forEach(key => {
+                totals[key] += parseInt(row[key]) || 0;
+            });
+        });
+
+        // Ligne de total
+        addTotalRowRegimes(tbody, totals);
+        table.style.display = 'table';
+    }
+
+    function displayMilieuProved(data) {
+        const table = document.getElementById('milieu-proved-table');
+        const tbody = document.getElementById('milieu-proved-table-body');
+        tbody.innerHTML = '';
+
+        let totals = { Urbain: 0, Rural: 0, NR: 0, Total_General: 0 };
+        let index = 1;
+
+        data.forEach((row) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
             <td>${index++}</td>
             <td class="text-left">${row.province}</td>
             <td>${row.idannee}</td>
@@ -1048,18 +1438,18 @@ function displayMilieuProved(data) {
             <td>${row.NR || 0}</td>
             <td>${row.Total_General || 0}</td>
         `;
-        tbody.appendChild(tr);
-        
-        totals.Urbain += parseInt(row.Urbain) || 0;
-        totals.Rural += parseInt(row.Rural) || 0;
-        totals.NR += parseInt(row.NR) || 0;
-        totals.Total_General += parseInt(row.Total_General) || 0;
-    });
-    
-    // Ligne de total
-    const totalTr = document.createElement('tr');
-    totalTr.className = 'total-row';
-    totalTr.innerHTML = `
+            tbody.appendChild(tr);
+
+            totals.Urbain += parseInt(row.Urbain) || 0;
+            totals.Rural += parseInt(row.Rural) || 0;
+            totals.NR += parseInt(row.NR) || 0;
+            totals.Total_General += parseInt(row.Total_General) || 0;
+        });
+
+        // Ligne de total
+        const totalTr = document.createElement('tr');
+        totalTr.className = 'total-row';
+        totalTr.innerHTML = `
         <td></td>
         <td class="text-left"><strong>TOTAL</strong></td>
         <td></td>
@@ -1069,59 +1459,59 @@ function displayMilieuProved(data) {
         <td><strong>${totals.NR}</strong></td>
         <td><strong>${totals.Total_General}</strong></td>
     `;
-    tbody.appendChild(totalTr);
-    
-    table.style.display = 'table';
-}
+        tbody.appendChild(totalTr);
 
-function displayPublicProved(data) {
-    const table = document.getElementById('public-proved-table');
-    const tbody = document.getElementById('public-proved-table-body');
-    tbody.innerHTML = '';
-    
-    let totalPublic = 0;
-    let index = 1;
-    
-    data.forEach((row) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+        table.style.display = 'table';
+    }
+
+    function displayPublicProved(data) {
+        const table = document.getElementById('public-proved-table');
+        const tbody = document.getElementById('public-proved-table-body');
+        tbody.innerHTML = '';
+
+        let totalPublic = 0;
+        let index = 1;
+
+        data.forEach((row) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
             <td>${index++}</td>
             <td class="text-left">${row.province}</td>
             <td>${row.idannee}</td>
             <td>${row.type}</td>
             <td>${row.nombre_ecoles_public || 0}</td>
         `;
-        tbody.appendChild(tr);
-        
-        totalPublic += parseInt(row.nombre_ecoles_public) || 0;
-    });
-    
-    // Ligne de total
-    const totalTr = document.createElement('tr');
-    totalTr.className = 'total-row';
-    totalTr.innerHTML = `
+            tbody.appendChild(tr);
+
+            totalPublic += parseInt(row.nombre_ecoles_public) || 0;
+        });
+
+        // Ligne de total
+        const totalTr = document.createElement('tr');
+        totalTr.className = 'total-row';
+        totalTr.innerHTML = `
         <td></td>
         <td class="text-left"><strong>TOTAL GÉNÉRAL</strong></td>
         <td></td>
         <td></td>
         <td><strong>${totalPublic}</strong></td>
     `;
-    tbody.appendChild(totalTr);
-    
-    table.style.display = 'table';
-}
+        tbody.appendChild(totalTr);
 
-function displayMilieuPublic(data) {
-    const table = document.getElementById('milieu-public-table');
-    const tbody = document.getElementById('milieu-public-table-body');
-    tbody.innerHTML = '';
-    
-    let totals = { Urbain: 0, Rural: 0, NR: 0, Total_Public: 0 };
-    let index = 1;
-    
-    data.forEach((row) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
+        table.style.display = 'table';
+    }
+
+    function displayMilieuPublic(data) {
+        const table = document.getElementById('milieu-public-table');
+        const tbody = document.getElementById('milieu-public-table-body');
+        tbody.innerHTML = '';
+
+        let totals = { Urbain: 0, Rural: 0, NR: 0, Total_Public: 0 };
+        let index = 1;
+
+        data.forEach((row) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
             <td>${index++}</td>
             <td class="text-left">${row.province}</td>
             <td>${row.idannee}</td>
@@ -1131,18 +1521,18 @@ function displayMilieuPublic(data) {
             <td>${row.NR || 0}</td>
             <td>${row.Total_Public || 0}</td>
         `;
-        tbody.appendChild(tr);
-        
-        totals.Urbain += parseInt(row.Urbain) || 0;
-        totals.Rural += parseInt(row.Rural) || 0;
-        totals.NR += parseInt(row.NR) || 0;
-        totals.Total_Public += parseInt(row.Total_Public) || 0;
-    });
-    
-    // Ligne de total
-    const totalTr = document.createElement('tr');
-    totalTr.className = 'total-row';
-    totalTr.innerHTML = `
+            tbody.appendChild(tr);
+
+            totals.Urbain += parseInt(row.Urbain) || 0;
+            totals.Rural += parseInt(row.Rural) || 0;
+            totals.NR += parseInt(row.NR) || 0;
+            totals.Total_Public += parseInt(row.Total_Public) || 0;
+        });
+
+        // Ligne de total
+        const totalTr = document.createElement('tr');
+        totalTr.className = 'total-row';
+        totalTr.innerHTML = `
         <td></td>
         <td class="text-left"><strong>TOTAL</strong></td>
         <td></td>
@@ -1152,64 +1542,66 @@ function displayMilieuPublic(data) {
         <td><strong>${totals.NR}</strong></td>
         <td><strong>${totals.Total_Public}</strong></td>
     `;
-    tbody.appendChild(totalTr);
-    
-    table.style.display = 'table';
-}
+        tbody.appendChild(totalTr);
 
-// Fonctions utilitaires pour créer les lignes
-function addSectorRow(tbody, secteur) {
-    const tr = document.createElement('tr');
-    tr.className = 'sector-row';
-    tr.innerHTML = `<td><strong>${secteur}</strong></td><td></td><td></td><td></td><td></td>`;
-    tbody.appendChild(tr);
-}
+        table.style.display = 'table';
+    }
 
-function addRegimeRowRegimeNational(tbody, regime, totalEtablissements, totalPublic, totalPrive) {
-    const tr = document.createElement('tr');
-    tr.className = 'regime-row';
-    tr.innerHTML = `
+    // Fonctions utilitaires pour créer les lignes
+    function addSectorRow(tbody, secteur) {
+        const tr = document.createElement('tr');
+        tr.className = 'sector-row';
+        tr.innerHTML = `<td><strong>${secteur}</strong></td><td></td><td></td><td></td><td></td>`;
+        tbody.appendChild(tr);
+    }
+
+    function addRegimeRowRegimeNational(tbody, regime, totalEtablissements, totalPublic, totalPrive) {
+        const tr = document.createElement('tr');
+        tr.className = 'regime-row';
+        tr.innerHTML = `
         <td></td>
         <td>${regime}</td>
         <td>${totalEtablissements}</td>
         <td>${totalPublic}</td>
         <td>${totalPrive}</td>
     `;
-    tbody.appendChild(tr);
-}
+        tbody.appendChild(tr);
+    }
 
-function addTotalRowRegimeNational(tbody, label, totalEtablissements, totalPublic, totalPrive) {
-    const tr = document.createElement('tr');
-    tr.className = 'total-row';
-    tr.innerHTML = `
+    function addTotalRowRegimeNational(tbody, label, totalEtablissements, totalPublic, totalPrive) {
+        const tr = document.createElement('tr');
+        tr.className = 'total-row';
+        tr.innerHTML = `
         <td><strong>${label}</strong></td>
         <td></td>
         <td><strong>${totalEtablissements}</strong></td>
         <td><strong>${totalPublic}</strong></td>
         <td><strong>${totalPrive}</strong></td>
     `;
-    tbody.appendChild(tr);
-}
+        tbody.appendChild(tr);
+    }
 
-function addGrandTotalRowRegimeNational(tbody, totalEtablissements, totalPublic, totalPrive) {
-    const tr = document.createElement('tr');
-    tr.className = 'grand-total';
-    tr.innerHTML = `
+    function addGrandTotalRowRegimeNational(tbody, totalEtablissements, totalPublic, totalPrive) {
+        const tr = document.createElement('tr');
+        tr.className = 'grand-total';
+        tr.innerHTML = `
         <td><strong>TOTAL GÉNÉRAL</strong></td>
         <td></td>
         <td><strong>${totalEtablissements}</strong></td>
         <td><strong>${totalPublic}</strong></td>
         <td><strong>${totalPrive}</strong></td>
     `;
-    tbody.appendChild(tr);
-}
+        tbody.appendChild(tr);
+    }
 
-function addTotalRowRegimes(tbody, totals) {
-    const tr = document.createElement('tr');
-    tr.className = 'total-row';
-    tr.innerHTML = `
+    function addTotalRowRegimes(tbody, totals) {
+        const tr = document.createElement('tr');
+        tr.className = 'total-row';
+        tr.innerHTML = `
         <td></td>
         <td class="text-left"><strong>TOTAL</strong></td>
+        <td></td>
+        <td></td>
         <td><strong>${totals.ECC}</strong></td>
         <td><strong>${totals.ECF}</strong></td>
         <td><strong>${totals.ECI}</strong></td>
@@ -1223,28 +1615,47 @@ function addTotalRowRegimes(tbody, totals) {
         <td><strong>${totals.Total_Prive}</strong></td>
         <td><strong>${totals.Total_General}</strong></td>
     `;
-    tbody.appendChild(tr);
-}
+        tbody.appendChild(tr);
+    }
 
-function getCsrfToken() {
-    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
-    return csrfToken ? csrfToken.value : '';
-}
+    function getCsrfToken() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        return csrfToken ? csrfToken.value : '';
+    }
 
-// Fonctions d'export
-function exportToExcel() {
-    const regimeCombo = document.getElementById('regime-combo');
-    const tableTitle = document.getElementById('table-title').textContent;
-    alert('Exportation en Excel: ' + tableTitle);
-    // Implémentez l'export Excel ici
-}
+    // FONCTIONS D'EXPORT
+    function exportToExcel() {
+        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const filters = getCurrentFilters();
+        const url = `{% url "export_excel" %}?regime_type=${regimeType}&${filters}`;
+        window.location.href = url;
+    }
 
-function exportToPDF() {
-    const regimeCombo = document.getElementById('regime-combo');
-    const tableTitle = document.getElementById('table-title').textContent;
-    alert('Exportation en PDF: ' + tableTitle);
-    // Implémentez l'export PDF ici
-}
+    function exportToPDF() {
+        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const filters = getCurrentFilters();
+        const url = `{% url "export_pdf" %}?regime_type=${regimeType}&${filters}`;
+        window.location.href = url;
+    }
+
+    function getCurrentFilters() {
+        const filters = {
+            annee: document.getElementById('annee-scolaire').value,
+            type_enseignement: document.getElementById('type-enseignement').value,
+            province: document.getElementById('proved').value,
+            milieu: document.getElementById('milieu').value,
+            secteur: document.getElementById('secteur').value
+        };
+        
+        const params = [];
+        for (const [key, value] of Object.entries(filters)) {
+            if (value) {
+                params.push(`${key}=${encodeURIComponent(value)}`);
+            }
+        }
+        
+        return params.join('&');
+    }
 </script>
 
 {% endblock content %}
