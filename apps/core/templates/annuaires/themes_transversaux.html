@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block annuaire_active %} active {% endblock %}
+{% block themes_active %} active {% endblock %}
 {% block content %}
 
 <style>
@@ -71,8 +71,8 @@
     .filter-select:focus,
     .filter-combo:focus {
         outline: none;
-        border-color: #4b6cb7;
-        box-shadow: 0 0 0 2px rgba(75, 108, 183, 0.2);
+        border-color: #3498db;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
     }
 
     .combo-container {
@@ -134,6 +134,11 @@
         color: white;
     }
 
+    .csv-btn {
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        color: white;
+    }
+
     .export-btn:hover {
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -152,7 +157,7 @@
     }
 
     .card-header {
-        background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%);
+        background: linear-gradient(90deg, #3498db 0%, #2c3e50 100%);
         color: white;
         padding: 20px 25px;
         display: flex;
@@ -222,7 +227,6 @@
         width: 100%;
         border-collapse: collapse;
         margin: 20px 0;
-        font-size: 0.9rem;
     }
 
     thead {
@@ -233,18 +237,33 @@
     }
 
     th {
-        padding: 12px 8px;
-        text-align: center;
+        padding: 15px 12px;
+        text-align: left;
         font-weight: 600;
         color: #495057;
-        border: 1px solid #dee2e6;
-        background-color: #e9ecef;
+        border-bottom: 2px solid #dee2e6;
+        position: relative;
     }
 
-    td {
-        padding: 10px 8px;
-        border: 1px solid #dee2e6;
-        text-align: center;
+    th:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #3498db;
+        transition: width 0.3s ease;
+    }
+
+    th:hover:after {
+        width: 100%;
+    }
+
+    td,
+    tbody th {
+        padding: 14px 12px;
+        border-bottom: 1px solid #e9ecef;
         color: #495057;
     }
 
@@ -253,65 +272,62 @@
     }
 
     tbody tr:hover {
-        background-color: #f8f9fa;
+        background-color: #f1f3f5;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    /* Styles spécifiques pour chaque type de tableau */
-    .regime-table th,
-    .regime-table td {
-        text-align: center;
-        white-space: nowrap;
+    tbody tr:last-child {
+        border-bottom: none;
     }
 
-    .regime-table .text-left {
-        text-align: left;
-    }
-
-    .number-col {
-        width: 60px;
-        text-align: center;
-    }
-
-    .province-col {
-        width: 150px;
-        text-align: left;
-    }
-
-    .secteur-col {
-        width: 120px;
-        text-align: left;
-        font-weight: bold;
-    }
-
-    /* Styles pour les lignes spécifiques */
-    .secteur-row {
-        background-color: #e3f2fd !important;
-        font-weight: 700;
-    }
-
-    .regime-detail-row {
+    /* Style pour les lignes impaires */
+    tbody tr:nth-child(odd) {
         background-color: #fafbfc;
     }
 
-    .total-public-row {
-        background-color: #e8f5e8 !important;
-        font-weight: 700;
+    tbody tr:nth-child(odd):hover {
+        background-color: #f1f3f5;
     }
 
-    .total-prive-row {
-        background-color: #fff3cd !important;
-        font-weight: 700;
+    /* Style pour les thèmes */
+    .theme-row {
+        background-color: #e8f4fd !important;
+        font-weight: 600;
     }
 
-    .grand-total {
-        background-color: #d4edda !important;
-        font-weight: 800;
-        font-size: 1rem;
+    .theme-row td {
+        border-bottom: 2px solid #3498db;
     }
 
+    .sub-theme-row {
+        background-color: #f8f9fa;
+    }
+
+    /* Style pour les nombres */
+    .number-cell {
+        text-align: center;
+        font-weight: 500;
+    }
+
+    .positive-number {
+        color: #27ae60;
+        font-weight: 600;
+    }
+
+    .zero-number {
+        color: #95a5a6;
+    }
+
+    /* Style pour les lignes de total */
     .total-row {
-        background-color: #e3f2fd !important;
+        background-color: #2c3e50 !important;
+        color: white;
         font-weight: 700;
+    }
+
+    .total-row td {
+        border-bottom: none;
     }
 
     /* Loading spinner */
@@ -323,7 +339,7 @@
 
     .spinner {
         border: 4px solid #f3f3f3;
-        border-top: 4px solid #4b6cb7;
+        border-top: 4px solid #3498db;
         border-radius: 50%;
         width: 50px;
         height: 50px;
@@ -357,7 +373,7 @@
 
     .filter-badge {
         display: inline-block;
-        background: #4b6cb7;
+        background: #3498db;
         color: white;
         padding: 4px 8px;
         border-radius: 12px;
@@ -367,12 +383,37 @@
 
     /* Badges pour les nombres */
     .count-badge {
-        background: linear-gradient(135deg, #4b6cb7, #182848);
+        background: linear-gradient(135deg, #3498db, #2c3e50);
         color: white;
         padding: 3px 8px;
         border-radius: 10px;
         font-size: 0.75rem;
         font-weight: 600;
+    }
+
+    /* Indicateurs visuels */
+    .theme-indicator {
+        display: inline-block;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 8px;
+    }
+
+    .theme-vih {
+        background-color: #e74c3c;
+    }
+
+    .theme-sante {
+        background-color: #3498db;
+    }
+
+    .theme-violence {
+        background-color: #9b59b6;
+    }
+
+    .theme-environnement {
+        background-color: #27ae60;
     }
 
     /* Pied de page avec pagination */
@@ -419,7 +460,7 @@
         padding: 8px 12px;
         border: 1px solid #dee2e6;
         border-radius: 8px;
-        color: #4b6cb7;
+        color: #3498db;
         text-decoration: none;
         font-weight: 500;
         transition: all 0.3s ease;
@@ -428,15 +469,15 @@
 
     .page-link:hover {
         background-color: #e9ecef;
-        border-color: #4b6cb7;
+        border-color: #3498db;
         transform: translateY(-1px);
     }
 
     .page-item.active .page-link {
-        background: linear-gradient(135deg, #4b6cb7 0%, #182848 100%);
+        background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
         color: white;
-        border-color: #4b6cb7;
-        box-shadow: 0 2px 8px rgba(75, 108, 183, 0.3);
+        border-color: #3498db;
+        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
     }
 
     .page-item.disabled .page-link {
@@ -468,15 +509,58 @@
         color: #495057;
     }
 
-    /* Styles pour tableaux spécifiques */
-    .compact-table th,
-    .compact-table td {
-        padding: 8px 6px;
-        font-size: 0.85rem;
+    .pagination-nav {
+        display: flex;
+        gap: 10px;
     }
 
-    .wide-table {
-        min-width: 1200px;
+    .pagination-summary {
+        background: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    /* Styles spécifiques pour les tableaux de thèmes */
+    .themes-table {
+        min-width: 800px;
+    }
+
+    .themes-table th:nth-child(1),
+    .themes-table td:nth-child(1) {
+        width: 80px;
+        text-align: center;
+    }
+
+    .themes-table th:nth-child(5),
+    .themes-table th:nth-child(6),
+    .themes-table th:nth-child(7),
+    .themes-table td:nth-child(5),
+    .themes-table td:nth-child(6),
+    .themes-table td:nth-child(7) {
+        text-align: center;
+        width: 120px;
+    }
+
+    /* Message d'état vide */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: #bdc3c7;
+        margin-bottom: 20px;
+    }
+
+    .empty-state h3 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        color: #7f8c8d;
     }
 
     /* Responsive */
@@ -520,8 +604,12 @@
 
         th,
         td {
-            padding: 8px 6px;
-            font-size: 0.8rem;
+            padding: 10px 8px;
+            font-size: 0.9rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
         }
 
         .card-footer {
@@ -536,6 +624,15 @@
 
         .pagination-info {
             text-align: center;
+        }
+
+        .themes-table th:nth-child(5),
+        .themes-table th:nth-child(6),
+        .themes-table th:nth-child(7),
+        .themes-table td:nth-child(5),
+        .themes-table td:nth-child(6),
+        .themes-table td:nth-child(7) {
+            width: 80px;
         }
     }
 
@@ -553,6 +650,10 @@
             flex-direction: column;
             gap: 5px;
         }
+
+        .themes-table {
+            font-size: 0.8rem;
+        }
     }
 </style>
 
@@ -561,20 +662,16 @@
     <!-- Première carte avec le champ combo -->
     <div class="header-card">
         <div class="header-title">
-            <h1>Annuaires des écoles</h1>
-            <p>Gestion des annuaires des établissements scolaires</p>
+            <h1>Thèmes Transversaux</h1>
+            <p>Statistiques des thèmes transversaux enseignés dans les établissements</p>
         </div>
 
         <div class="filter-container">
             <div class="filter-group combo-container">
-                <label for="regime-combo">Régime</label>
-                <select class="filter-combo" id="regime-combo">
-                    <option value="normal">Sélectionnez un régime</option>
-                    <option value="regime_national">Régime National</option>
-                    <option value="regimes_proved">Régimes par Province</option>
-                    <option value="milieu_proved">Milieu par Province</option>
-                    <option value="public_proved">Public par Province</option>
-                    <option value="milieu_public">Milieu public</option>
+                <label for="rapport-combo">Type de Rapport</label>
+                <select class="filter-combo" id="rapport-combo">
+                    <option value="par_province">Par Province</option>
+                    <option value="par_secteur">Par Secteur d'Enseignement</option>
                 </select>
             </div>
         </div>
@@ -609,8 +706,8 @@
             </div>
 
             <div class="filter-group">
-                <label for="proved">Province</label>
-                <select class="filter-select" id="proved">
+                <label for="province">Province</label>
+                <select class="filter-select" id="province">
                     <option value="">Toutes les provinces</option>
                     {% for province in provinces %}
                     <option value="{{ province.id }}">{{ province.libelle }}</option>
@@ -619,25 +716,15 @@
             </div>
 
             <div class="filter-group">
-                <label for="milieu">Milieu</label>
-                <select class="filter-select" id="milieu">
-                    <option value="">Tous les milieux</option>
-                    <option value="urbain">Urbain</option>
-                    <option value="rural">Rural</option>
-                    {% for milieu in milieux %}
-                    {% if milieu != 'URBAIN' and milieu != 'RURAL' %}
-                    <option value="{{ milieu }}">{{ milieu }}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-            </div>
-
-            <div class="filter-group">
-                <label for="secteur">Secteur</label>
+                <label for="secteur">Secteur d'enseignement</label>
                 <select class="filter-select" id="secteur">
                     <option value="">Tous les secteurs</option>
-                    <option value="public">Public</option>
-                    <option value="prive">Privé</option>
+                    <option value="NR">Non renseigné (NR)</option>
+                    {% for secteur in secteurs_enseignement %}
+                    {% if secteur != 'NR' %}
+                    <option value="{{ secteur }}">{{ secteur }}</option>
+                    {% endif %}
+                    {% endfor %}
                 </select>
             </div>
 
@@ -652,13 +739,26 @@
         <div class="active-filters" id="active-filters" style="display: none;">
             <strong>Filtres actifs :</strong> <span id="filters-text"></span>
         </div>
+
+        <!-- Boutons d'export principaux -->
+        <div class="export-buttons">
+            <button class="export-btn excel-btn" onclick="exportToExcel()">
+                <i class="fas fa-file-excel"></i> Exporter en Excel
+            </button>
+            <button class="export-btn pdf-btn" onclick="exportToPDF()">
+                <i class="fas fa-file-pdf"></i> Exporter en PDF
+            </button>
+            <button class="export-btn csv-btn" onclick="exportToCSV()">
+                <i class="fas fa-file-csv"></i> Exporter en CSV
+            </button>
+        </div>
     </div>
 
     <!-- Carte principale avec les tableaux -->
     <div class="card-block">
         <div class="card-header">
             <div class="card-header-left">
-                <h2><i class="fas fa-school"></i> <span id="table-title">Annuaires</span></h2>
+                <h2><i class="fas fa-chart-bar"></i> <span id="table-title">Thèmes Transversaux par Province</span></h2>
                 <span class="count-badge" id="total-count-badge">0</span>
             </div>
             <div class="card-header-right">
@@ -669,7 +769,7 @@
                     <button class="table-export-btn pdf-btn" onclick="exportToPDF()">
                         <i class="fas fa-file-pdf"></i> PDF
                     </button>
-                    <button class="table-export-btn" onclick="exportToCSV()" style="background: #17a2b8; color: white;">
+                    <button class="table-export-btn csv-btn" onclick="exportToCSV()">
                         <i class="fas fa-file-csv"></i> CSV
                     </button>
                 </div>
@@ -682,130 +782,52 @@
         </div>
 
         <div class="table-responsive" id="table-container">
-
-            <!-- Tableau normal (par défaut) -->
-            <table class="table compact-table" id="normal-table">
+            <!-- Tableau pour Rapport par Province -->
+            <table class="table themes-table" id="province-table">
                 <thead>
                     <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Nom</th>
-                        <th>Année Scolaire</th>
+                        <th>#</th>
+                        <th>Année</th>
+                        <th>Type</th>
                         <th>Province</th>
-                        <th>Adresse</th>
-                        <th>Chef d'établissement</th>
-                        <th>Téléphone</th>
-                        <th>Statut</th>
-                        <th>Créé le</th>
+                        <th>Thèmes transversaux</th>
+                        <th>Programme officiel</th>
+                        <th>Discipline à part</th>
+                        <th>Activités parascolaires</th>
                     </tr>
                 </thead>
-                <tbody id="normal-table-body">
+                <tbody id="province-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
-            <!-- Tableau pour Régime National -->
-            <table class="table regime-table compact-table" id="regime-national-table" style="display: none;">
+            <!-- Tableau pour Rapport par Secteur -->
+            <table class="table themes-table" id="secteur-table" style="display: none;">
                 <thead>
                     <tr>
-                        <th class="secteur-col">Secteur</th>
-                        <th>Regime de gestion</th>
-                        <th>Total</th>
+                        <th>#</th>
+                        <th>Année</th>
+                        <th>Type</th>
+                        <th>Secteur d'enseignement</th>
+                        <th>Thèmes transversaux</th>
+                        <th>Programme officiel</th>
+                        <th>Discipline à part</th>
+                        <th>Activités parascolaires</th>
                     </tr>
                 </thead>
-                <tbody id="regime-national-table-body">
+                <tbody id="secteur-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
-
-            <!-- Tableau pour Régimes par Province -->
-            <table class="table regime-table compact-table wide-table" id="regimes-proved-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
-                        <th colspan="10" style="background-color: #d1ecf1;">Public</th>
-                        <th>Total Public</th>
-                        <th>Prive</th>
-                        <th>Total general</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th>ECC</th>
-                        <th>ECF</th>
-                        <th>ECI</th>
-                        <th>ECK</th>
-                        <th>ECP</th>
-                        <th>ECS</th>
-                        <th>ENC</th>
-                        <th>EPR</th>
-                        <th>NR</th>
-                        <th>Autre</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="regimes-proved-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Milieu par Province -->
-            <table class="table regime-table compact-table" id="milieu-proved-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
-                        <th>Urbain</th>
-                        <th>Rural</th>
-                        <th>Total general</th>
-                    </tr>
-                </thead>
-                <tbody id="milieu-proved-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Public par Province -->
-            <table class="table regime-table compact-table" id="public-proved-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="public-proved-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Milieu Public -->
-            <table class="table regime-table compact-table" id="milieu-public-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
-                        <th>Urbain</th>
-                        <th>Rural</th>
-                        <th>Total general</th>
-                    </tr>
-                </thead>
-                <tbody id="milieu-public-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
         </div>
-
-        <!-- Pied de page avec pagination -->
+        
+        <!-- Pied de page avec pagination améliorée -->
         <div class="card-footer">
             <div class="pagination-container">
                 <div class="pagination-info" id="pagination-info">
                     Aucune donnée à afficher
                 </div>
-
+                
                 <div class="page-size-selector">
                     <label for="page-size">Afficher :</label>
                     <select class="page-size-select" id="page-size" onchange="changePageSize()">
@@ -815,7 +837,7 @@
                         <option value="100">100</option>
                     </select>
                 </div>
-
+                
                 <nav aria-label="Pagination">
                     <ul class="pagination" id="pagination">
                         <!-- La pagination sera générée dynamiquement -->
@@ -830,35 +852,34 @@
     // Variables globales pour la pagination
     let currentPage = 1;
     let currentPageSize = 10;
-    let currentRegimeType = 'normal';
+    let currentRapportType = 'par_province';
     let currentFilters = {};
     let totalPages = 1;
     let totalCount = 0;
 
     document.addEventListener('DOMContentLoaded', function () {
-        const regimeCombo = document.getElementById('regime-combo');
+        const rapportCombo = document.getElementById('rapport-combo');
         const anneeSelect = document.getElementById('annee-scolaire');
         const typeSelect = document.getElementById('type-enseignement');
-        const provinceSelect = document.getElementById('proved');
-        const milieuSelect = document.getElementById('milieu');
+        const provinceSelect = document.getElementById('province');
         const secteurSelect = document.getElementById('secteur');
 
-        const filters = [anneeSelect, typeSelect, provinceSelect, milieuSelect, secteurSelect];
+        const filters = [anneeSelect, typeSelect, provinceSelect, secteurSelect];
 
         // Charger les données initiales
-        loadTableData('normal', 1, currentPageSize);
+        loadThemesData(currentRapportType, 1, currentPageSize);
 
         // Écouter les changements de filtre
-        regimeCombo.addEventListener('change', function () {
-            currentRegimeType = this.value || 'normal';
+        rapportCombo.addEventListener('change', function () {
+            currentRapportType = this.value;
             currentPage = 1;
-            loadTableData(currentRegimeType, currentPage, currentPageSize);
+            loadThemesData(currentRapportType, currentPage, currentPageSize);
         });
 
         filters.forEach(filter => {
             filter.addEventListener('change', function () {
                 currentPage = 1;
-                loadTableData(currentRegimeType, currentPage, currentPageSize);
+                loadThemesData(currentRapportType, currentPage, currentPageSize);
             });
         });
     });
@@ -875,28 +896,27 @@
         document.querySelector('.card-footer').style.display = 'flex';
     }
 
-    function loadTableData(regimeType, page = 1, pageSize = 10) {
+    function loadThemesData(rapportType, page = 1, pageSize = 10) {
         showLoading();
 
         currentFilters = {
             annee: document.getElementById('annee-scolaire').value,
             type_enseignement: document.getElementById('type-enseignement').value,
-            province: document.getElementById('proved').value,
-            milieu: document.getElementById('milieu').value,
+            province: document.getElementById('province').value,
             secteur: document.getElementById('secteur').value
         };
 
         // Afficher les filtres actifs
         updateActiveFilters(currentFilters);
 
-        fetch('{% url "get_table_data" %}', {
+        fetch('{% url "get_themes_data" %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()
             },
             body: JSON.stringify({
-                regime_type: regimeType,
+                rapport_type: rapportType,
                 filters: currentFilters,
                 page: page,
                 page_size: pageSize
@@ -905,9 +925,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    updateTableDisplay(regimeType, data.data);
+                    updateTableDisplay(rapportType, data.data);
                     updatePagination(data.pagination);
-                    updateEntriesInfo(data.pagination, regimeType);
+                    updateEntriesInfo(data.pagination, rapportType);
                 } else {
                     console.error('Erreur:', data.error);
                     showError('Erreur lors du chargement des données: ' + data.error);
@@ -926,10 +946,10 @@
         currentPage = pagination.page;
         totalPages = pagination.total_pages;
         totalCount = pagination.total_count;
-
+        
         const paginationElement = document.getElementById('pagination');
         const paginationInfo = document.getElementById('pagination-info');
-
+        
         // Mettre à jour les informations de pagination
         if (totalCount > 0) {
             paginationInfo.innerHTML = `
@@ -939,10 +959,10 @@
         } else {
             paginationInfo.innerHTML = 'Aucune donnée à afficher';
         }
-
+        
         // Générer les boutons de pagination
         let paginationHTML = '';
-
+        
         // Bouton Précédent
         if (pagination.has_previous) {
             paginationHTML += `
@@ -959,9 +979,35 @@
                 </li>
             `;
         }
-
+        
+        // Calcul des pages à afficher
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        // Ajuster si on est près du début
+        if (currentPage <= 3) {
+            endPage = Math.min(5, totalPages);
+        }
+        
+        // Ajuster si on est près de la fin
+        if (currentPage >= totalPages - 2) {
+            startPage = Math.max(1, totalPages - 4);
+        }
+        
+        // Première page
+        if (startPage > 1) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(1)">1</a>
+                </li>
+            `;
+            if (startPage > 2) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
         // Pages numérotées
-        for (let i = 1; i <= totalPages; i++) {
+        for (let i = startPage; i <= endPage; i++) {
             if (i === currentPage) {
                 paginationHTML += `
                     <li class="page-item active">
@@ -976,7 +1022,19 @@
                 `;
             }
         }
-
+        
+        // Dernière page
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${totalPages})">${totalPages}</a>
+                </li>
+            `;
+        }
+        
         // Bouton Suivant
         if (pagination.has_next) {
             paginationHTML += `
@@ -993,14 +1051,14 @@
                 </li>
             `;
         }
-
+        
         paginationElement.innerHTML = paginationHTML;
     }
 
     function goToPage(page) {
         if (page >= 1 && page <= totalPages && page !== currentPage) {
             currentPage = page;
-            loadTableData(currentRegimeType, currentPage, currentPageSize);
+            loadThemesData(currentRapportType, currentPage, currentPageSize);
         }
     }
 
@@ -1009,7 +1067,7 @@
         if (newSize !== currentPageSize) {
             currentPageSize = newSize;
             currentPage = 1;
-            loadTableData(currentRegimeType, currentPage, currentPageSize);
+            loadThemesData(currentRapportType, currentPage, currentPageSize);
         }
     }
 
@@ -1019,18 +1077,21 @@
         if (filters.annee) activeFilters.push(`Année: ${filters.annee}`);
         if (filters.type_enseignement) activeFilters.push(`Type: ${filters.type_enseignement}`);
         if (filters.province) {
-            const provinceSelect = document.getElementById('proved');
+            const provinceSelect = document.getElementById('province');
             const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
             activeFilters.push(`Province: ${provinceText}`);
         }
-        if (filters.milieu) activeFilters.push(`Milieu: ${filters.milieu}`);
-        if (filters.secteur) activeFilters.push(`Secteur: ${filters.secteur}`);
+        if (filters.secteur) {
+            const secteurSelect = document.getElementById('secteur');
+            const secteurText = secteurSelect.options[secteurSelect.selectedIndex].text;
+            activeFilters.push(`Secteur: ${secteurText}`);
+        }
 
         const activeFiltersDiv = document.getElementById('active-filters');
         const filtersText = document.getElementById('filters-text');
 
         if (activeFilters.length > 0) {
-            filtersText.innerHTML = activeFilters.map(filter =>
+            filtersText.innerHTML = activeFilters.map(filter => 
                 `<span class="filter-badge">${filter}</span>`
             ).join(' ');
             activeFiltersDiv.style.display = 'block';
@@ -1039,117 +1100,85 @@
         }
     }
 
-    function updateEntriesInfo(pagination, regimeType) {
+    function updateEntriesInfo(pagination, rapportType) {
         const totalCountBadge = document.getElementById('total-count-badge');
+        const tableTitle = document.getElementById('table-title');
+        
         totalCountBadge.textContent = pagination.total_count.toLocaleString();
-
-        // Mettre à jour le badge avec animation
+        
+        // Mettre à jour le titre en fonction du type de rapport
+        if (rapportType === 'par_secteur') {
+            tableTitle.textContent = 'Thèmes Transversaux par Secteur d\'Enseignement';
+        } else {
+            tableTitle.textContent = 'Thèmes Transversaux par Province';
+        }
+        
+        // Animation du badge
         totalCountBadge.style.transform = 'scale(1.1)';
         setTimeout(() => {
             totalCountBadge.style.transform = 'scale(1)';
         }, 200);
     }
 
-    function updateTableDisplay(regimeType, data) {
+    function updateTableDisplay(rapportType, data) {
         // Cacher tous les tableaux
         hideAllTables();
 
-        const tableTitle = document.getElementById('table-title');
-
-        switch (regimeType) {
-            case 'regime_national':
-                displayRegimeNational(data);
-                tableTitle.textContent = 'Régime National';
-                break;
-
-            case 'regimes_proved':
-                displayRegimesProved(data);
-                tableTitle.textContent = 'Régime par Province';
-                break;
-
-            case 'milieu_proved':
-                displayMilieuProved(data);
-                tableTitle.textContent = 'Milieu par Province';
-                break;
-
-            case 'public_proved':
-                displayPublicProved(data);
-                tableTitle.textContent = 'Public par Province';
-                break;
-
-            case 'milieu_public':
-                displayMilieuPublic(data);
-                tableTitle.textContent = 'Milieu Public';
-                break;
-
-            default:
-                displayNormalTable(data);
-                tableTitle.textContent = 'Liste des Établissements';
-                break;
+        if (rapportType === 'par_secteur') {
+            displaySecteurTable(data);
+        } else {
+            displayProvinceTable(data);
         }
     }
 
     function hideAllTables() {
-        const tables = [
-            'normal-table', 'regime-national-table', 'regimes-proved-table',
-            'milieu-proved-table', 'public-proved-table', 'milieu-public-table'
-        ];
-
-        tables.forEach(tableId => {
-            document.getElementById(tableId).style.display = 'none';
-        });
+        document.getElementById('province-table').style.display = 'none';
+        document.getElementById('secteur-table').style.display = 'none';
     }
 
-    // FONCTIONS D'AFFICHAGE DES TABLEAUX CORRIGÉES
-    function displayNormalTable(data) {
-        const table = document.getElementById('normal-table');
-        const tbody = document.getElementById('normal-table-body');
+    function displayProvinceTable(data) {
+        const table = document.getElementById('province-table');
+        const tbody = document.getElementById('province-table-body');
+        
+        if (data.length === 0) {
+            showEmptyState(tbody, 8);
+            table.style.display = 'table';
+            return;
+        }
+        
         tbody.innerHTML = '';
-
-        data.forEach((row, index) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td class="text-left">${row.nom_etablissement || 'N/A'}</td>
-                <td>${row.annee_scolaire || 'N/A'}</td>
-                <td>${row.province || 'N/A'}</td>
-                <td>${row.adresse || 'N/A'}</td>
-                <td>${row.chef_etablissement || 'N/A'}</td>
-                <td>${row.telephone || 'N/A'}</td>
-                <td>${row.statut || 'Actif'}</td>
-                <td>${row.created_at ? new Date(row.created_at).toLocaleDateString() : 'N/A'}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
-    }
-
-    function displayRegimeNational(data) {
-        const table = document.getElementById('regime-national-table');
-        const tbody = document.getElementById('regime-national-table-body');
-        tbody.innerHTML = '';
+        let currentTheme = '';
+        let rowIndex = 1;
 
         data.forEach((row) => {
             const tr = document.createElement('tr');
-
-            // Appliquer les styles selon le type de ligne
-            if (row.type_ligne === 'secteur') {
-                tr.className = 'secteur-row';
-            } else if (row.type_ligne === 'regime_detail') {
-                tr.className = 'regime-detail-row';
-            } else if (row.type_ligne === 'total_public') {
-                tr.className = 'total-public-row';
-            } else if (row.type_ligne === 'total_prive') {
-                tr.className = 'total-prive-row';
-            } else if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
+            
+            // Appliquer un style différent pour chaque nouveau thème
+            if (row['Thèmes transversaux'] !== currentTheme) {
+                currentTheme = row['Thèmes transversaux'];
+                tr.className = 'theme-row';
             }
 
+            const themeClass = getThemeClass(currentTheme);
+            
             tr.innerHTML = `
-                <td class="text-left">${row.secteur}</td>
-                <td>${row.regime}</td>
-                <td>${row.total}</td>
+                <td>${rowIndex++}</td>
+                <td>${row['Année'] || 'N/A'}</td>
+                <td>${row['Type'] || 'N/A'}</td>
+                <td>${row['Province'] || 'N/A'}</td>
+                <td>
+                    <span class="theme-indicator ${themeClass}"></span>
+                    ${currentTheme}
+                </td>
+                <td class="number-cell ${getNumberClass(row['Dont : Programme officiel'])}">
+                    ${formatNumber(row['Dont : Programme officiel'])}
+                </td>
+                <td class="number-cell ${getNumberClass(row['Dont : Discipline à part'])}">
+                    ${formatNumber(row['Dont : Discipline à part'])}
+                </td>
+                <td class="number-cell ${getNumberClass(row['Dont : Activités parascolaires'])}">
+                    ${formatNumber(row['Dont : Activités parascolaires'])}
+                </td>
             `;
             tbody.appendChild(tr);
         });
@@ -1157,34 +1186,49 @@
         table.style.display = 'table';
     }
 
-    function displayRegimesProved(data) {
-        const table = document.getElementById('regimes-proved-table');
-        const tbody = document.getElementById('regimes-proved-table-body');
+    function displaySecteurTable(data) {
+        const table = document.getElementById('secteur-table');
+        const tbody = document.getElementById('secteur-table-body');
+        
+        if (data.length === 0) {
+            showEmptyState(tbody, 8);
+            table.style.display = 'table';
+            return;
+        }
+        
         tbody.innerHTML = '';
+        let currentTheme = '';
+        let rowIndex = 1;
 
         data.forEach((row) => {
             const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
+            
+            // Appliquer un style différent pour chaque nouveau thème
+            if (row['Thèmes transversaux'] !== currentTheme) {
+                currentTheme = row['Thèmes transversaux'];
+                tr.className = 'theme-row';
             }
 
+            const themeClass = getThemeClass(currentTheme);
+            
             tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.ecc || 0}</td>
-                <td>${row.ecf || 0}</td>
-                <td>${row.eci || 0}</td>
-                <td>${row.eck || 0}</td>
-                <td>${row.ecp || 0}</td>
-                <td>${row.ecs || 0}</td>
-                <td>${row.enc || 0}</td>
-                <td>${row.epr || 0}</td>
-                <td>${row.nr || 0}</td>
-                <td>${row.autre || 0}</td>
-                <td>${row.total_public || 0}</td>
-                <td>${row.prive || 0}</td>
-                <td>${row.total_general || 0}</td>
+                <td>${rowIndex++}</td>
+                <td>${row['Année'] || 'N/A'}</td>
+                <td>${row['Type'] || 'N/A'}</td>
+                <td>${row["Secteur d'enseignement"] || 'N/A'}</td>
+                <td>
+                    <span class="theme-indicator ${themeClass}"></span>
+                    ${currentTheme}
+                </td>
+                <td class="number-cell ${getNumberClass(row['Dont : Programme officiel'])}">
+                    ${formatNumber(row['Dont : Programme officiel'])}
+                </td>
+                <td class="number-cell ${getNumberClass(row['Dont : Discipline à part'])}">
+                    ${formatNumber(row['Dont : Discipline à part'])}
+                </td>
+                <td class="number-cell ${getNumberClass(row['Dont : Activités parascolaires'])}">
+                    ${formatNumber(row['Dont : Activités parascolaires'])}
+                </td>
             `;
             tbody.appendChild(tr);
         });
@@ -1192,84 +1236,40 @@
         table.style.display = 'table';
     }
 
-    function displayMilieuProved(data) {
-        const table = document.getElementById('milieu-proved-table');
-        const tbody = document.getElementById('milieu-proved-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.urbain || 0}</td>
-                <td>${row.rural || 0}</td>
-                <td>${row.total_general || 0}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
+    function getThemeClass(theme) {
+        if (theme.includes('VIH/SIDA')) return 'theme-vih';
+        if (theme.includes('santé sexuelle')) return 'theme-sante';
+        if (theme.includes('violences')) return 'theme-violence';
+        if (theme.includes('environnementale')) return 'theme-environnement';
+        return 'theme-vih'; // défaut
     }
 
-    function displayPublicProved(data) {
-        const table = document.getElementById('public-proved-table');
-        const tbody = document.getElementById('public-proved-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.total || 0}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
+    function getNumberClass(value) {
+        const num = parseInt(value) || 0;
+        return num > 0 ? 'positive-number' : 'zero-number';
     }
 
-    function displayMilieuPublic(data) {
-        const table = document.getElementById('milieu-public-table');
-        const tbody = document.getElementById('milieu-public-table-body');
-        tbody.innerHTML = '';
+    function formatNumber(value) {
+        const num = parseInt(value) || 0;
+        return num.toLocaleString();
+    }
 
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.urbain || 0}</td>
-                <td>${row.rural || 0}</td>
-                <td>${row.total_general || 0}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
+    function showEmptyState(tbody, colspan) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="${colspan}" class="empty-state">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>Aucune donnée disponible</h3>
+                    <p>Essayez de modifier vos critères de filtrage</p>
+                </td>
+            </tr>
+        `;
     }
 
     function resetFilters() {
         document.getElementById('annee-scolaire').value = '';
         document.getElementById('type-enseignement').value = '';
-        document.getElementById('proved').value = '';
-        document.getElementById('milieu').value = '';
+        document.getElementById('province').value = '';
         document.getElementById('secteur').value = '';
         document.getElementById('page-size').value = '10';
 
@@ -1278,13 +1278,12 @@
 
         currentPage = 1;
         currentPageSize = 10;
-        currentRegimeType = document.getElementById('regime-combo').value || 'normal';
-        loadTableData(currentRegimeType, currentPage, currentPageSize);
+        currentRapportType = document.getElementById('rapport-combo').value;
+        loadThemesData(currentRapportType, currentPage, currentPageSize);
     }
 
     function showError(message) {
-        // Implémentez une notification toast ou une alerte plus élégante
-        console.error(message);
+        // Implémentation basique - vous pouvez utiliser un système de toast plus avancé
         alert(message);
     }
 
@@ -1295,49 +1294,43 @@
 
     // FONCTIONS D'EXPORT
     function exportToExcel() {
-        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_excel" %}?regime_type=${regimeType}&${filters}`;
-        console.log('Export Excel URL:', url); // Debug
+        const url = `{% url "export_themes_excel" %}?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
     function exportToPDF() {
-        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_pdf" %}?regime_type=${regimeType}&${filters}`;
-        console.log('Export PDF URL:', url); // Debug
+        const url = `{% url "export_themes_pdf" %}?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
     function exportToCSV() {
-        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_csv" %}?regime_type=${regimeType}&${filters}`;
-        console.log('Export CSV URL:', url); // Debug
+        const url = `{% url "export_themes_csv" %}?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
     function getCurrentFilters() {
-    const filters = {
-        annee: document.getElementById('annee-scolaire').value,
-        type_enseignement: document.getElementById('type-enseignement').value,
-        province: document.getElementById('proved').value,
-        milieu: document.getElementById('milieu').value,
-        secteur: document.getElementById('secteur').value
-    };
-    
-    const params = [];
-    for (const [key, value] of Object.entries(filters)) {
-        if (value) {
-            params.push(`${key}=${encodeURIComponent(value)}`);
+        const filters = {
+            annee: document.getElementById('annee-scolaire').value,
+            type_enseignement: document.getElementById('type-enseignement').value,
+            province: document.getElementById('province').value,
+            secteur: document.getElementById('secteur').value
+        };
+        
+        const params = [];
+        for (const [key, value] of Object.entries(filters)) {
+            if (value) {
+                params.push(`${key}=${encodeURIComponent(value)}`);
+            }
         }
+        
+        return params.join('&');
     }
-    
-    const queryString = params.join('&');
-    console.log('Filters query string:', queryString); // Debug
-    return queryString;
-}
 </script>
 
 {% endblock content %}

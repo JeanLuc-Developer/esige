@@ -31,6 +31,13 @@
     <!-- Style.css -->
     <link rel="stylesheet" type="text/css" href="{% static 'assets/css/style.css' %} ">
 </head>
+<style>
+    .logo {
+    
+    filter: brightness(0) invert(1);
+}
+
+</style>
 
 <body>
     <!-- Pre-loader start -->
@@ -108,6 +115,8 @@
                             </div>
                         </div>
                         <a href="index.html" style="font-weight: bold; font-size: 24px; color: white; text-align: end;">
+                            <img src="{% static 'assets/images/retouche.png' %}" alt="Logo" width="60" height="auto" class="logo">
+
                             ESIGE
                         </a>
                         <a class="mobile-options waves-effect waves-light">
@@ -138,7 +147,7 @@
                                     </li>
                                     <li class="waves-effect waves-light">
                                         <div class="media">
-                                            <img class="d-flex align-self-center img-radius" src="{% static 'assets/images/avatar-2.jpg' %}" alt="Generic placeholder image">
+                                            <img class="d-flex align-self-center img-radius" src="" alt="Generic placeholder image">
                                             <div class="media-body">
                                                 <h5 class="notification-user">Banza Jean-Luc</h5>
                                                 <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
@@ -148,7 +157,7 @@
                                     </li>
                                     <li class="waves-effect waves-light">
                                         <div class="media">
-                                            <img class="d-flex align-self-center img-radius" src="{% static 'assets/images/avatar-4.jpg' %}" alt="Generic placeholder image">
+                                            <img class="d-flex align-self-center img-radius" src="" alt="Generic placeholder image">
                                             <div class="media-body">
                                                 <h5 class="notification-user">Joseph William</h5>
                                                 <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
@@ -158,7 +167,7 @@
                                     </li>
                                     <li class="waves-effect waves-light">
                                         <div class="media">
-                                            <img class="d-flex align-self-center img-radius" src="{% static 'assets/images/avatar-3.jpg' %}" alt="Generic placeholder image">
+                                            <img class="d-flex align-self-center img-radius" src="" alt="Generic placeholder image">
                                             <div class="media-body">
                                                 <h5 class="notification-user">Sara Soudein</h5>
                                                 <p class="notification-msg">Lorem ipsum dolor sit amet, consectetuer elit.</p>
@@ -285,56 +294,56 @@
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="{% url 'annuaire_classe' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'salles_organisees' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Classe</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                          <li class=" ">
-                                            <a href="{% url 'annuaire_eleve' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'effectifs_st1' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Elèves</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                          <li class=" ">
-                                            <a href="{% url 'annuaire_enseignant' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'annuaire_enseignants' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Enseignants</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                       <li class=" ">
-                                            <a href="{% url 'annuaire_enseignant' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'guides_manuels' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Manuels et Guides</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                        <li class=" ">
-                                            <a href="{% url 'annuaire_enseignant' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'gestion_ratios' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Ratios</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="{% url 'annuaire_enseignant' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'annuaire_locaux' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Locaux</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="{% url 'annuaire_enseignant' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'annuaire_commodites' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Commodites</span>
                                                 <span class="pcoded-mcaret"></span>
                                             </a>
                                         </li>
                                         <li class=" ">
-                                            <a href="{% url 'annuaire_enseignant' %}" class="waves-effect waves-dark">
+                                            <a href="{% url 'themes_transversaux' %}" class="waves-effect waves-dark">
                                                 <span class="pcoded-micon"><i class="ti-angle-right"></i></span>
                                                 <span class="pcoded-mtext">Thèmes Transversaux</span>
                                                 <span class="pcoded-mcaret"></span>
