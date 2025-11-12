@@ -6,7 +6,7 @@
 <style>
     .container {
         width: 100%;
-        max-width: 1400px;
+        max-width: 1200px;
         margin: 0 auto;
     }
 
@@ -134,6 +134,11 @@
         color: white;
     }
 
+    .csv-btn {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
     .export-btn:hover {
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -186,6 +191,27 @@
         gap: 15px;
     }
 
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 30px;
+        padding: 5px 15px;
+    }
+
+    .search-box input {
+        background: transparent;
+        border: none;
+        color: white;
+        padding: 8px;
+        width: 200px;
+        outline: none;
+    }
+
+    .search-box input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
     .table-export-buttons {
         display: flex;
         gap: 10px;
@@ -222,7 +248,6 @@
         width: 100%;
         border-collapse: collapse;
         margin: 20px 0;
-        font-size: 0.9rem;
     }
 
     thead {
@@ -233,18 +258,33 @@
     }
 
     th {
-        padding: 12px 8px;
-        text-align: center;
+        padding: 15px 12px;
+        text-align: left;
         font-weight: 600;
         color: #495057;
-        border: 1px solid #dee2e6;
-        background-color: #e9ecef;
+        border-bottom: 2px solid #dee2e6;
+        position: relative;
     }
 
-    td {
-        padding: 10px 8px;
-        border: 1px solid #dee2e6;
-        text-align: center;
+    th:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #4b6cb7;
+        transition: width 0.3s ease;
+    }
+
+    th:hover:after {
+        width: 100%;
+    }
+
+    td,
+    tbody th {
+        padding: 14px 12px;
+        border-bottom: 1px solid #e9ecef;
         color: #495057;
     }
 
@@ -253,129 +293,126 @@
     }
 
     tbody tr:hover {
-        background-color: #f8f9fa;
+        background-color: #f1f3f5;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    /* Styles spécifiques pour chaque type de tableau */
-    .regime-table th,
-    .regime-table td {
-        text-align: center;
-        white-space: nowrap;
+    tbody tr:last-child {
+        border-bottom: none;
     }
 
-    .regime-table .text-left {
-        text-align: left;
-    }
-
-    .number-col {
-        width: 60px;
-        text-align: center;
-    }
-
-    .province-col {
-        width: 150px;
-        text-align: left;
-    }
-
-    .secteur-col {
-        width: 120px;
-        text-align: left;
-        font-weight: bold;
-    }
-
-    /* Styles pour les lignes spécifiques */
-    .secteur-row {
-        background-color: #e3f2fd !important;
-        font-weight: 700;
-    }
-
-    .regime-detail-row {
+    /* Style pour les lignes impaires */
+    tbody tr:nth-child(odd) {
         background-color: #fafbfc;
     }
 
-    .total-public-row {
-        background-color: #e8f5e8 !important;
+    tbody tr:nth-child(odd):hover {
+        background-color: #f1f3f5;
+    }
+
+    /* Style pour la première colonne */
+    tbody th {
+        color: #4b6cb7;
+        font-weight: 600;
+    }
+
+    /* Style pour les lignes de total */
+    .total-row {
+        background-color: #e8f4fd !important;
+        font-weight: 600;
+    }
+
+    .sector-row {
+        background-color: #f0f8ff !important;
         font-weight: 700;
     }
 
-    .total-prive-row {
-        background-color: #fff3cd !important;
+    .regime-row {
+        background-color: #fafbfc;
+    }
+
+    .header-row {
+        background-color: #e3f2fd;
         font-weight: 700;
     }
 
     .grand-total {
         background-color: #d4edda !important;
         font-weight: 800;
-        font-size: 1rem;
+        font-size: 1.1rem;
     }
 
-    .total-row {
-        background-color: #e3f2fd !important;
-        font-weight: 700;
+    /* Style pour les nombres */
+    .number-cell {
+        text-align: right;
+        font-family: 'Courier New', monospace;
+        font-weight: 500;
     }
 
-    /* Loading spinner */
-    .loading-spinner {
-        display: none;
-        text-align: center;
-        padding: 40px;
-    }
-
-    .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #4b6cb7;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 20px;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    /* Filtres actifs */
-    .active-filters {
-        background: #e7f3ff;
-        border: 1px solid #b3d9ff;
-        border-radius: 6px;
-        padding: 12px 16px;
-        margin-top: 10px;
-        font-size: 0.9rem;
-    }
-
-    .active-filters strong {
-        color: #0066cc;
-    }
-
-    .filter-badge {
-        display: inline-block;
-        background: #4b6cb7;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
+    /* Style pour les statuts */
+    .status {
+        padding: 6px 12px;
+        border-radius: 20px;
         font-size: 0.8rem;
-        margin: 0 4px;
+        font-weight: 500;
+        display: inline-block;
     }
 
-    /* Badges pour les nombres */
-    .count-badge {
-        background: linear-gradient(135deg, #4b6cb7, #182848);
+    .status-active {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .status-inactive {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+    .status-pending {
+        background-color: #fff3cd;
+        color: #856404;
+    }
+
+    /* Style pour les boutons d'action */
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn {
+        padding: 6px 10px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.8rem;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .btn-edit {
+        background-color: #17a2b8;
         color: white;
-        padding: 3px 8px;
-        border-radius: 10px;
-        font-size: 0.75rem;
-        font-weight: 600;
     }
 
-    /* Pied de page avec pagination */
+    .btn-delete {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .btn-view {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+        transform: translateY(-1px);
+    }
+
+    /* Style amélioré pour la pagination */
     .card-footer {
         display: flex;
         justify-content: space-between;
@@ -468,15 +505,150 @@
         color: #495057;
     }
 
-    /* Styles pour tableaux spécifiques */
-    .compact-table th,
-    .compact-table td {
-        padding: 8px 6px;
-        font-size: 0.85rem;
+    .pagination-nav {
+        display: flex;
+        gap: 10px;
     }
 
-    .wide-table {
-        min-width: 1200px;
+    .pagination-summary {
+        background: white;
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    /* Styles spécifiques pour les différents tableaux */
+    .salles-table {
+        min-width: 800px;
+    }
+
+    .salles-table th,
+    .salles-table td {
+        text-align: center;
+    }
+
+    .salles-table .text-left {
+        text-align: left;
+    }
+
+    .number-col {
+        width: 60px;
+        text-align: center;
+    }
+
+    .province-col {
+        width: 150px;
+        text-align: left;
+    }
+
+    .secteur-col {
+        width: 120px;
+        text-align: left;
+    }
+
+    .regime-col {
+        width: 100px;
+        text-align: left;
+    }
+
+    .annee-col {
+        width: 100px;
+    }
+
+    .type-col {
+        width: 80px;
+    }
+
+    .salle-col {
+        width: 100px;
+        text-align: right;
+    }
+
+    .total-col {
+        background-color: #e8f5e8;
+        font-weight: 700;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 40px;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4b6cb7;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Filtres actifs */
+    .active-filters {
+        background: #e7f3ff;
+        border: 1px solid #b3d9ff;
+        border-radius: 6px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .active-filters strong {
+        color: #0066cc;
+    }
+
+    .filter-badge {
+        display: inline-block;
+        background: #4b6cb7;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin: 0 4px;
+    }
+
+    /* Badges pour les nombres */
+    .count-badge {
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Indicateurs de salles */
+    .salle-indicator {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .salle-positive {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .salle-zero {
+        background-color: #fff3cd;
+        color: #856404;
     }
 
     /* Responsive */
@@ -513,6 +685,14 @@
             justify-content: space-between;
         }
 
+        .search-box {
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
         .table-export-buttons {
             justify-content: flex-end;
             width: 100%;
@@ -520,8 +700,17 @@
 
         th,
         td {
-            padding: 8px 6px;
-            font-size: 0.8rem;
+            padding: 10px 8px;
+            font-size: 0.9rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .btn {
+            padding: 5px 8px;
+            font-size: 0.7rem;
         }
 
         .card-footer {
@@ -540,6 +729,11 @@
     }
 
     @media (max-width: 576px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 4px;
+        }
+
         .table-export-buttons {
             flex-direction: column;
         }
@@ -561,20 +755,17 @@
     <!-- Première carte avec le champ combo -->
     <div class="header-card">
         <div class="header-title">
-            <h1>Annuaires des écoles</h1>
-            <p>Gestion des annuaires des établissements scolaires</p>
+            <h1>Salles Organisées</h1>
+            <p>Statistiques des salles organisées par niveau maternelle</p>
         </div>
 
         <div class="filter-container">
             <div class="filter-group combo-container">
-                <label for="regime-combo">Régime</label>
-                <select class="filter-combo" id="regime-combo">
-                    <option value="normal">Sélectionnez un régime</option>
-                    <option value="regime_national">Régime National</option>
-                    <option value="regimes_proved">Régimes par Province</option>
-                    <option value="milieu_proved">Milieu par Province</option>
-                    <option value="public_proved">Public par Province</option>
-                    <option value="milieu_public">Milieu public</option>
+                <label for="rapport-combo">Type de Rapport</label>
+                <select class="filter-combo" id="rapport-combo">
+                    <option value="secteur_regime">Par Secteur et Régime</option>
+                    <option value="province">Par Province</option>
+                    <option value="province_detail">Par Province - Détail</option>
                 </select>
             </div>
         </div>
@@ -652,13 +843,26 @@
         <div class="active-filters" id="active-filters" style="display: none;">
             <strong>Filtres actifs :</strong> <span id="filters-text"></span>
         </div>
+
+        <!-- Boutons d'export principaux -->
+        <div class="export-buttons">
+            <button class="export-btn excel-btn" onclick="exportToExcel()">
+                <i class="fas fa-file-excel"></i> Exporter vers Excel
+            </button>
+            <button class="export-btn pdf-btn" onclick="exportToPDF()">
+                <i class="fas fa-file-pdf"></i> Exporter vers PDF
+            </button>
+            <button class="export-btn csv-btn" onclick="exportToCSV()">
+                <i class="fas fa-file-csv"></i> Exporter vers CSV
+            </button>
+        </div>
     </div>
 
     <!-- Carte principale avec les tableaux -->
     <div class="card-block">
         <div class="card-header">
             <div class="card-header-left">
-                <h2><i class="fas fa-school"></i> <span id="table-title">Annuaires</span></h2>
+                <h2><i class="fas fa-chalkboard"></i> <span id="table-title">Salles Organisées par Secteur et Régime</span></h2>
                 <span class="count-badge" id="total-count-badge">0</span>
             </div>
             <div class="card-header-right">
@@ -669,7 +873,7 @@
                     <button class="table-export-btn pdf-btn" onclick="exportToPDF()">
                         <i class="fas fa-file-pdf"></i> PDF
                     </button>
-                    <button class="table-export-btn" onclick="exportToCSV()" style="background: #17a2b8; color: white;">
+                    <button class="table-export-btn csv-btn" onclick="exportToCSV()">
                         <i class="fas fa-file-csv"></i> CSV
                     </button>
                 </div>
@@ -683,129 +887,72 @@
 
         <div class="table-responsive" id="table-container">
 
-            <!-- Tableau normal (par défaut) -->
-            <table class="table compact-table" id="normal-table">
+            <!-- Tableau pour Secteur et Régime -->
+            <table class="table salles-table" id="secteur-regime-table">
                 <thead>
                     <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Nom</th>
-                        <th>Année Scolaire</th>
-                        <th>Province</th>
-                        <th>Adresse</th>
-                        <th>Chef d'établissement</th>
-                        <th>Téléphone</th>
-                        <th>Statut</th>
-                        <th>Créé le</th>
-                    </tr>
-                </thead>
-                <tbody id="normal-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Régime National -->
-            <table class="table regime-table compact-table" id="regime-national-table" style="display: none;">
-                <thead>
-                    <tr>
+                        <th class="annee-col">Année</th>
+                        <th class="type-col">Type</th>
                         <th class="secteur-col">Secteur</th>
-                        <th>Regime de gestion</th>
-                        <th>Total</th>
+                        <th class="regime-col">Régime</th>
+                        <th class="salle-col">1ère Maternelle</th>
+                        <th class="salle-col">2ème Maternelle</th>
+                        <th class="salle-col">3ème Maternelle</th>
+                        <th class="salle-col">Total</th>
                     </tr>
                 </thead>
-                <tbody id="regime-national-table-body">
+                <tbody id="secteur-regime-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
-            <!-- Tableau pour Régimes par Province -->
-            <table class="table regime-table compact-table wide-table" id="regimes-proved-table" style="display: none;">
+            <!-- Tableau pour Province -->
+            <table class="table salles-table" id="province-table" style="display: none;">
                 <thead>
                     <tr>
                         <th class="number-col">N°</th>
                         <th class="province-col">Province</th>
-                        <th colspan="10" style="background-color: #d1ecf1;">Public</th>
-                        <th>Total Public</th>
-                        <th>Prive</th>
-                        <th>Total general</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th>ECC</th>
-                        <th>ECF</th>
-                        <th>ECI</th>
-                        <th>ECK</th>
-                        <th>ECP</th>
-                        <th>ECS</th>
-                        <th>ENC</th>
-                        <th>EPR</th>
-                        <th>NR</th>
-                        <th>Autre</th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th class="annee-col">Année</th>
+                        <th class="type-col">Type</th>
+                        <th class="salle-col">1ère Maternelle</th>
+                        <th class="salle-col">2ème Maternelle</th>
+                        <th class="salle-col">3ème Maternelle</th>
+                        <th class="salle-col">Total</th>
                     </tr>
                 </thead>
-                <tbody id="regimes-proved-table-body">
+                <tbody id="province-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
-            <!-- Tableau pour Milieu par Province -->
-            <table class="table regime-table compact-table" id="milieu-proved-table" style="display: none;">
+            <!-- Tableau pour Province - Détail -->
+            <table class="table salles-table" id="province-detail-table" style="display: none;">
                 <thead>
                     <tr>
                         <th class="number-col">N°</th>
                         <th class="province-col">Province</th>
-                        <th>Urbain</th>
-                        <th>Rural</th>
-                        <th>Total general</th>
+                        <th class="annee-col">Année</th>
+                        <th class="type-col">Type</th>
+                        <th class="salle-col">1ère Maternelle</th>
+                        <th class="salle-col">2ème Maternelle</th>
+                        <th class="salle-col">3ème Maternelle</th>
+                        <th class="salle-col">Total</th>
                     </tr>
                 </thead>
-                <tbody id="milieu-proved-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Public par Province -->
-            <table class="table regime-table compact-table" id="public-proved-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody id="public-proved-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Milieu Public -->
-            <table class="table regime-table compact-table" id="milieu-public-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
-                        <th>Urbain</th>
-                        <th>Rural</th>
-                        <th>Total general</th>
-                    </tr>
-                </thead>
-                <tbody id="milieu-public-table-body">
+                <tbody id="province-detail-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
         </div>
-
-        <!-- Pied de page avec pagination -->
+        
+        <!-- Pied de page avec pagination améliorée -->
         <div class="card-footer">
             <div class="pagination-container">
                 <div class="pagination-info" id="pagination-info">
                     Aucune donnée à afficher
                 </div>
-
+                
                 <div class="page-size-selector">
                     <label for="page-size">Afficher :</label>
                     <select class="page-size-select" id="page-size" onchange="changePageSize()">
@@ -815,7 +962,7 @@
                         <option value="100">100</option>
                     </select>
                 </div>
-
+                
                 <nav aria-label="Pagination">
                     <ul class="pagination" id="pagination">
                         <!-- La pagination sera générée dynamiquement -->
@@ -830,13 +977,13 @@
     // Variables globales pour la pagination
     let currentPage = 1;
     let currentPageSize = 10;
-    let currentRegimeType = 'normal';
+    let currentRapportType = 'secteur_regime';
     let currentFilters = {};
     let totalPages = 1;
     let totalCount = 0;
 
     document.addEventListener('DOMContentLoaded', function () {
-        const regimeCombo = document.getElementById('regime-combo');
+        const rapportCombo = document.getElementById('rapport-combo');
         const anneeSelect = document.getElementById('annee-scolaire');
         const typeSelect = document.getElementById('type-enseignement');
         const provinceSelect = document.getElementById('proved');
@@ -846,19 +993,19 @@
         const filters = [anneeSelect, typeSelect, provinceSelect, milieuSelect, secteurSelect];
 
         // Charger les données initiales
-        loadTableData('normal', 1, currentPageSize);
+        loadSallesData('secteur_regime', 1, currentPageSize);
 
         // Écouter les changements de filtre
-        regimeCombo.addEventListener('change', function () {
-            currentRegimeType = this.value || 'normal';
+        rapportCombo.addEventListener('change', function () {
+            currentRapportType = this.value;
             currentPage = 1;
-            loadTableData(currentRegimeType, currentPage, currentPageSize);
+            loadSallesData(currentRapportType, currentPage, currentPageSize);
         });
 
         filters.forEach(filter => {
             filter.addEventListener('change', function () {
                 currentPage = 1;
-                loadTableData(currentRegimeType, currentPage, currentPageSize);
+                loadSallesData(currentRapportType, currentPage, currentPageSize);
             });
         });
     });
@@ -875,7 +1022,7 @@
         document.querySelector('.card-footer').style.display = 'flex';
     }
 
-    function loadTableData(regimeType, page = 1, pageSize = 10) {
+    function loadSallesData(rapportType, page = 1, pageSize = 10) {
         showLoading();
 
         currentFilters = {
@@ -889,14 +1036,14 @@
         // Afficher les filtres actifs
         updateActiveFilters(currentFilters);
 
-        fetch('{% url "get_table_data" %}', {
+        fetch('{% url "get_salles_data" %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': getCsrfToken()
             },
             body: JSON.stringify({
-                regime_type: regimeType,
+                rapport_type: rapportType,
                 filters: currentFilters,
                 page: page,
                 page_size: pageSize
@@ -905,9 +1052,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    updateTableDisplay(regimeType, data.data);
+                    updateTableDisplay(rapportType, data.data);
                     updatePagination(data.pagination);
-                    updateEntriesInfo(data.pagination, regimeType);
+                    updateEntriesInfo(data.pagination, rapportType);
                 } else {
                     console.error('Erreur:', data.error);
                     showError('Erreur lors du chargement des données: ' + data.error);
@@ -926,10 +1073,10 @@
         currentPage = pagination.page;
         totalPages = pagination.total_pages;
         totalCount = pagination.total_count;
-
+        
         const paginationElement = document.getElementById('pagination');
         const paginationInfo = document.getElementById('pagination-info');
-
+        
         // Mettre à jour les informations de pagination
         if (totalCount > 0) {
             paginationInfo.innerHTML = `
@@ -939,10 +1086,10 @@
         } else {
             paginationInfo.innerHTML = 'Aucune donnée à afficher';
         }
-
+        
         // Générer les boutons de pagination
         let paginationHTML = '';
-
+        
         // Bouton Précédent
         if (pagination.has_previous) {
             paginationHTML += `
@@ -959,9 +1106,35 @@
                 </li>
             `;
         }
-
+        
+        // Calcul des pages à afficher
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        // Ajuster si on est près du début
+        if (currentPage <= 3) {
+            endPage = Math.min(5, totalPages);
+        }
+        
+        // Ajuster si on est près de la fin
+        if (currentPage >= totalPages - 2) {
+            startPage = Math.max(1, totalPages - 4);
+        }
+        
+        // Première page
+        if (startPage > 1) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(1)">1</a>
+                </li>
+            `;
+            if (startPage > 2) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
         // Pages numérotées
-        for (let i = 1; i <= totalPages; i++) {
+        for (let i = startPage; i <= endPage; i++) {
             if (i === currentPage) {
                 paginationHTML += `
                     <li class="page-item active">
@@ -976,7 +1149,19 @@
                 `;
             }
         }
-
+        
+        // Dernière page
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${totalPages})">${totalPages}</a>
+                </li>
+            `;
+        }
+        
         // Bouton Suivant
         if (pagination.has_next) {
             paginationHTML += `
@@ -993,14 +1178,14 @@
                 </li>
             `;
         }
-
+        
         paginationElement.innerHTML = paginationHTML;
     }
 
     function goToPage(page) {
         if (page >= 1 && page <= totalPages && page !== currentPage) {
             currentPage = page;
-            loadTableData(currentRegimeType, currentPage, currentPageSize);
+            loadSallesData(currentRapportType, currentPage, currentPageSize);
         }
     }
 
@@ -1009,7 +1194,7 @@
         if (newSize !== currentPageSize) {
             currentPageSize = newSize;
             currentPage = 1;
-            loadTableData(currentRegimeType, currentPage, currentPageSize);
+            loadSallesData(currentRapportType, currentPage, currentPageSize);
         }
     }
 
@@ -1030,7 +1215,7 @@
         const filtersText = document.getElementById('filters-text');
 
         if (activeFilters.length > 0) {
-            filtersText.innerHTML = activeFilters.map(filter =>
+            filtersText.innerHTML = activeFilters.map(filter => 
                 `<span class="filter-badge">${filter}</span>`
             ).join(' ');
             activeFiltersDiv.style.display = 'block';
@@ -1039,10 +1224,10 @@
         }
     }
 
-    function updateEntriesInfo(pagination, regimeType) {
+    function updateEntriesInfo(pagination, rapportType) {
         const totalCountBadge = document.getElementById('total-count-badge');
         totalCountBadge.textContent = pagination.total_count.toLocaleString();
-
+        
         // Mettre à jour le badge avec animation
         totalCountBadge.style.transform = 'scale(1.1)';
         setTimeout(() => {
@@ -1050,219 +1235,43 @@
         }, 200);
     }
 
-    function updateTableDisplay(regimeType, data) {
+    function updateTableDisplay(rapportType, data) {
         // Cacher tous les tableaux
         hideAllTables();
 
         const tableTitle = document.getElementById('table-title');
 
-        switch (regimeType) {
-            case 'regime_national':
-                displayRegimeNational(data);
-                tableTitle.textContent = 'Régime National';
+        switch (rapportType) {
+            case 'secteur_regime':
+                displaySecteurRegime(data);
+                tableTitle.textContent = 'Salles Organisées par Secteur et Régime';
                 break;
 
-            case 'regimes_proved':
-                displayRegimesProved(data);
-                tableTitle.textContent = 'Régime par Province';
+            case 'province':
+                displayProvince(data);
+                tableTitle.textContent = 'Salles Organisées par Province';
                 break;
 
-            case 'milieu_proved':
-                displayMilieuProved(data);
-                tableTitle.textContent = 'Milieu par Province';
-                break;
-
-            case 'public_proved':
-                displayPublicProved(data);
-                tableTitle.textContent = 'Public par Province';
-                break;
-
-            case 'milieu_public':
-                displayMilieuPublic(data);
-                tableTitle.textContent = 'Milieu Public';
+            case 'province_detail':
+                displayProvinceDetail(data);
+                tableTitle.textContent = 'Salles Organisées par Province - Détail';
                 break;
 
             default:
-                displayNormalTable(data);
-                tableTitle.textContent = 'Liste des Établissements';
+                displaySecteurRegime(data);
+                tableTitle.textContent = 'Salles Organisées par Secteur et Régime';
                 break;
         }
     }
 
     function hideAllTables() {
         const tables = [
-            'normal-table', 'regime-national-table', 'regimes-proved-table',
-            'milieu-proved-table', 'public-proved-table', 'milieu-public-table'
+            'secteur-regime-table', 'province-table', 'province-detail-table'
         ];
 
         tables.forEach(tableId => {
             document.getElementById(tableId).style.display = 'none';
         });
-    }
-
-    // FONCTIONS D'AFFICHAGE DES TABLEAUX CORRIGÉES
-    function displayNormalTable(data) {
-        const table = document.getElementById('normal-table');
-        const tbody = document.getElementById('normal-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row, index) => {
-            const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td class="text-left">${row.nom_etablissement || 'N/A'}</td>
-                <td>${row.annee_scolaire || 'N/A'}</td>
-                <td>${row.province || 'N/A'}</td>
-                <td>${row.adresse || 'N/A'}</td>
-                <td>${row.chef_etablissement || 'N/A'}</td>
-                <td>${row.telephone || 'N/A'}</td>
-                <td>${row.statut || 'Actif'}</td>
-                <td>${row.created_at ? new Date(row.created_at).toLocaleDateString() : 'N/A'}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
-    }
-
-    function displayRegimeNational(data) {
-        const table = document.getElementById('regime-national-table');
-        const tbody = document.getElementById('regime-national-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            // Appliquer les styles selon le type de ligne
-            if (row.type_ligne === 'secteur') {
-                tr.className = 'secteur-row';
-            } else if (row.type_ligne === 'regime_detail') {
-                tr.className = 'regime-detail-row';
-            } else if (row.type_ligne === 'total_public') {
-                tr.className = 'total-public-row';
-            } else if (row.type_ligne === 'total_prive') {
-                tr.className = 'total-prive-row';
-            } else if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td class="text-left">${row.secteur}</td>
-                <td>${row.regime}</td>
-                <td>${row.total}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
-    }
-
-    function displayRegimesProved(data) {
-        const table = document.getElementById('regimes-proved-table');
-        const tbody = document.getElementById('regimes-proved-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.ecc || 0}</td>
-                <td>${row.ecf || 0}</td>
-                <td>${row.eci || 0}</td>
-                <td>${row.eck || 0}</td>
-                <td>${row.ecp || 0}</td>
-                <td>${row.ecs || 0}</td>
-                <td>${row.enc || 0}</td>
-                <td>${row.epr || 0}</td>
-                <td>${row.nr || 0}</td>
-                <td>${row.autre || 0}</td>
-                <td>${row.total_public || 0}</td>
-                <td>${row.prive || 0}</td>
-                <td>${row.total_general || 0}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
-    }
-
-    function displayMilieuProved(data) {
-        const table = document.getElementById('milieu-proved-table');
-        const tbody = document.getElementById('milieu-proved-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.urbain || 0}</td>
-                <td>${row.rural || 0}</td>
-                <td>${row.total_general || 0}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
-    }
-
-    function displayPublicProved(data) {
-        const table = document.getElementById('public-proved-table');
-        const tbody = document.getElementById('public-proved-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.total || 0}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
-    }
-
-    function displayMilieuPublic(data) {
-        const table = document.getElementById('milieu-public-table');
-        const tbody = document.getElementById('milieu-public-table-body');
-        tbody.innerHTML = '';
-
-        data.forEach((row) => {
-            const tr = document.createElement('tr');
-
-            if (row.type_ligne === 'total_general') {
-                tr.className = 'grand-total';
-            }
-
-            tr.innerHTML = `
-                <td>${row.numero || ''}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.urbain || 0}</td>
-                <td>${row.rural || 0}</td>
-                <td>${row.total_general || 0}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        table.style.display = 'table';
     }
 
     function resetFilters() {
@@ -1278,14 +1287,232 @@
 
         currentPage = 1;
         currentPageSize = 10;
-        currentRegimeType = document.getElementById('regime-combo').value || 'normal';
-        loadTableData(currentRegimeType, currentPage, currentPageSize);
+        currentRapportType = document.getElementById('rapport-combo').value;
+        loadSallesData(currentRapportType, currentPage, currentPageSize);
     }
 
     function showError(message) {
-        // Implémentez une notification toast ou une alerte plus élégante
+        // Vous pouvez implémenter une notification toast ou une alerte plus élégante
         console.error(message);
         alert(message);
+    }
+
+    // Fonctions d'affichage pour chaque type de tableau
+    function displaySecteurRegime(data) {
+        const table = document.getElementById('secteur-regime-table');
+        const tbody = document.getElementById('secteur-regime-table-body');
+        tbody.innerHTML = '';
+
+        let secteurActuel = '';
+        let totalSecteur1ere = 0;
+        let totalSecteur2eme = 0;
+        let totalSecteur3eme = 0;
+        let totalSecteurGeneral = 0;
+        let totalGeneral1ere = 0;
+        let totalGeneral2eme = 0;
+        let totalGeneral3eme = 0;
+        let totalGeneralGeneral = 0;
+
+        data.forEach((row, index) => {
+            if (row.secteur !== secteurActuel) {
+                // Ajouter le total du secteur précédent
+                if (secteurActuel !== '') {
+                    addTotalRowSecteurRegime(tbody, `Total ${secteurActuel}`, totalSecteur1ere, totalSecteur2eme, totalSecteur3eme, totalSecteurGeneral);
+                    totalSecteur1ere = 0;
+                    totalSecteur2eme = 0;
+                    totalSecteur3eme = 0;
+                    totalSecteurGeneral = 0;
+                }
+
+                // Nouveau secteur
+                secteurActuel = row.secteur;
+                addSectorRowSecteurRegime(tbody, secteurActuel);
+            }
+
+            addRegimeRowSecteurRegime(tbody, row, index);
+            totalSecteur1ere += parseInt(row.nb_salles_organisees_1ere) || 0;
+            totalSecteur2eme += parseInt(row.nb_salles_organisees_2eme) || 0;
+            totalSecteur3eme += parseInt(row.nb_salles_organisees_3eme) || 0;
+            totalSecteurGeneral += parseInt(row.Total) || 0;
+            totalGeneral1ere += parseInt(row.nb_salles_organisees_1ere) || 0;
+            totalGeneral2eme += parseInt(row.nb_salles_organisees_2eme) || 0;
+            totalGeneral3eme += parseInt(row.nb_salles_organisees_3eme) || 0;
+            totalGeneralGeneral += parseInt(row.Total) || 0;
+        });
+
+        // Dernier total de secteur
+        if (secteurActuel !== '') {
+            addTotalRowSecteurRegime(tbody, `Total ${secteurActuel}`, totalSecteur1ere, totalSecteur2eme, totalSecteur3eme, totalSecteurGeneral);
+        }
+
+        // Total général
+        addGrandTotalRowSecteurRegime(tbody, totalGeneral1ere, totalGeneral2eme, totalGeneral3eme, totalGeneralGeneral);
+
+        table.style.display = 'table';
+    }
+
+    function displayProvince(data) {
+        const table = document.getElementById('province-table');
+        const tbody = document.getElementById('province-table-body');
+        tbody.innerHTML = '';
+
+        let totals = {
+            nb_salles_organisees_1ere: 0,
+            nb_salles_organisees_2eme: 0,
+            nb_salles_organisees_3eme: 0,
+            Total: 0
+        };
+
+        data.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td class="text-left">${row.province}</td>
+                <td>${row.idannee}</td>
+                <td>${row.type}</td>
+                <td class="number-cell">${formatNumber(row.nb_salles_organisees_1ere)}</td>
+                <td class="number-cell">${formatNumber(row.nb_salles_organisees_2eme)}</td>
+                <td class="number-cell">${formatNumber(row.nb_salles_organisees_3eme)}</td>
+                <td class="number-cell"><strong>${formatNumber(row.Total)}</strong></td>
+            `;
+            tbody.appendChild(tr);
+
+            // Calcul des totaux
+            totals.nb_salles_organisees_1ere += parseInt(row.nb_salles_organisees_1ere) || 0;
+            totals.nb_salles_organisees_2eme += parseInt(row.nb_salles_organisees_2eme) || 0;
+            totals.nb_salles_organisees_3eme += parseInt(row.nb_salles_organisees_3eme) || 0;
+            totals.Total += parseInt(row.Total) || 0;
+        });
+
+        // Ligne de total
+        addTotalRowProvince(tbody, totals);
+        table.style.display = 'table';
+    }
+
+    function displayProvinceDetail(data) {
+        const table = document.getElementById('province-detail-table');
+        const tbody = document.getElementById('province-detail-table-body');
+        tbody.innerHTML = '';
+
+        let totals = {
+            '1ere Maternelle': 0,
+            '2eme Maternelle': 0,
+            '3eme Maternelle': 0,
+            'Total': 0
+        };
+
+        data.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${index + 1}</td>
+                <td class="text-left">${row.province}</td>
+                <td>${row.idannee}</td>
+                <td>${row.type}</td>
+                <td class="number-cell">${formatNumber(row['1ere Maternelle'])}</td>
+                <td class="number-cell">${formatNumber(row['2eme Maternelle'])}</td>
+                <td class="number-cell">${formatNumber(row['3eme Maternelle'])}</td>
+                <td class="number-cell"><strong>${formatNumber(row.Total)}</strong></td>
+            `;
+            tbody.appendChild(tr);
+
+            // Calcul des totaux
+            totals['1ere Maternelle'] += parseInt(row['1ere Maternelle']) || 0;
+            totals['2eme Maternelle'] += parseInt(row['2eme Maternelle']) || 0;
+            totals['3eme Maternelle'] += parseInt(row['3eme Maternelle']) || 0;
+            totals['Total'] += parseInt(row.Total) || 0;
+        });
+
+        // Ligne de total
+        addTotalRowProvinceDetail(tbody, totals);
+        table.style.display = 'table';
+    }
+
+    // Fonctions utilitaires pour créer les lignes
+    function addSectorRowSecteurRegime(tbody, secteur) {
+        const tr = document.createElement('tr');
+        tr.className = 'sector-row';
+        tr.innerHTML = `
+            <td colspan="8"><strong>${secteur}</strong></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function addRegimeRowSecteurRegime(tbody, row, index) {
+        const tr = document.createElement('tr');
+        tr.className = 'regime-row';
+        tr.innerHTML = `
+            <td>${row.idannee}</td>
+            <td>${row.type}</td>
+            <td></td>
+            <td>${row.regime_gestion}</td>
+            <td class="number-cell">${formatNumber(row.nb_salles_organisees_1ere)}</td>
+            <td class="number-cell">${formatNumber(row.nb_salles_organisees_2eme)}</td>
+            <td class="number-cell">${formatNumber(row.nb_salles_organisees_3eme)}</td>
+            <td class="number-cell"><strong>${formatNumber(row.Total)}</strong></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function addTotalRowSecteurRegime(tbody, label, total1ere, total2eme, total3eme, totalGeneral) {
+        const tr = document.createElement('tr');
+        tr.className = 'total-row';
+        tr.innerHTML = `
+            <td colspan="4"><strong>${label}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(total1ere)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(total2eme)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(total3eme)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totalGeneral)}</strong></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function addGrandTotalRowSecteurRegime(tbody, total1ere, total2eme, total3eme, totalGeneral) {
+        const tr = document.createElement('tr');
+        tr.className = 'grand-total';
+        tr.innerHTML = `
+            <td colspan="4"><strong>TOTAL GÉNÉRAL</strong></td>
+            <td class="number-cell"><strong>${formatNumber(total1ere)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(total2eme)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(total3eme)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totalGeneral)}</strong></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function addTotalRowProvince(tbody, totals) {
+        const tr = document.createElement('tr');
+        tr.className = 'total-row';
+        tr.innerHTML = `
+            <td></td>
+            <td class="text-left"><strong>TOTAL</strong></td>
+            <td></td>
+            <td></td>
+            <td class="number-cell"><strong>${formatNumber(totals.nb_salles_organisees_1ere)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totals.nb_salles_organisees_2eme)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totals.nb_salles_organisees_3eme)}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totals.Total)}</strong></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function addTotalRowProvinceDetail(tbody, totals) {
+        const tr = document.createElement('tr');
+        tr.className = 'total-row';
+        tr.innerHTML = `
+            <td></td>
+            <td class="text-left"><strong>TOTAL</strong></td>
+            <td></td>
+            <td></td>
+            <td class="number-cell"><strong>${formatNumber(totals['1ere Maternelle'])}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totals['2eme Maternelle'])}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totals['3eme Maternelle'])}</strong></td>
+            <td class="number-cell"><strong>${formatNumber(totals['Total'])}</strong></td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function formatNumber(num) {
+        return parseInt(num) || 0;
     }
 
     function getCsrfToken() {
@@ -1295,49 +1522,44 @@
 
     // FONCTIONS D'EXPORT
     function exportToExcel() {
-        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_excel" %}?regime_type=${regimeType}&${filters}`;
-        console.log('Export Excel URL:', url); // Debug
+        const url = `{% url "export_salles_excel" %}?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
     function exportToPDF() {
-        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_pdf" %}?regime_type=${regimeType}&${filters}`;
-        console.log('Export PDF URL:', url); // Debug
+        const url = `{% url "export_salles_pdf" %}?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
     function exportToCSV() {
-        const regimeType = document.getElementById('regime-combo').value || 'normal';
+        const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_csv" %}?regime_type=${regimeType}&${filters}`;
-        console.log('Export CSV URL:', url); // Debug
+        const url = `{% url "export_salles_csv" %}?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
     function getCurrentFilters() {
-    const filters = {
-        annee: document.getElementById('annee-scolaire').value,
-        type_enseignement: document.getElementById('type-enseignement').value,
-        province: document.getElementById('proved').value,
-        milieu: document.getElementById('milieu').value,
-        secteur: document.getElementById('secteur').value
-    };
-    
-    const params = [];
-    for (const [key, value] of Object.entries(filters)) {
-        if (value) {
-            params.push(`${key}=${encodeURIComponent(value)}`);
+        const filters = {
+            annee: document.getElementById('annee-scolaire').value,
+            type_enseignement: document.getElementById('type-enseignement').value,
+            province: document.getElementById('proved').value,
+            milieu: document.getElementById('milieu').value,
+            secteur: document.getElementById('secteur').value
+        };
+        
+        const params = [];
+        for (const [key, value] of Object.entries(filters)) {
+            if (value) {
+                params.push(`${key}=${encodeURIComponent(value)}`);
+            }
         }
+        
+        return params.join('&');
     }
-    
-    const queryString = params.join('&');
-    console.log('Filters query string:', queryString); // Debug
-    return queryString;
-}
 </script>
 
 {% endblock content %}

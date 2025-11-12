@@ -1,0 +1,1587 @@
+<!-- templates/effectifs/effectifs_st1.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block effectifs_active %} active {% endblock %}
+{% block content %}
+
+<style>
+    .container {
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+    }
+
+    /* Carte d'en-tête */
+    .header-card {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+        padding: 25px 30px;
+        margin-bottom: 25px;
+    }
+
+    .header-title {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+
+    .header-title h1 {
+        font-weight: 700;
+        font-size: 1.8rem;
+        color: #2c3e50;
+        margin-bottom: 5px;
+    }
+
+    .header-title p {
+        color: #7f8c8d;
+        font-size: 1rem;
+    }
+
+    /* Styles pour les champs de filtre */
+    .filter-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-group label {
+        font-weight: 600;
+        margin-bottom: 8px;
+        color: #495057;
+        font-size: 0.9rem;
+    }
+
+    .filter-select,
+    .filter-combo {
+        padding: 10px 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        background-color: white;
+        font-size: 0.9rem;
+        color: #495057;
+        transition: all 0.3s ease;
+    }
+
+    .filter-select:focus,
+    .filter-combo:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+
+    .combo-container {
+        grid-column: 1 / -1;
+    }
+
+    .combo-container .filter-combo {
+        width: 100%;
+    }
+
+    .filter-actions {
+        grid-column: 1 / -1;
+        margin-top: 15px;
+        text-align: right;
+    }
+
+    .btn-reset {
+        background: #6c757d;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+    }
+
+    .btn-reset:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+    }
+
+    .export-buttons {
+        display: flex;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    .export-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95rem;
+    }
+
+    .excel-btn {
+        background: linear-gradient(135deg, #21a366 0%, #107c41 100%);
+        color: white;
+    }
+
+    .pdf-btn {
+        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+    }
+
+    .csv-btn {
+        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+        color: white;
+    }
+
+    .export-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .export-btn:active {
+        transform: translateY(-1px);
+    }
+
+    /* Carte principale */
+    .card-block {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .card-header {
+        background: linear-gradient(90deg, #3498db 0%, #2c3e50 100%);
+        color: white;
+        padding: 20px 25px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+
+    .card-header-left {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .card-header h2 {
+        font-weight: 600;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+        margin: 0;
+    }
+
+    .card-header h2 i {
+        margin-right: 10px;
+    }
+
+    .card-header-right {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .search-box {
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 30px;
+        padding: 5px 15px;
+    }
+
+    .search-box input {
+        background: transparent;
+        border: none;
+        color: white;
+        padding: 8px;
+        width: 200px;
+        outline: none;
+    }
+
+    .search-box input::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .table-export-buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .table-export-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.85rem;
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .table-export-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+        padding: 0 10px;
+        max-height: 600px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+        font-size: 0.85rem;
+    }
+
+    thead {
+        background-color: #f8f9fa;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    th {
+        padding: 12px 8px;
+        text-align: center;
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        position: relative;
+        white-space: nowrap;
+    }
+
+    th:after {
+        content: '';
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: #3498db;
+        transition: width 0.3s ease;
+    }
+
+    th:hover:after {
+        width: 100%;
+    }
+
+    td,
+    tbody th {
+        padding: 10px 8px;
+        border-bottom: 1px solid #e9ecef;
+        color: #495057;
+        text-align: center;
+    }
+
+    tbody tr {
+        transition: all 0.2s ease;
+    }
+
+    tbody tr:hover {
+        background-color: #f1f3f5;
+        transform: translateY(-1px);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    /* Style pour les lignes impaires */
+    tbody tr:nth-child(odd) {
+        background-color: #fafbfc;
+    }
+
+    tbody tr:nth-child(odd):hover {
+        background-color: #f1f3f5;
+    }
+
+    /* Style pour la première colonne */
+    tbody th {
+        color: #3498db;
+        font-weight: 600;
+        text-align: left;
+    }
+
+    /* Style pour les lignes de total */
+    .total-row {
+        background-color: #e8f4fd !important;
+        font-weight: 600;
+    }
+
+    .sector-row {
+        background-color: #f0f8ff !important;
+        font-weight: 700;
+    }
+
+    .regime-row {
+        background-color: #fafbfc;
+    }
+
+    .header-row {
+        background-color: #e3f2fd;
+        font-weight: 700;
+    }
+
+    .sexe-garcons {
+        background-color: #e3f2fd !important;
+    }
+
+    .sexe-filles {
+        background-color: #fce4ec !important;
+    }
+
+    .sexe-total {
+        background-color: #e8f5e8 !important;
+        font-weight: 600;
+    }
+
+    /* Style pour les nombres */
+    .number-col {
+        text-align: right;
+        font-family: 'Courier New', monospace;
+        font-weight: 500;
+    }
+
+    .text-left {
+        text-align: left !important;
+    }
+
+    .text-center {
+        text-align: center !important;
+    }
+
+    .text-right {
+        text-align: right !important;
+    }
+
+    /* Badges pour les nombres */
+    .count-badge {
+        background: linear-gradient(135deg, #3498db, #2c3e50);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 40px;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Filtres actifs */
+    .active-filters {
+        background: #e7f3ff;
+        border: 1px solid #b3d9ff;
+        border-radius: 6px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .active-filters strong {
+        color: #0066cc;
+    }
+
+    .filter-badge {
+        display: inline-block;
+        background: #3498db;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin: 0 4px;
+    }
+
+    /* Styles spécifiques pour les tableaux d'effectifs */
+    .effectif-table {
+        min-width: 800px;
+    }
+
+    .effectif-table th,
+    .effectif-table td {
+        text-align: center;
+    }
+
+    .effectif-table .text-left {
+        text-align: left;
+    }
+
+    .age-col {
+        background-color: #f8f9fa;
+        font-weight: 600;
+    }
+
+    .niveau-col {
+        background-color: #e3f2fd;
+        font-weight: 600;
+    }
+
+    .total-col {
+        background-color: #e8f5e8;
+        font-weight: 700;
+    }
+
+    .grand-total {
+        background-color: #d4edda;
+        font-weight: 800;
+        font-size: 0.9rem;
+    }
+
+    .province-col {
+        width: 150px;
+        text-align: left;
+    }
+
+    .small-col {
+        width: 80px;
+    }
+
+    .medium-col {
+        width: 100px;
+    }
+
+    /* Pied de page avec pagination */
+    .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-top: 1px solid #e9ecef;
+        background: #f8f9fa;
+    }
+
+    .pagination-container {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .pagination-info {
+        color: #6c757d;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .pagination {
+        display: flex;
+        gap: 5px;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+    }
+
+    .page-item {
+        margin: 0;
+    }
+
+    .page-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 40px;
+        height: 40px;
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        color: #3498db;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        background: white;
+    }
+
+    .page-link:hover {
+        background-color: #e9ecef;
+        border-color: #3498db;
+        transform: translateY(-1px);
+    }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+        color: white;
+        border-color: #3498db;
+        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    }
+
+    .page-item.disabled .page-link {
+        color: #6c757d;
+        background-color: #f8f9fa;
+        border-color: #dee2e6;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .page-size-selector {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .page-size-selector label {
+        font-size: 0.9rem;
+        color: #6c757d;
+        font-weight: 500;
+    }
+
+    .page-size-select {
+        padding: 8px 12px;
+        border: 1px solid #dee2e6;
+        border-radius: 6px;
+        background: white;
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .header-card {
+            padding: 20px;
+        }
+
+        .filter-container {
+            grid-template-columns: 1fr;
+        }
+
+        .combo-container {
+            grid-column: 1;
+        }
+
+        .filter-actions {
+            grid-column: 1;
+            text-align: center;
+        }
+
+        .export-buttons {
+            flex-direction: column;
+        }
+
+        .card-header {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .card-header-left,
+        .card-header-right {
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .search-box {
+            width: 100%;
+        }
+
+        .search-box input {
+            width: 100%;
+        }
+
+        .table-export-buttons {
+            justify-content: flex-end;
+            width: 100%;
+        }
+
+        th,
+        td {
+            padding: 8px 6px;
+            font-size: 0.8rem;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .card-footer {
+            flex-direction: column;
+            gap: 15px;
+            align-items: stretch;
+        }
+
+        .pagination-container {
+            justify-content: center;
+        }
+
+        .pagination-info {
+            text-align: center;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .table-export-buttons {
+            flex-direction: column;
+        }
+
+        .pagination {
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .page-size-selector {
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .effectif-table {
+            font-size: 0.75rem;
+        }
+    }
+
+    /* Indicateurs visuels */
+    .positive-trend {
+        color: #27ae60;
+    }
+
+    .negative-trend {
+        color: #e74c3c;
+    }
+
+    .highlight-cell {
+        background-color: #fff3cd !important;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container">
+
+    <!-- Première carte avec le champ combo -->
+    <div class="header-card">
+        <div class="header-title">
+            <h1>Effectifs ST1 - Enseignement Maternelle</h1>
+            <p>Statistiques détaillées des effectifs par âge, sexe, province et régime</p>
+        </div>
+
+        <div class="filter-container">
+            <div class="filter-group combo-container">
+                <label for="rapport-combo">Type de Rapport</label>
+                <select class="filter-combo" id="rapport-combo">
+                    <option value="">Sélectionnez un rapport</option>
+                    <option value="effectifs_par_age_national">Effectifs par Âge - National</option>
+                    <option value="effectifs_regime_province">Effectifs par Régime et Province</option>
+                    <option value="effectifs_secteur_national">Effectifs par Secteur National</option>
+                    <option value="effectifs_province_detail">Effectifs par Province - Détail</option>
+                    <option value="effectifs_par_age_sexe">Effectifs par Âge et Sexe</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deuxième carte avec les filtres -->
+    <div class="header-card">
+        <div class="header-title">
+            <h3>Filtres</h3>
+            <p>Affinez votre recherche avec les filtres ci-dessous</p>
+        </div>
+
+        <div class="filter-container">
+            <div class="filter-group">
+                <label for="annee-scolaire">Année scolaire</label>
+                <select class="filter-select" id="annee-scolaire">
+                    <option value="">Toutes les années</option>
+                    {% for annee in annees_scolaires %}
+                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="proved">Province</label>
+                <select class="filter-select" id="proved">
+                    <option value="">Toutes les provinces</option>
+                    {% for province in provinces %}
+                    <option value="{{ province.id }}">{{ province.libelle }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="milieu">Milieu</label>
+                <select class="filter-select" id="milieu">
+                    <option value="">Tous les milieux</option>
+                    <option value="urbain">Urbain</option>
+                    <option value="rural">Rural</option>
+                    {% for milieu in milieux %}
+                    {% if milieu != 'URBAIN' and milieu != 'RURAL' %}
+                    <option value="{{ milieu }}">{{ milieu }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="secteur">Secteur</label>
+                <select class="filter-select" id="secteur">
+                    <option value="">Tous les secteurs</option>
+                    <option value="public">Public</option>
+                    <option value="prive">Privé</option>
+                </select>
+            </div>
+
+            <div class="filter-actions">
+                <button type="button" class="btn-reset" onclick="resetFilters()">
+                    <i class="fas fa-redo"></i> Réinitialiser les filtres
+                </button>
+            </div>
+        </div>
+
+        <!-- Affichage des filtres actifs -->
+        <div class="active-filters" id="active-filters" style="display: none;">
+            <strong>Filtres actifs :</strong> <span id="filters-text"></span>
+        </div>
+
+        <!-- Boutons d'export principaux -->
+        <div class="export-buttons">
+            <button class="export-btn excel-btn" onclick="exportToExcel()">
+                <i class="fas fa-file-excel"></i> Exporter en Excel
+            </button>
+            <button class="export-btn pdf-btn" onclick="exportToPDF()">
+                <i class="fas fa-file-pdf"></i> Exporter en PDF
+            </button>
+            <button class="export-btn csv-btn" onclick="exportToCSV()">
+                <i class="fas fa-file-csv"></i> Exporter en CSV
+            </button>
+        </div>
+    </div>
+
+    <!-- Carte principale avec les tableaux -->
+    <div class="card-block">
+        <div class="card-header">
+            <div class="card-header-left">
+                <h2><i class="fas fa-chart-bar"></i> <span id="table-title">Statistiques des Effectifs ST1</span></h2>
+                <span class="count-badge" id="total-count-badge">0</span>
+            </div>
+            <div class="card-header-right">
+                <div class="table-export-buttons">
+                    <button class="table-export-btn excel-btn" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Excel
+                    </button>
+                    <button class="table-export-btn pdf-btn" onclick="exportToPDF()">
+                        <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="table-export-btn csv-btn" onclick="exportToCSV()">
+                        <i class="fas fa-file-csv"></i> CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading-spinner" id="loading-spinner">
+            <div class="spinner"></div>
+            <p>Chargement des données...</p>
+        </div>
+
+        <div class="table-responsive" id="table-container">
+
+            <!-- Tableau pour Effectifs par Âge - National -->
+            <table class="table effectif-table" id="effectifs-par-age-national-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="niveau-col">Niveau</th>
+                        <th>Année</th>
+                        <th class="age-col">-3 ans</th>
+                        <th class="age-col">3 ans</th>
+                        <th class="age-col">4 ans</th>
+                        <th class="age-col">5 ans</th>
+                        <th class="age-col">6 ans</th>
+                        <th class="total-col">Total Général</th>
+                    </tr>
+                </thead>
+                <tbody id="effectifs-par-age-national-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Effectifs par Régime et Province -->
+            <table class="table effectif-table" id="effectifs-regime-province-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="province-col">Province</th>
+                        <th>Année</th>
+                        <th>Sexe</th>
+                        <th class="small-col">ECC</th>
+                        <th class="small-col">ECF</th>
+                        <th class="small-col">ECI</th>
+                        <th class="small-col">ECK</th>
+                        <th class="small-col">ECP</th>
+                        <th class="small-col">ECS</th>
+                        <th class="small-col">ENC</th>
+                        <th class="small-col">AUTRES</th>
+                        <th class="small-col">NR</th>
+                        <th class="medium-col">Total Public</th>
+                        <th class="medium-col">Privé</th>
+                        <th class="total-col">Total Général</th>
+                    </tr>
+                </thead>
+                <tbody id="effectifs-regime-province-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Effectifs par Secteur National -->
+            <table class="table effectif-table" id="effectifs-secteur-national-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Secteur</th>
+                        <th>Régime</th>
+                        <th>Sexe</th>
+                        <th>Année</th>
+                        <th class="medium-col">1ère Maternelle</th>
+                        <th class="medium-col">2ème Maternelle</th>
+                        <th class="medium-col">3ème Maternelle</th>
+                        <th class="medium-col">Pré-primaire</th>
+                        <th class="total-col">Total Général</th>
+                    </tr>
+                </thead>
+                <tbody id="effectifs-secteur-national-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Effectifs par Province - Détail -->
+            <table class="table effectif-table" id="effectifs-province-detail-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="province-col">Province</th>
+                        <th>Sexe</th>
+                        <th>Année</th>
+                        <th class="medium-col">1ère Maternelle</th>
+                        <th class="medium-col">2ème Maternelle</th>
+                        <th class="medium-col">3ème Maternelle</th>
+                        <th class="medium-col">Pré-primaire</th>
+                        <th class="total-col">Total Général</th>
+                        <th class="small-col">NR</th>
+                    </tr>
+                </thead>
+                <tbody id="effectifs-province-detail-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
+                </tbody>
+            </table>
+
+            <!-- Tableau pour Effectifs par Âge et Sexe -->
+            <table class="table effectif-table" id="effectifs-par-age-sexe-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th class="niveau-col">Niveau</th>
+                        <th>Sexe</th>
+                        <th>Année</th>
+                        <th class="age-col">-3 ans</th>
+                        <th class="age-col">3 ans</th>
+                        <th class="age-col">4 ans</th>
+                        <th class="age-col">5 ans</th>
+                        <th class="age-col">6 ans</th>
+                        <th class="total-col">Total Général</th>
+                    </tr>
+                </thead>
+                <tbody id="effectifs-par-age-sexe-table-body">
+                    <!-- Les données seront chargées dynamiquement -->
+                </tbody>
+            </table>
+
+        </div>
+        
+        <!-- Pied de page avec pagination améliorée -->
+        <div class="card-footer">
+            <div class="pagination-container">
+                <div class="pagination-info" id="pagination-info">
+                    Aucune donnée à afficher
+                </div>
+                
+                <div class="page-size-selector">
+                    <label for="page-size">Afficher :</label>
+                    <select class="page-size-select" id="page-size" onchange="changePageSize()">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </div>
+                
+                <nav aria-label="Pagination">
+                    <ul class="pagination" id="pagination">
+                        <!-- La pagination sera générée dynamiquement -->
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Variables globales pour la pagination
+    let currentPage = 1;
+    let currentPageSize = 10;
+    let currentRapportType = 'effectifs_par_age_national';
+    let currentFilters = {};
+    let totalPages = 1;
+    let totalCount = 0;
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const rapportCombo = document.getElementById('rapport-combo');
+        const anneeSelect = document.getElementById('annee-scolaire');
+        const provinceSelect = document.getElementById('proved');
+        const milieuSelect = document.getElementById('milieu');
+        const secteurSelect = document.getElementById('secteur');
+
+        const filters = [anneeSelect, provinceSelect, milieuSelect, secteurSelect];
+
+        // Charger les données initiales
+        loadEffectifsData('effectifs_par_age_national', 1, currentPageSize);
+
+        // Écouter les changements de filtre
+        rapportCombo.addEventListener('change', function () {
+            currentRapportType = this.value || 'effectifs_par_age_national';
+            currentPage = 1;
+            loadEffectifsData(currentRapportType, currentPage, currentPageSize);
+        });
+
+        filters.forEach(filter => {
+            filter.addEventListener('change', function () {
+                currentPage = 1;
+                loadEffectifsData(currentRapportType, currentPage, currentPageSize);
+            });
+        });
+    });
+
+    function showLoading() {
+        document.getElementById('loading-spinner').style.display = 'block';
+        document.getElementById('table-container').style.display = 'none';
+        document.querySelector('.card-footer').style.display = 'none';
+    }
+
+    function hideLoading() {
+        document.getElementById('loading-spinner').style.display = 'none';
+        document.getElementById('table-container').style.display = 'block';
+        document.querySelector('.card-footer').style.display = 'flex';
+    }
+
+    function loadEffectifsData(rapportType, page = 1, pageSize = 10) {
+        showLoading();
+
+        currentFilters = {
+            annee: document.getElementById('annee-scolaire').value,
+            province: document.getElementById('proved').value,
+            milieu: document.getElementById('milieu').value,
+            secteur: document.getElementById('secteur').value
+        };
+
+        // Afficher les filtres actifs
+        updateActiveFilters(currentFilters);
+
+        fetch('{% url "get_effectifs_data" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCsrfToken()
+            },
+            body: JSON.stringify({
+                rapport_type: rapportType,
+                filters: currentFilters,
+                page: page,
+                page_size: pageSize
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateTableDisplay(rapportType, data.data);
+                    updatePagination(data.pagination);
+                    updateEntriesInfo(data.pagination, rapportType);
+                } else {
+                    console.error('Erreur:', data.error);
+                    showError('Erreur lors du chargement des données: ' + data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                showError('Erreur lors du chargement des données');
+            })
+            .finally(() => {
+                hideLoading();
+            });
+    }
+
+    function updatePagination(pagination) {
+        currentPage = pagination.page;
+        totalPages = pagination.total_pages;
+        totalCount = pagination.total_count;
+        
+        const paginationElement = document.getElementById('pagination');
+        const paginationInfo = document.getElementById('pagination-info');
+        
+        // Mettre à jour les informations de pagination
+        if (totalCount > 0) {
+            paginationInfo.innerHTML = `
+                Affichage de <strong>${pagination.start_index}-${pagination.end_index}</strong> 
+                sur <strong>${totalCount.toLocaleString()}</strong> entrées
+            `;
+        } else {
+            paginationInfo.innerHTML = 'Aucune donnée à afficher';
+        }
+        
+        // Générer les boutons de pagination
+        let paginationHTML = '';
+        
+        // Bouton Précédent
+        if (pagination.has_previous) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${currentPage - 1})" aria-label="Précédent">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+            `;
+        } else {
+            paginationHTML += `
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-left"></i></span>
+                </li>
+            `;
+        }
+        
+        // Calcul des pages à afficher
+        let startPage = Math.max(1, currentPage - 2);
+        let endPage = Math.min(totalPages, currentPage + 2);
+        
+        // Ajuster si on est près du début
+        if (currentPage <= 3) {
+            endPage = Math.min(5, totalPages);
+        }
+        
+        // Ajuster si on est près de la fin
+        if (currentPage >= totalPages - 2) {
+            startPage = Math.max(1, totalPages - 4);
+        }
+        
+        // Première page
+        if (startPage > 1) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(1)">1</a>
+                </li>
+            `;
+            if (startPage > 2) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+        }
+        
+        // Pages numérotées
+        for (let i = startPage; i <= endPage; i++) {
+            if (i === currentPage) {
+                paginationHTML += `
+                    <li class="page-item active">
+                        <span class="page-link">${i}</span>
+                    </li>
+                `;
+            } else {
+                paginationHTML += `
+                    <li class="page-item">
+                        <a class="page-link" href="javascript:void(0)" onclick="goToPage(${i})">${i}</a>
+                    </li>
+                `;
+            }
+        }
+        
+        // Dernière page
+        if (endPage < totalPages) {
+            if (endPage < totalPages - 1) {
+                paginationHTML += `<li class="page-item disabled"><span class="page-link">...</span></li>`;
+            }
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${totalPages})">${totalPages}</a>
+                </li>
+            `;
+        }
+        
+        // Bouton Suivant
+        if (pagination.has_next) {
+            paginationHTML += `
+                <li class="page-item">
+                    <a class="page-link" href="javascript:void(0)" onclick="goToPage(${currentPage + 1})" aria-label="Suivant">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+            `;
+        } else {
+            paginationHTML += `
+                <li class="page-item disabled">
+                    <span class="page-link"><i class="fas fa-chevron-right"></i></span>
+                </li>
+            `;
+        }
+        
+        paginationElement.innerHTML = paginationHTML;
+    }
+
+    function goToPage(page) {
+        if (page >= 1 && page <= totalPages && page !== currentPage) {
+            currentPage = page;
+            loadEffectifsData(currentRapportType, currentPage, currentPageSize);
+        }
+    }
+
+    function changePageSize() {
+        const newSize = parseInt(document.getElementById('page-size').value);
+        if (newSize !== currentPageSize) {
+            currentPageSize = newSize;
+            currentPage = 1;
+            loadEffectifsData(currentRapportType, currentPage, currentPageSize);
+        }
+    }
+
+    function updateActiveFilters(filters) {
+        const activeFilters = [];
+
+        if (filters.annee) activeFilters.push(`Année: ${filters.annee}`);
+        if (filters.province) {
+            const provinceSelect = document.getElementById('proved');
+            const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
+            activeFilters.push(`Province: ${provinceText}`);
+        }
+        if (filters.milieu) activeFilters.push(`Milieu: ${filters.milieu}`);
+        if (filters.secteur) activeFilters.push(`Secteur: ${filters.secteur}`);
+
+        const activeFiltersDiv = document.getElementById('active-filters');
+        const filtersText = document.getElementById('filters-text');
+
+        if (activeFilters.length > 0) {
+            filtersText.innerHTML = activeFilters.map(filter => 
+                `<span class="filter-badge">${filter}</span>`
+            ).join(' ');
+            activeFiltersDiv.style.display = 'block';
+        } else {
+            activeFiltersDiv.style.display = 'none';
+        }
+    }
+
+    function updateEntriesInfo(pagination, rapportType) {
+        const totalCountBadge = document.getElementById('total-count-badge');
+        totalCountBadge.textContent = pagination.total_count.toLocaleString();
+        
+        // Mettre à jour le badge avec animation
+        totalCountBadge.style.transform = 'scale(1.1)';
+        setTimeout(() => {
+            totalCountBadge.style.transform = 'scale(1)';
+        }, 200);
+    }
+
+    function updateTableDisplay(rapportType, data) {
+        // Cacher tous les tableaux
+        hideAllTables();
+
+        const tableTitle = document.getElementById('table-title');
+
+        switch (rapportType) {
+            case 'effectifs_par_age_national':
+                displayEffectifsParAgeNational(data);
+                tableTitle.textContent = 'Effectifs par Âge - Vue Nationale';
+                break;
+
+            case 'effectifs_regime_province':
+                displayEffectifsRegimeProvince(data);
+                tableTitle.textContent = 'Effectifs par Régime et Province';
+                break;
+
+            case 'effectifs_secteur_national':
+                displayEffectifsSecteurNational(data);
+                tableTitle.textContent = 'Effectifs par Secteur - Vue Nationale';
+                break;
+
+            case 'effectifs_province_detail':
+                displayEffectifsProvinceDetail(data);
+                tableTitle.textContent = 'Effectifs par Province - Détail';
+                break;
+
+            case 'effectifs_par_age_sexe':
+                displayEffectifsParAgeSexe(data);
+                tableTitle.textContent = 'Effectifs par Âge et Sexe';
+                break;
+
+            default:
+                displayEffectifsParAgeNational(data);
+                tableTitle.textContent = 'Statistiques des Effectifs ST1';
+                break;
+        }
+    }
+
+    function hideAllTables() {
+        const tables = [
+            'effectifs-par-age-national-table',
+            'effectifs-regime-province-table', 
+            'effectifs-secteur-national-table',
+            'effectifs-province-detail-table',
+            'effectifs-par-age-sexe-table'
+        ];
+
+        tables.forEach(tableId => {
+            document.getElementById(tableId).style.display = 'none';
+        });
+    }
+
+    // Fonctions d'affichage spécifiques pour chaque type de rapport
+    function displayEffectifsParAgeNational(data) {
+        const table = document.getElementById('effectifs-par-age-national-table');
+        const tbody = document.getElementById('effectifs-par-age-national-table-body');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            displayNoData(tbody, 8);
+        } else {
+            let totalGeneral = 0;
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                if (row.Niveau === 'Pré-primaire') {
+                    tr.className = 'total-row';
+                }
+                tr.innerHTML = `
+                    <td class="text-left">${escapeHtml(row.Niveau || 'N/A')}</td>
+                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
+                    <td class="number-col">${formatNumber(row['-3ans'])}</td>
+                    <td class="number-col">${formatNumber(row['3ans'])}</td>
+                    <td class="number-col">${formatNumber(row['4ans'])}</td>
+                    <td class="number-col">${formatNumber(row['5ans'])}</td>
+                    <td class="number-col">${formatNumber(row['6ans'])}</td>
+                    <td class="number-col total-col">${formatNumber(row['Total général'])}</td>
+                `;
+                tbody.appendChild(tr);
+                totalGeneral += parseInt(row['Total général']) || 0;
+            });
+
+            // Ligne de total général
+            const totalTr = document.createElement('tr');
+            totalTr.className = 'grand-total';
+            totalTr.innerHTML = `
+                <td class="text-left"><strong>TOTAL GÉNÉRAL</strong></td>
+                <td></td>
+                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['-3ans']) || 0), 0))}</strong></td>
+                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['3ans']) || 0), 0))}</strong></td>
+                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['4ans']) || 0), 0))}</strong></td>
+                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['5ans']) || 0), 0))}</strong></td>
+                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['6ans']) || 0), 0))}</strong></td>
+                <td class="number-col"><strong>${formatNumber(totalGeneral)}</strong></td>
+            `;
+            tbody.appendChild(totalTr);
+        }
+
+        table.style.display = 'table';
+    }
+
+    function displayEffectifsRegimeProvince(data) {
+        const table = document.getElementById('effectifs-regime-province-table');
+        const tbody = document.getElementById('effectifs-regime-province-table-body');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            displayNoData(tbody, 15);
+        } else {
+            let currentProvince = '';
+            let provinceTotals = {};
+            
+            data.forEach((row, index) => {
+                if (row['provinces.libelle'] !== currentProvince) {
+                    currentProvince = row['provinces.libelle'];
+                    provinceTotals[currentProvince] = {
+                        garcons: 0,
+                        filles: 0,
+                        total: 0
+                    };
+                }
+
+                const tr = document.createElement('tr');
+                if (row.sexe === 'Garçons') {
+                    tr.className = 'sexe-garcons';
+                } else if (row.sexe === 'Filles') {
+                    tr.className = 'sexe-filles';
+                }
+                
+                tr.innerHTML = `
+                    <td class="text-left">${escapeHtml(row['provinces.libelle'] || 'N/A')}</td>
+                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
+                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
+                    <td class="number-col">${formatNumber(row.ECC)}</td>
+                    <td class="number-col">${formatNumber(row.ECF)}</td>
+                    <td class="number-col">${formatNumber(row.ECI)}</td>
+                    <td class="number-col">${formatNumber(row.ECK)}</td>
+                    <td class="number-col">${formatNumber(row.ECP)}</td>
+                    <td class="number-col">${formatNumber(row.ECS)}</td>
+                    <td class="number-col">${formatNumber(row.ENC)}</td>
+                    <td class="number-col">${formatNumber(row.AUTRES)}</td>
+                    <td class="number-col">${formatNumber(row.NR)}</td>
+                    <td class="number-col">${formatNumber(row['Total Public'])}</td>
+                    <td class="number-col">${formatNumber(row['Privé'])}</td>
+                    <td class="number-col total-col">${formatNumber(row['Total Général'])}</td>
+                `;
+                tbody.appendChild(tr);
+
+                // Accumuler les totaux par province
+                if (row.sexe === 'Garçons') {
+                    provinceTotals[currentProvince].garcons += parseInt(row['Total Général']) || 0;
+                } else if (row.sexe === 'Filles') {
+                    provinceTotals[currentProvince].filles += parseInt(row['Total Général']) || 0;
+                }
+                provinceTotals[currentProvince].total += parseInt(row['Total Général']) || 0;
+            });
+
+            // Ajouter les lignes de total par province
+            Object.keys(provinceTotals).forEach(province => {
+                const totalTr = document.createElement('tr');
+                totalTr.className = 'sexe-total';
+                totalTr.innerHTML = `
+                    <td class="text-left"><strong>Total ${province}</strong></td>
+                    <td></td>
+                    <td><strong>Total</strong></td>
+                    <td colspan="10"></td>
+                    <td class="number-col"><strong>${formatNumber(provinceTotals[province].garcons + provinceTotals[province].filles)}</strong></td>
+                    <td class="number-col"><strong>${formatNumber(provinceTotals[province].total)}</strong></td>
+                `;
+                tbody.appendChild(totalTr);
+            });
+        }
+
+        table.style.display = 'table';
+    }
+
+    function displayEffectifsSecteurNational(data) {
+        const table = document.getElementById('effectifs-secteur-national-table');
+        const tbody = document.getElementById('effectifs-secteur-national-table-body');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            displayNoData(tbody, 9);
+        } else {
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                if (row.sexe === 'Garçons') {
+                    tr.className = 'sexe-garcons';
+                } else if (row.sexe === 'Filles') {
+                    tr.className = 'sexe-filles';
+                } else if (row.sexe === 'Total') {
+                    tr.className = 'sexe-total';
+                }
+                
+                tr.innerHTML = `
+                    <td>${escapeHtml(row.secteur || 'N/A')}</td>
+                    <td>${escapeHtml(row.regime_gestion || 'N/A')}</td>
+                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
+                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
+                    <td class="number-col">${formatNumber(row['1ere_maternelle'])}</td>
+                    <td class="number-col">${formatNumber(row['2eme_maternelle'])}</td>
+                    <td class="number-col">${formatNumber(row['3eme_maternelle'])}</td>
+                    <td class="number-col">${formatNumber(row['pre_primaire'])}</td>
+                    <td class="number-col total-col">${formatNumber(row['total_general'])}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        table.style.display = 'table';
+    }
+
+    function displayEffectifsProvinceDetail(data) {
+        const table = document.getElementById('effectifs-province-detail-table');
+        const tbody = document.getElementById('effectifs-province-detail-table-body');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            displayNoData(tbody, 9);
+        } else {
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                if (row.sexe === 'Garçons') {
+                    tr.className = 'sexe-garcons';
+                } else if (row.sexe === 'Filles') {
+                    tr.className = 'sexe-filles';
+                } else if (row.sexe === 'Total') {
+                    tr.className = 'sexe-total';
+                }
+                
+                tr.innerHTML = `
+                    <td class="text-left">${escapeHtml(row['provinces.libelle'] || 'N/A')}</td>
+                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
+                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
+                    <td class="number-col">${formatNumber(row['1ere_maternelle'])}</td>
+                    <td class="number-col">${formatNumber(row['2eme_maternelle'])}</td>
+                    <td class="number-col">${formatNumber(row['3eme_maternelle'])}</td>
+                    <td class="number-col">${formatNumber(row['pre_primaire'])}</td>
+                    <td class="number-col total-col">${formatNumber(row['total_general'])}</td>
+                    <td class="number-col">${formatNumber(row['NR'])}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        table.style.display = 'table';
+    }
+
+    function displayEffectifsParAgeSexe(data) {
+        const table = document.getElementById('effectifs-par-age-sexe-table');
+        const tbody = document.getElementById('effectifs-par-age-sexe-table-body');
+        tbody.innerHTML = '';
+
+        if (data.length === 0) {
+            displayNoData(tbody, 9);
+        } else {
+            data.forEach((row, index) => {
+                const tr = document.createElement('tr');
+                if (row.sexe === 'Garçons') {
+                    tr.className = 'sexe-garcons';
+                } else if (row.sexe === 'Filles') {
+                    tr.className = 'sexe-filles';
+                } else if (row.sexe === 'Total') {
+                    tr.className = 'sexe-total';
+                }
+                
+                tr.innerHTML = `
+                    <td class="text-left">${escapeHtml(row.Niveau || 'N/A')}</td>
+                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
+                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
+                    <td class="number-col">${formatNumber(row['-3ans'])}</td>
+                    <td class="number-col">${formatNumber(row['3ans'])}</td>
+                    <td class="number-col">${formatNumber(row['4ans'])}</td>
+                    <td class="number-col">${formatNumber(row['5ans'])}</td>
+                    <td class="number-col">${formatNumber(row['6ans'])}</td>
+                    <td class="number-col total-col">${formatNumber(row['Total général'])}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        table.style.display = 'table';
+    }
+
+    // Fonctions utilitaires
+    function displayNoData(tbody, colspan) {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td colspan="${colspan}" style="text-align: center; padding: 40px; color: #6c757d;">
+                <i class="fas fa-inbox" style="font-size: 3rem; margin-bottom: 15px; display: block; opacity: 0.5;"></i>
+                <h4 style="margin: 0; color: #495057;">Aucune donnée trouvée</h4>
+                <p style="margin: 10px 0 0 0;">Essayez de modifier vos critères de recherche</p>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    }
+
+    function formatNumber(num) {
+        if (num === null || num === undefined) return '0';
+        return parseInt(num).toLocaleString();
+    }
+
+    function escapeHtml(unsafe) {
+        if (unsafe === null || unsafe === undefined) return 'N/A';
+        return unsafe.toString()
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    function resetFilters() {
+        document.getElementById('annee-scolaire').value = '';
+        document.getElementById('proved').value = '';
+        document.getElementById('milieu').value = '';
+        document.getElementById('secteur').value = '';
+        document.getElementById('page-size').value = '10';
+
+        // Masquer les filtres actifs
+        document.getElementById('active-filters').style.display = 'none';
+
+        currentPage = 1;
+        currentPageSize = 10;
+        currentRapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
+        loadEffectifsData(currentRapportType, currentPage, currentPageSize);
+    }
+
+    function showError(message) {
+        // Implémentation simple d'alerte - vous pouvez la remplacer par un toast
+        alert('Erreur: ' + message);
+    }
+
+    function getCsrfToken() {
+        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]');
+        return csrfToken ? csrfToken.value : '';
+    }
+
+    // FONCTIONS D'EXPORT
+    function exportToExcel() {
+        const rapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
+        const filters = getCurrentFilters();
+        const url = `{% url "export_effectifs_excel" %}?rapport_type=${rapportType}&${filters}`;
+        window.location.href = url;
+    }
+
+    function exportToPDF() {
+        const rapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
+        const filters = getCurrentFilters();
+        const url = `{% url "export_effectifs_pdf" %}?rapport_type=${rapportType}&${filters}`;
+        window.location.href = url;
+    }
+
+    function exportToCSV() {
+        const rapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
+        const filters = getCurrentFilters();
+        const url = `{% url "export_effectifs_csv" %}?rapport_type=${rapportType}&${filters}`;
+        window.location.href = url;
+    }
+
+    function getCurrentFilters() {
+        const filters = {
+            annee: document.getElementById('annee-scolaire').value,
+            province: document.getElementById('proved').value,
+            milieu: document.getElementById('milieu').value,
+            secteur: document.getElementById('secteur').value
+        };
+        
+        const params = [];
+        for (const [key, value] of Object.entries(filters)) {
+            if (value) {
+                params.push(`${key}=${encodeURIComponent(value)}`);
+            }
+        }
+        
+        return params.join('&');
+    }
+</script>
+
+{% endblock content %}
