@@ -14,7 +14,7 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',  # ne pas changer
-        'NAME': 'dige_database',
+        'NAME': 'dige',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': '127.0.0.1',  # ou localhost
