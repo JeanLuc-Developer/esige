@@ -697,8 +697,8 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    {% for annee in annees_scolaires %}
-                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% for annee in abbl %}
+                    <option value="{{ annee.id }}">{{ annee.lib_annee_scolaire }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1515,14 +1515,14 @@
     function exportToPDF() {
         const rapportType = document.getElementById('rapport-combo').value || 'normal';
         const filters = getCurrentFilters();
-        const url = `{% url "export_guides_pdf" %}?rapport_type=${rapportType}&${filters}`;
+        //const url = `?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
     function exportToCSV() {
         const rapportType = document.getElementById('rapport-combo').value || 'normal';
         const filters = getCurrentFilters();
-        const url = `{% url "export_guides_csv" %}?rapport_type=${rapportType}&${filters}`;
+        //const url = `?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 

@@ -563,6 +563,46 @@
         color: #7f8c8d;
     }
 
+    /* Notifications */
+    .notification {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .notification.success {
+        background: #27ae60;
+    }
+
+    .notification.error {
+        background: #e74c3c;
+    }
+
+    .notification.warning {
+        background: #f39c12;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
     /* Responsive */
     @media (max-width: 768px) {
         .header-card {
@@ -634,6 +674,12 @@
         .themes-table td:nth-child(7) {
             width: 80px;
         }
+
+        .notification {
+            left: 20px;
+            right: 20px;
+            top: 10px;
+        }
     }
 
     @media (max-width: 576px) {
@@ -689,8 +735,8 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    {% for annee in annees_scolaires %}
-                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% for annee in abbl %}
+                    <option value="{{ annee.id }}">{{ annee.lib_annee_scolaire }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -896,18 +942,48 @@
         document.querySelector('.card-footer').style.display = 'flex';
     }
 
+    function formatFilterValue(value, filterType) {
+        if (!value) return '';
+        
+        switch(filterType) {
+            case 'type_enseignement':
+                return value.toUpperCase();
+            case 'secteur':
+                return value.toUpperCase();
+            default:
+                return value;
+        }
+    }
+
+    function validateFilters(filters) {
+        const validated = {};
+        
+        for (const [key, value] of Object.entries(filters)) {
+            if (value && value !== '') {
+                validated[key] = formatFilterValue(value, key);
+            }
+        }
+        
+        return validated;
+    }
+
     function loadThemesData(rapportType, page = 1, pageSize = 10) {
         showLoading();
 
-        currentFilters = {
+        const rawFilters = {
             annee: document.getElementById('annee-scolaire').value,
             type_enseignement: document.getElementById('type-enseignement').value,
             province: document.getElementById('province').value,
             secteur: document.getElementById('secteur').value
         };
 
+        // Valider et formater les filtres
+        currentFilters = validateFilters(rawFilters);
+
         // Afficher les filtres actifs
-        updateActiveFilters(currentFilters);
+        updateActiveFilters(rawFilters);
+
+        console.log('Chargement des données avec filtres:', currentFilters);
 
         fetch('{% url "get_themes_data" %}', {
             method: 'POST',
@@ -922,24 +998,30 @@
                 page_size: pageSize
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updateTableDisplay(rapportType, data.data);
-                    updatePagination(data.pagination);
-                    updateEntriesInfo(data.pagination, rapportType);
-                } else {
-                    console.error('Erreur:', data.error);
-                    showError('Erreur lors du chargement des données: ' + data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                showError('Erreur lors du chargement des données');
-            })
-            .finally(() => {
-                hideLoading();
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                updateTableDisplay(rapportType, data.data);
+                updatePagination(data.pagination);
+                updateEntriesInfo(data.pagination, rapportType);
+                showNotification('Données chargées avec succès', 'success');
+            } else {
+                console.error('Erreur backend:', data.error);
+                showError('Erreur lors du chargement des données: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur fetch:', error);
+            showError('Erreur de connexion lors du chargement des données: ' + error.message);
+        })
+        .finally(() => {
+            hideLoading();
+        });
     }
 
     function updatePagination(pagination) {
@@ -1074,8 +1156,14 @@
     function updateActiveFilters(filters) {
         const activeFilters = [];
 
-        if (filters.annee) activeFilters.push(`Année: ${filters.annee}`);
-        if (filters.type_enseignement) activeFilters.push(`Type: ${filters.type_enseignement}`);
+        if (filters.annee) {
+            const anneeSelect = document.getElementById('annee-scolaire');
+            const anneeText = anneeSelect.options[anneeSelect.selectedIndex].text;
+            activeFilters.push(`Année: ${anneeText}`);
+        }
+        if (filters.type_enseignement) {
+            activeFilters.push(`Type: ${filters.type_enseignement}`);
+        }
         if (filters.province) {
             const provinceSelect = document.getElementById('province');
             const provinceText = provinceSelect.options[provinceSelect.selectedIndex].text;
@@ -1237,10 +1325,10 @@
     }
 
     function getThemeClass(theme) {
-        if (theme.includes('VIH/SIDA')) return 'theme-vih';
-        if (theme.includes('santé sexuelle')) return 'theme-sante';
-        if (theme.includes('violences')) return 'theme-violence';
-        if (theme.includes('environnementale')) return 'theme-environnement';
+        if (theme && theme.includes('VIH/SIDA')) return 'theme-vih';
+        if (theme && theme.includes('santé sexuelle')) return 'theme-sante';
+        if (theme && theme.includes('violences')) return 'theme-violence';
+        if (theme && theme.includes('environnementale')) return 'theme-environnement';
         return 'theme-vih'; // défaut
     }
 
@@ -1280,11 +1368,36 @@
         currentPageSize = 10;
         currentRapportType = document.getElementById('rapport-combo').value;
         loadThemesData(currentRapportType, currentPage, currentPageSize);
+        
+        showNotification('Filtres réinitialisés', 'success');
+    }
+
+    function showNotification(message, type = 'success') {
+        // Supprimer les notifications existantes
+        const existingNotifications = document.querySelectorAll('.notification');
+        existingNotifications.forEach(notification => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        });
+
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.innerHTML = `
+            <i class="fas ${type === 'success' ? 'fa-check' : type === 'error' ? 'fa-exclamation-triangle' : 'fa-info-circle'}"></i>
+            ${message}
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (document.body.contains(notification)) {
+                document.body.removeChild(notification);
+            }
+        }, 4000);
     }
 
     function showError(message) {
-        // Implémentation basique - vous pouvez utiliser un système de toast plus avancé
-        alert(message);
+        showNotification(message, 'error');
     }
 
     function getCsrfToken() {
@@ -1296,21 +1409,24 @@
     function exportToExcel() {
         const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_themes_excel" %}?rapport_type=${rapportType}&${filters}`;
+        //const url = `?rapport_type=${rapportType}&${filters}`;
+        console.log('Export Excel URL:', url);
         window.location.href = url;
     }
 
     function exportToPDF() {
         const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_themes_pdf" %}?rapport_type=${rapportType}&${filters}`;
+        //const url = ?rapport_type=${rapportType}&${filters}`;
+        console.log('Export PDF URL:', url);
         window.location.href = url;
     }
 
     function exportToCSV() {
         const rapportType = document.getElementById('rapport-combo').value;
         const filters = getCurrentFilters();
-        const url = `{% url "export_themes_csv" %}?rapport_type=${rapportType}&${filters}`;
+        //const url = `?rapport_type=${rapportType}&${filters}`;
+        console.log('Export CSV URL:', url);
         window.location.href = url;
     }
 

@@ -777,8 +777,8 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    {% for annee in annees_scolaires %}
-                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% for annee in abbl %}
+                    <option value="{{ annee.id }}">{{ annee.lib_annee_scolaire }}</option>
                     {% endfor %}
                 </select>
             </div>

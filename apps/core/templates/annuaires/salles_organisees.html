@@ -317,102 +317,154 @@
         font-weight: 600;
     }
 
-    /* Style pour les lignes de total */
-    .total-row {
+    /* Styles spécifiques pour les nouveaux tableaux */
+    .table-header-row {
+        background: linear-gradient(135deg, #2c3e50, #4b6cb7) !important;
+        color: white;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .sector-header {
         background-color: #e8f4fd !important;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+    .subtotal-row {
+        background-color: #f0f8ff !important;
         font-weight: 600;
     }
 
-    .sector-row {
-        background-color: #f0f8ff !important;
-        font-weight: 700;
-    }
-
-    .regime-row {
-        background-color: #fafbfc;
-    }
-
-    .header-row {
-        background-color: #e3f2fd;
-        font-weight: 700;
-    }
-
-    .grand-total {
+    .grand-total-row {
         background-color: #d4edda !important;
         font-weight: 800;
         font-size: 1.1rem;
     }
 
-    /* Style pour les nombres */
-    .number-cell {
+    .number-col {
         text-align: right;
         font-family: 'Courier New', monospace;
         font-weight: 500;
     }
 
-    /* Style pour les statuts */
-    .status {
-        padding: 6px 12px;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        font-weight: 500;
-        display: inline-block;
+    .text-left {
+        text-align: left;
     }
 
-    .status-active {
+    .text-center {
+        text-align: center;
+    }
+
+    /* Style pour l'en-tête des tableaux Excel-like */
+    .excel-like-header {
+        background: #2c3e50;
+        color: white;
+        text-align: center;
+        font-weight: bold;
+        padding: 15px;
+        font-size: 1.2rem;
+    }
+
+    /* Indentation pour les sous-lignes */
+    .sub-row {
+        background-color: #fafbfc;
+    }
+
+    .sub-row td:first-child {
+        padding-left: 30px !important;
+    }
+
+    .regime-row {
+        background-color: #f8f9fa;
+    }
+
+    .regime-row td:first-child {
+        padding-left: 40px !important;
+        font-style: italic;
+    }
+
+    /* Loading spinner */
+    .loading-spinner {
+        display: none;
+        text-align: center;
+        padding: 40px;
+    }
+
+    .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #4b6cb7;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 20px;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+
+        100% {
+            transform: rotate(360deg);
+        }
+    }
+
+    /* Filtres actifs */
+    .active-filters {
+        background: #e7f3ff;
+        border: 1px solid #b3d9ff;
+        border-radius: 6px;
+        padding: 12px 16px;
+        margin-top: 10px;
+        font-size: 0.9rem;
+    }
+
+    .active-filters strong {
+        color: #0066cc;
+    }
+
+    .filter-badge {
+        display: inline-block;
+        background: #4b6cb7;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.8rem;
+        margin: 0 4px;
+    }
+
+    /* Badges pour les nombres */
+    .count-badge {
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        padding: 3px 8px;
+        border-radius: 10px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    /* Indicateurs de salles */
+    .salle-indicator {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.8rem;
+    }
+
+    .salle-positive {
         background-color: #d4edda;
         color: #155724;
     }
 
-    .status-inactive {
-        background-color: #f8d7da;
-        color: #721c24;
-    }
-
-    .status-pending {
+    .salle-zero {
         background-color: #fff3cd;
         color: #856404;
     }
 
-    /* Style pour les boutons d'action */
-    .action-buttons {
-        display: flex;
-        gap: 8px;
-    }
-
-    .btn {
-        padding: 6px 10px;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.8rem;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .btn-edit {
-        background-color: #17a2b8;
-        color: white;
-    }
-
-    .btn-delete {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .btn-view {
-        background-color: #28a745;
-        color: white;
-    }
-
-    .btn:hover {
-        opacity: 0.9;
-        transform: translateY(-1px);
-    }
-
-    /* Style amélioré pour la pagination */
+    /* Pied de page avec pagination améliorée */
     .card-footer {
         display: flex;
         justify-content: space-between;
@@ -571,86 +623,6 @@
         font-weight: 700;
     }
 
-    /* Loading spinner */
-    .loading-spinner {
-        display: none;
-        text-align: center;
-        padding: 40px;
-    }
-
-    .spinner {
-        border: 4px solid #f3f3f3;
-        border-top: 4px solid #4b6cb7;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite;
-        margin: 0 auto 20px;
-    }
-
-    @keyframes spin {
-        0% {
-            transform: rotate(0deg);
-        }
-
-        100% {
-            transform: rotate(360deg);
-        }
-    }
-
-    /* Filtres actifs */
-    .active-filters {
-        background: #e7f3ff;
-        border: 1px solid #b3d9ff;
-        border-radius: 6px;
-        padding: 12px 16px;
-        margin-top: 10px;
-        font-size: 0.9rem;
-    }
-
-    .active-filters strong {
-        color: #0066cc;
-    }
-
-    .filter-badge {
-        display: inline-block;
-        background: #4b6cb7;
-        color: white;
-        padding: 4px 8px;
-        border-radius: 12px;
-        font-size: 0.8rem;
-        margin: 0 4px;
-    }
-
-    /* Badges pour les nombres */
-    .count-badge {
-        background: linear-gradient(135deg, #4b6cb7, #182848);
-        color: white;
-        padding: 3px 8px;
-        border-radius: 10px;
-        font-size: 0.75rem;
-        font-weight: 600;
-    }
-
-    /* Indicateurs de salles */
-    .salle-indicator {
-        display: inline-block;
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-weight: 600;
-        font-size: 0.8rem;
-    }
-
-    .salle-positive {
-        background-color: #d4edda;
-        color: #155724;
-    }
-
-    .salle-zero {
-        background-color: #fff3cd;
-        color: #856404;
-    }
-
     /* Responsive */
     @media (max-width: 768px) {
         .header-card {
@@ -783,8 +755,8 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    {% for annee in annees_scolaires %}
-                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% for annee in abbl %}
+                    <option value="{{ annee.id }}">{{ annee.lib_annee_scolaire }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -887,18 +859,21 @@
 
         <div class="table-responsive" id="table-container">
 
-            <!-- Tableau pour Secteur et Régime -->
+            <!-- Tableau pour Secteur et Régime (style Excel) -->
             <table class="table salles-table" id="secteur-regime-table">
                 <thead>
+                    <tr class="table-header-row">
+                        <th colspan="6" class="excel-like-header">
+                            secteur d'enseignement et régime de gestion
+                        </th>
+                    </tr>
                     <tr>
-                        <th class="annee-col">Année</th>
-                        <th class="type-col">Type</th>
-                        <th class="secteur-col">Secteur</th>
-                        <th class="regime-col">Régime</th>
+                        <th class="secteur-col text-left">Secteur Enseignement</th>
+                        <th class="regime-col text-left">Régime de gestion</th>
                         <th class="salle-col">1ère Maternelle</th>
                         <th class="salle-col">2ème Maternelle</th>
                         <th class="salle-col">3ème Maternelle</th>
-                        <th class="salle-col">Total</th>
+                        <th class="salle-col">Total général</th>
                     </tr>
                 </thead>
                 <tbody id="secteur-regime-table-body">
@@ -906,18 +881,21 @@
                 </tbody>
             </table>
 
-            <!-- Tableau pour Province -->
+            <!-- Tableau pour Province (style Excel) -->
             <table class="table salles-table" id="province-table" style="display: none;">
                 <thead>
+                    <tr class="table-header-row">
+                        <th colspan="6" class="excel-like-header">
+                        Nombre de classes par année d'étude et Province
+                        </th>
+                    </tr>
                     <tr>
                         <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
-                        <th class="annee-col">Année</th>
-                        <th class="type-col">Type</th>
+                        <th class="province-col text-left">PROVINCE</th>
                         <th class="salle-col">1ère Maternelle</th>
                         <th class="salle-col">2ème Maternelle</th>
                         <th class="salle-col">3ème Maternelle</th>
-                        <th class="salle-col">Total</th>
+                        <th class="salle-col">Total général</th>
                     </tr>
                 </thead>
                 <tbody id="province-table-body">
@@ -925,18 +903,23 @@
                 </tbody>
             </table>
 
-            <!-- Tableau pour Province - Détail -->
+            <!-- Tableau pour Province - Détail (identique à Province mais avec année et type) -->
             <table class="table salles-table" id="province-detail-table" style="display: none;">
                 <thead>
+                    <tr class="table-header-row">
+                        <th colspan="8" class="excel-like-header">
+                            Tableau: Nombre de classes organisées du pré-primaire par année d'étude et Province - Détail
+                        </th>
+                    </tr>
                     <tr>
                         <th class="number-col">N°</th>
-                        <th class="province-col">Province</th>
+                        <th class="province-col text-left">PROVINCE</th>
                         <th class="annee-col">Année</th>
                         <th class="type-col">Type</th>
                         <th class="salle-col">1ère Maternelle</th>
                         <th class="salle-col">2ème Maternelle</th>
                         <th class="salle-col">3ème Maternelle</th>
-                        <th class="salle-col">Total</th>
+                        <th class="salle-col">Total général</th>
                     </tr>
                 </thead>
                 <tbody id="province-detail-table-body">
@@ -1297,7 +1280,8 @@
         alert(message);
     }
 
-    // Fonctions d'affichage pour chaque type de tableau
+    // FONCTIONS D'AFFICHAGE POUR CHAQUE TYPE DE TABLEAU
+
     function displaySecteurRegime(data) {
         const table = document.getElementById('secteur-regime-table');
         const tbody = document.getElementById('secteur-regime-table-body');
@@ -1314,10 +1298,11 @@
         let totalGeneralGeneral = 0;
 
         data.forEach((row, index) => {
+            // Gérer le changement de secteur
             if (row.secteur !== secteurActuel) {
-                // Ajouter le total du secteur précédent
+                // Ajouter le total du secteur précédent s'il existe
                 if (secteurActuel !== '') {
-                    addTotalRowSecteurRegime(tbody, `Total ${secteurActuel}`, totalSecteur1ere, totalSecteur2eme, totalSecteur3eme, totalSecteurGeneral);
+                    addTotalSecteurRow(tbody, `Total ${secteurActuel}`, totalSecteur1ere, totalSecteur2eme, totalSecteur3eme, totalSecteurGeneral);
                     totalSecteur1ere = 0;
                     totalSecteur2eme = 0;
                     totalSecteur3eme = 0;
@@ -1326,14 +1311,18 @@
 
                 // Nouveau secteur
                 secteurActuel = row.secteur;
-                addSectorRowSecteurRegime(tbody, secteurActuel);
+                addSectorHeaderRow(tbody, secteurActuel);
             }
 
-            addRegimeRowSecteurRegime(tbody, row, index);
+            // Ajouter la ligne de régime
+            addRegimeRow(tbody, row);
+            
+            // Calculer les totaux
             totalSecteur1ere += parseInt(row.nb_salles_organisees_1ere) || 0;
             totalSecteur2eme += parseInt(row.nb_salles_organisees_2eme) || 0;
             totalSecteur3eme += parseInt(row.nb_salles_organisees_3eme) || 0;
             totalSecteurGeneral += parseInt(row.Total) || 0;
+            
             totalGeneral1ere += parseInt(row.nb_salles_organisees_1ere) || 0;
             totalGeneral2eme += parseInt(row.nb_salles_organisees_2eme) || 0;
             totalGeneral3eme += parseInt(row.nb_salles_organisees_3eme) || 0;
@@ -1342,11 +1331,11 @@
 
         // Dernier total de secteur
         if (secteurActuel !== '') {
-            addTotalRowSecteurRegime(tbody, `Total ${secteurActuel}`, totalSecteur1ere, totalSecteur2eme, totalSecteur3eme, totalSecteurGeneral);
+            addTotalSecteurRow(tbody, `Total ${secteurActuel}`, totalSecteur1ere, totalSecteur2eme, totalSecteur3eme, totalSecteurGeneral);
         }
 
         // Total général
-        addGrandTotalRowSecteurRegime(tbody, totalGeneral1ere, totalGeneral2eme, totalGeneral3eme, totalGeneralGeneral);
+        addGrandTotalRow(tbody, totalGeneral1ere, totalGeneral2eme, totalGeneral3eme, totalGeneralGeneral);
 
         table.style.display = 'table';
     }
@@ -1357,35 +1346,37 @@
         tbody.innerHTML = '';
 
         let totals = {
-            nb_salles_organisees_1ere: 0,
-            nb_salles_organisees_2eme: 0,
-            nb_salles_organisees_3eme: 0,
-            Total: 0
+            '1ere_maternelle': 0,
+            '2eme_maternelle': 0,
+            '3eme_maternelle': 0,
+            'total_general': 0
         };
 
         data.forEach((row, index) => {
             const tr = document.createElement('tr');
+            if (index % 2 === 0) {
+                tr.className = 'sub-row';
+            }
+            
             tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.idannee}</td>
-                <td>${row.type}</td>
-                <td class="number-cell">${formatNumber(row.nb_salles_organisees_1ere)}</td>
-                <td class="number-cell">${formatNumber(row.nb_salles_organisees_2eme)}</td>
-                <td class="number-cell">${formatNumber(row.nb_salles_organisees_3eme)}</td>
-                <td class="number-cell"><strong>${formatNumber(row.Total)}</strong></td>
+                <td class="number-col">${index + 1}</td>
+                <td class="text-left">${row.province || ''}</td>
+                <td class="number-col">${formatNumber(row.nb_salles_organisees_1ere)}</td>
+                <td class="number-col">${formatNumber(row.nb_salles_organisees_2eme)}</td>
+                <td class="number-col">${formatNumber(row.nb_salles_organisees_3eme)}</td>
+                <td class="number-col"><strong>${formatNumber(row.Total)}</strong></td>
             `;
             tbody.appendChild(tr);
 
             // Calcul des totaux
-            totals.nb_salles_organisees_1ere += parseInt(row.nb_salles_organisees_1ere) || 0;
-            totals.nb_salles_organisees_2eme += parseInt(row.nb_salles_organisees_2eme) || 0;
-            totals.nb_salles_organisees_3eme += parseInt(row.nb_salles_organisees_3eme) || 0;
-            totals.Total += parseInt(row.Total) || 0;
+            totals['1ere_maternelle'] += parseInt(row.nb_salles_organisees_1ere) || 0;
+            totals['2eme_maternelle'] += parseInt(row.nb_salles_organisees_2eme) || 0;
+            totals['3eme_maternelle'] += parseInt(row.nb_salles_organisees_3eme) || 0;
+            totals['total_general'] += parseInt(row.Total) || 0;
         });
 
-        // Ligne de total
-        addTotalRowProvince(tbody, totals);
+        // Ligne de total général
+        addProvinceTotalRow(tbody, totals, data.length + 1);
         table.style.display = 'table';
     }
 
@@ -1395,124 +1386,133 @@
         tbody.innerHTML = '';
 
         let totals = {
-            '1ere Maternelle': 0,
-            '2eme Maternelle': 0,
-            '3eme Maternelle': 0,
-            'Total': 0
+            '1ere_maternelle': 0,
+            '2eme_maternelle': 0,
+            '3eme_maternelle': 0,
+            'total_general': 0
         };
 
         data.forEach((row, index) => {
             const tr = document.createElement('tr');
+            if (index % 2 === 0) {
+                tr.className = 'sub-row';
+            }
+            
             tr.innerHTML = `
-                <td>${index + 1}</td>
-                <td class="text-left">${row.province}</td>
-                <td>${row.idannee}</td>
-                <td>${row.type}</td>
-                <td class="number-cell">${formatNumber(row['1ere Maternelle'])}</td>
-                <td class="number-cell">${formatNumber(row['2eme Maternelle'])}</td>
-                <td class="number-cell">${formatNumber(row['3eme Maternelle'])}</td>
-                <td class="number-cell"><strong>${formatNumber(row.Total)}</strong></td>
+                <td class="number-col">${index + 1}</td>
+                <td class="text-left">${row.province || ''}</td>
+                <td>${row.idannee || ''}</td>
+                <td>${row.type || ''}</td>
+                <td class="number-col">${formatNumber(row.nb_salles_organisees_1ere)}</td>
+                <td class="number-col">${formatNumber(row.nb_salles_organisees_2eme)}</td>
+                <td class="number-col">${formatNumber(row.nb_salles_organisees_3eme)}</td>
+                <td class="number-col"><strong>${formatNumber(row.Total)}</strong></td>
             `;
             tbody.appendChild(tr);
 
             // Calcul des totaux
-            totals['1ere Maternelle'] += parseInt(row['1ere Maternelle']) || 0;
-            totals['2eme Maternelle'] += parseInt(row['2eme Maternelle']) || 0;
-            totals['3eme Maternelle'] += parseInt(row['3eme Maternelle']) || 0;
-            totals['Total'] += parseInt(row.Total) || 0;
+            totals['1ere_maternelle'] += parseInt(row.nb_salles_organisees_1ere) || 0;
+            totals['2eme_maternelle'] += parseInt(row.nb_salles_organisees_2eme) || 0;
+            totals['3eme_maternelle'] += parseInt(row.nb_salles_organisees_3eme) || 0;
+            totals['total_general'] += parseInt(row.Total) || 0;
         });
 
-        // Ligne de total
-        addTotalRowProvinceDetail(tbody, totals);
+        // Ligne de total général
+        addProvinceDetailTotalRow(tbody, totals, data.length + 1);
         table.style.display = 'table';
     }
 
-    // Fonctions utilitaires pour créer les lignes
-    function addSectorRowSecteurRegime(tbody, secteur) {
+    // FONCTIONS UTILITAIRES POUR CRÉER LES LIGNES
+
+    function addSectorHeaderRow(tbody, secteur) {
         const tr = document.createElement('tr');
-        tr.className = 'sector-row';
+        tr.className = 'sector-header';
         tr.innerHTML = `
-            <td colspan="8"><strong>${secteur}</strong></td>
+            <td class="text-left"><strong>${secteur}</strong></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
         `;
         tbody.appendChild(tr);
     }
 
-    function addRegimeRowSecteurRegime(tbody, row, index) {
+    function addRegimeRow(tbody, row) {
         const tr = document.createElement('tr');
         tr.className = 'regime-row';
         tr.innerHTML = `
-            <td>${row.idannee}</td>
-            <td>${row.type}</td>
             <td></td>
-            <td>${row.regime_gestion}</td>
-            <td class="number-cell">${formatNumber(row.nb_salles_organisees_1ere)}</td>
-            <td class="number-cell">${formatNumber(row.nb_salles_organisees_2eme)}</td>
-            <td class="number-cell">${formatNumber(row.nb_salles_organisees_3eme)}</td>
-            <td class="number-cell"><strong>${formatNumber(row.Total)}</strong></td>
+            <td class="text-left">${row.regime_gestion || ''}</td>
+            <td class="number-col">${formatNumber(row.nb_salles_organisees_1ere)}</td>
+            <td class="number-col">${formatNumber(row.nb_salles_organisees_2eme)}</td>
+            <td class="number-col">${formatNumber(row.nb_salles_organisees_3eme)}</td>
+            <td class="number-col">${formatNumber(row.Total)}</td>
         `;
         tbody.appendChild(tr);
     }
 
-    function addTotalRowSecteurRegime(tbody, label, total1ere, total2eme, total3eme, totalGeneral) {
+    function addTotalSecteurRow(tbody, label, total1ere, total2eme, total3eme, totalGeneral) {
         const tr = document.createElement('tr');
-        tr.className = 'total-row';
+        tr.className = 'subtotal-row';
         tr.innerHTML = `
-            <td colspan="4"><strong>${label}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(total1ere)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(total2eme)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(total3eme)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totalGeneral)}</strong></td>
+            <td class="text-left"><strong>${label}</strong></td>
+            <td></td>
+            <td class="number-col"><strong>${formatNumber(total1ere)}</strong></td>
+            <td class="number-col"><strong>${formatNumber(total2eme)}</strong></td>
+            <td class="number-col"><strong>${formatNumber(total3eme)}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totalGeneral)}</strong></td>
         `;
         tbody.appendChild(tr);
     }
 
-    function addGrandTotalRowSecteurRegime(tbody, total1ere, total2eme, total3eme, totalGeneral) {
+    function addGrandTotalRow(tbody, total1ere, total2eme, total3eme, totalGeneral) {
         const tr = document.createElement('tr');
-        tr.className = 'grand-total';
+        tr.className = 'grand-total-row';
         tr.innerHTML = `
-            <td colspan="4"><strong>TOTAL GÉNÉRAL</strong></td>
-            <td class="number-cell"><strong>${formatNumber(total1ere)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(total2eme)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(total3eme)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totalGeneral)}</strong></td>
+            <td class="text-left"><strong>Total général</strong></td>
+            <td></td>
+            <td class="number-col"><strong>${formatNumber(total1ere)}</strong></td>
+            <td class="number-col"><strong>${formatNumber(total2eme)}</strong></td>
+            <td class="number-col"><strong>${formatNumber(total3eme)}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totalGeneral)}</strong></td>
         `;
         tbody.appendChild(tr);
     }
 
-    function addTotalRowProvince(tbody, totals) {
+    function addProvinceTotalRow(tbody, totals, rowNumber) {
         const tr = document.createElement('tr');
-        tr.className = 'total-row';
+        tr.className = 'grand-total-row';
         tr.innerHTML = `
-            <td></td>
-            <td class="text-left"><strong>TOTAL</strong></td>
-            <td></td>
-            <td></td>
-            <td class="number-cell"><strong>${formatNumber(totals.nb_salles_organisees_1ere)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totals.nb_salles_organisees_2eme)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totals.nb_salles_organisees_3eme)}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totals.Total)}</strong></td>
+            <td class="number-col"><strong>${rowNumber}</strong></td>
+            <td class="text-left"><strong>Total général</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['1ere_maternelle'])}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['2eme_maternelle'])}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['3eme_maternelle'])}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['total_general'])}</strong></td>
         `;
         tbody.appendChild(tr);
     }
 
-    function addTotalRowProvinceDetail(tbody, totals) {
+    function addProvinceDetailTotalRow(tbody, totals, rowNumber) {
         const tr = document.createElement('tr');
-        tr.className = 'total-row';
+        tr.className = 'grand-total-row';
         tr.innerHTML = `
+            <td class="number-col"><strong>${rowNumber}</strong></td>
+            <td class="text-left"><strong>Total général</strong></td>
             <td></td>
-            <td class="text-left"><strong>TOTAL</strong></td>
             <td></td>
-            <td></td>
-            <td class="number-cell"><strong>${formatNumber(totals['1ere Maternelle'])}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totals['2eme Maternelle'])}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totals['3eme Maternelle'])}</strong></td>
-            <td class="number-cell"><strong>${formatNumber(totals['Total'])}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['1ere_maternelle'])}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['2eme_maternelle'])}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['3eme_maternelle'])}</strong></td>
+            <td class="number-col"><strong>${formatNumber(totals['total_general'])}</strong></td>
         `;
         tbody.appendChild(tr);
     }
 
     function formatNumber(num) {
-        return parseInt(num) || 0;
+        const value = parseInt(num) || 0;
+        return value.toLocaleString('fr-FR');
     }
 
     function getCsrfToken() {

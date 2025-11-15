@@ -1,4 +1,4 @@
-<!-- templates/effectifs/effectifs_st1.html -->
+<!-- templates/annuaires/effectifs_st1.html -->
 {% extends "base.html" %}
 {% load static %}
 {% block effectifs_active %} active {% endblock %}
@@ -130,16 +130,6 @@
         color: white;
     }
 
-    .pdf-btn {
-        background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
-        color: white;
-    }
-
-    .csv-btn {
-        background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
-        color: white;
-    }
-
     .export-btn:hover {
         transform: translateY(-3px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
@@ -192,27 +182,6 @@
         gap: 15px;
     }
 
-    .search-box {
-        display: flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 30px;
-        padding: 5px 15px;
-    }
-
-    .search-box input {
-        background: transparent;
-        border: none;
-        color: white;
-        padding: 8px;
-        width: 200px;
-        outline: none;
-    }
-
-    .search-box input::placeholder {
-        color: rgba(255, 255, 255, 0.7);
-    }
-
     .table-export-buttons {
         display: flex;
         gap: 10px;
@@ -245,134 +214,110 @@
         max-height: 600px;
     }
 
-    table {
-        width: 100%;
+    /* STYLES SPÉCIFIQUES EXCEL */
+    .excel-table {
         border-collapse: collapse;
-        margin: 20px 0;
-        font-size: 0.85rem;
+        width: 100%;
+        font-family: Arial, sans-serif;
+        font-size: 11px;
+        margin: 10px 0;
+        min-width: 800px;
     }
 
-    thead {
-        background-color: #f8f9fa;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
-
-    th {
-        padding: 12px 8px;
+    .excel-table th {
+        background-color: #d9e1f2;
+        border: 1px solid #8eaadb;
+        padding: 6px 8px;
         text-align: center;
-        font-weight: 600;
-        color: #495057;
-        border-bottom: 2px solid #dee2e6;
-        position: relative;
+        font-weight: bold;
+        color: #1f4e79;
         white-space: nowrap;
     }
 
-    th:after {
-        content: '';
-        position: absolute;
-        bottom: -2px;
-        left: 0;
-        width: 0;
-        height: 2px;
-        background: #3498db;
-        transition: width 0.3s ease;
+    .excel-table td {
+        border: 1px solid #d0d0d0;
+        padding: 5px 8px;
+        text-align: right;
     }
 
-    th:hover:after {
-        width: 100%;
-    }
-
-    td,
-    tbody th {
-        padding: 10px 8px;
-        border-bottom: 1px solid #e9ecef;
-        color: #495057;
-        text-align: center;
-    }
-
-    tbody tr {
-        transition: all 0.2s ease;
-    }
-
-    tbody tr:hover {
-        background-color: #f1f3f5;
-        transform: translateY(-1px);
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    tbody tr:last-child {
-        border-bottom: none;
-    }
-
-    /* Style pour les lignes impaires */
-    tbody tr:nth-child(odd) {
-        background-color: #fafbfc;
-    }
-
-    tbody tr:nth-child(odd):hover {
-        background-color: #f1f3f5;
-    }
-
-    /* Style pour la première colonne */
-    tbody th {
-        color: #3498db;
-        font-weight: 600;
+    .excel-table .text-left {
         text-align: left;
     }
 
-    /* Style pour les lignes de total */
-    .total-row {
-        background-color: #e8f4fd !important;
-        font-weight: 600;
+    .excel-table .text-center {
+        text-align: center;
     }
 
-    .sector-row {
-        background-color: #f0f8ff !important;
-        font-weight: 700;
+    /* Couleurs spécifiques pour les lignes */
+    .excel-table .header-row {
+        background-color: #2f75b5;
+        color: white;
+        font-weight: bold;
     }
 
-    .regime-row {
-        background-color: #fafbfc;
+    .excel-table .subheader-row {
+        background-color: #5b9bd5;
+        color: white;
+        font-weight: bold;
     }
 
-    .header-row {
-        background-color: #e3f2fd;
-        font-weight: 700;
+    .excel-table .section-row {
+        background-color: #ddebf7;
+        font-weight: bold;
     }
 
-    .sexe-garcons {
-        background-color: #e3f2fd !important;
+    .excel-table .total-row {
+        background-color: #f2f2f2;
+        font-weight: bold;
+        border-top: 2px solid #8eaadb;
     }
 
-    .sexe-filles {
-        background-color: #fce4ec !important;
+    .excel-table .grand-total-row {
+        background-color: #e6e6e6;
+        font-weight: bold;
+        border-top: 2px solid #2f75b5;
     }
 
-    .sexe-total {
-        background-color: #e8f5e8 !important;
-        font-weight: 600;
+    .excel-table .garcons-row {
+        background-color: #e6f0ff;
     }
 
-    /* Style pour les nombres */
-    .number-col {
+    .excel-table .filles-row {
+        background-color: #fff0f0;
+    }
+
+    /* Styles pour les cellules fusionnées */
+    .merged-cell {
+        background-color: #d9e1f2;
+        font-weight: bold;
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    /* Alternance des couleurs pour les données */
+    .excel-table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .excel-table tbody tr:nth-child(odd) {
+        background-color: #ffffff;
+    }
+
+    /* Styles pour les nombres */
+    .number-cell {
         text-align: right;
         font-family: 'Courier New', monospace;
         font-weight: 500;
     }
 
-    .text-left {
-        text-align: left !important;
-    }
-
-    .text-center {
-        text-align: center !important;
-    }
-
-    .text-right {
-        text-align: right !important;
-    }
+    /* Largeurs de colonnes spécifiques */
+    .col-numero { width: 40px; }
+    .col-province { width: 120px; }
+    .col-sexe { width: 80px; }
+    .col-niveau { width: 100px; }
+    .col-small { width: 60px; }
+    .col-medium { width: 80px; }
+    .col-large { width: 120px; }
 
     /* Badges pour les nombres */
     .count-badge {
@@ -432,54 +377,6 @@
         border-radius: 12px;
         font-size: 0.8rem;
         margin: 0 4px;
-    }
-
-    /* Styles spécifiques pour les tableaux d'effectifs */
-    .effectif-table {
-        min-width: 800px;
-    }
-
-    .effectif-table th,
-    .effectif-table td {
-        text-align: center;
-    }
-
-    .effectif-table .text-left {
-        text-align: left;
-    }
-
-    .age-col {
-        background-color: #f8f9fa;
-        font-weight: 600;
-    }
-
-    .niveau-col {
-        background-color: #e3f2fd;
-        font-weight: 600;
-    }
-
-    .total-col {
-        background-color: #e8f5e8;
-        font-weight: 700;
-    }
-
-    .grand-total {
-        background-color: #d4edda;
-        font-weight: 800;
-        font-size: 0.9rem;
-    }
-
-    .province-col {
-        width: 150px;
-        text-align: left;
-    }
-
-    .small-col {
-        width: 80px;
-    }
-
-    .medium-col {
-        width: 100px;
     }
 
     /* Pied de page avec pagination */
@@ -609,27 +506,9 @@
             justify-content: space-between;
         }
 
-        .search-box {
-            width: 100%;
-        }
-
-        .search-box input {
-            width: 100%;
-        }
-
         .table-export-buttons {
             justify-content: flex-end;
             width: 100%;
-        }
-
-        th,
-        td {
-            padding: 8px 6px;
-            font-size: 0.8rem;
-        }
-
-        .card-header h2 {
-            font-size: 1.3rem;
         }
 
         .card-footer {
@@ -644,6 +523,15 @@
 
         .pagination-info {
             text-align: center;
+        }
+
+        .excel-table {
+            font-size: 10px;
+        }
+
+        .excel-table th,
+        .excel-table td {
+            padding: 4px 6px;
         }
     }
 
@@ -662,23 +550,9 @@
             gap: 5px;
         }
 
-        .effectif-table {
-            font-size: 0.75rem;
+        .excel-table {
+            font-size: 9px;
         }
-    }
-
-    /* Indicateurs visuels */
-    .positive-trend {
-        color: #27ae60;
-    }
-
-    .negative-trend {
-        color: #e74c3c;
-    }
-
-    .highlight-cell {
-        background-color: #fff3cd !important;
-        font-weight: 600;
     }
 </style>
 
@@ -693,14 +567,12 @@
 
         <div class="filter-container">
             <div class="filter-group combo-container">
-                <label for="rapport-combo">Type de Rapport</label>
+                <label for="rapport-combo">Type de Rapport Excel</label>
                 <select class="filter-combo" id="rapport-combo">
-                    <option value="">Sélectionnez un rapport</option>
-                    <option value="effectifs_par_age_national">Effectifs par Âge - National</option>
-                    <option value="effectifs_regime_province">Effectifs par Régime et Province</option>
-                    <option value="effectifs_secteur_national">Effectifs par Secteur National</option>
-                    <option value="effectifs_province_detail">Effectifs par Province - Détail</option>
-                    <option value="effectifs_par_age_sexe">Effectifs par Âge et Sexe</option>
+                    <option value="">Sélectionnez un rapport Excel</option>
+                    <option value="effectifs_excel_secteur">Excel - Effectifs par Secteur</option>
+                    <option value="effectifs_excel_province_regime">Excel - Effectifs par Province et Régime</option>
+                    <option value="effectifs_excel_province_niveau">Excel - Effectifs par Province et Niveau</option>
                 </select>
             </div>
         </div>
@@ -718,8 +590,8 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    {% for annee in annees_scolaires %}
-                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% for annee in abbl %}
+                    <option value="{{ annee.id }}">{{ annee.lib_annee_scolaire }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -774,12 +646,6 @@
             <button class="export-btn excel-btn" onclick="exportToExcel()">
                 <i class="fas fa-file-excel"></i> Exporter en Excel
             </button>
-            <button class="export-btn pdf-btn" onclick="exportToPDF()">
-                <i class="fas fa-file-pdf"></i> Exporter en PDF
-            </button>
-            <button class="export-btn csv-btn" onclick="exportToCSV()">
-                <i class="fas fa-file-csv"></i> Exporter en CSV
-            </button>
         </div>
     </div>
 
@@ -795,12 +661,6 @@
                     <button class="table-export-btn excel-btn" onclick="exportToExcel()">
                         <i class="fas fa-file-excel"></i> Excel
                     </button>
-                    <button class="table-export-btn pdf-btn" onclick="exportToPDF()">
-                        <i class="fas fa-file-pdf"></i> PDF
-                    </button>
-                    <button class="table-export-btn csv-btn" onclick="exportToCSV()">
-                        <i class="fas fa-file-csv"></i> CSV
-                    </button>
                 </div>
             </div>
         </div>
@@ -812,107 +672,78 @@
 
         <div class="table-responsive" id="table-container">
 
-            <!-- Tableau pour Effectifs par Âge - National -->
-            <table class="table effectif-table" id="effectifs-par-age-national-table" style="display: none;">
+            <!-- Tableau Excel 1: Effectifs par Secteur -->
+            <table class="excel-table" id="effectifs-excel-secteur-table" style="display: none;">
                 <thead>
-                    <tr>
-                        <th class="niveau-col">Niveau</th>
-                        <th>Année</th>
-                        <th class="age-col">-3 ans</th>
-                        <th class="age-col">3 ans</th>
-                        <th class="age-col">4 ans</th>
-                        <th class="age-col">5 ans</th>
-                        <th class="age-col">6 ans</th>
-                        <th class="total-col">Total Général</th>
+                    <tr class="header-row">
+                        <th colspan="3" class="text-center merged-cell">Catégorie</th>
+                        <th colspan="4" class="text-center">Niveaux d'Enseignement</th>
+                        <th rowspan="2" class="merged-cell">Total Général</th>
+                    </tr>
+                    <tr class="subheader-row">
+                        <th>Secteur d'enseignement</th>
+                        <th>Régime de gestion</th>
+                        <th>Sexe</th>
+                        <th>1ère Maternelle</th>
+                        <th>2ème Maternelle</th>
+                        <th>3ème Maternelle</th>
+                        <th>Classe Pré-primaire</th>
                     </tr>
                 </thead>
-                <tbody id="effectifs-par-age-national-table-body">
+                <tbody id="effectifs-excel-secteur-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
-            <!-- Tableau pour Effectifs par Régime et Province -->
-            <table class="table effectif-table" id="effectifs-regime-province-table" style="display: none;">
+            <!-- Tableau Excel 2: Effectifs par Province et Régime -->
+            <table class="excel-table" id="effectifs-excel-province-regime-table" style="display: none;">
                 <thead>
-                    <tr>
-                        <th class="province-col">Province</th>
-                        <th>Année</th>
-                        <th>Sexe</th>
-                        <th class="small-col">ECC</th>
-                        <th class="small-col">ECF</th>
-                        <th class="small-col">ECI</th>
-                        <th class="small-col">ECK</th>
-                        <th class="small-col">ECP</th>
-                        <th class="small-col">ECS</th>
-                        <th class="small-col">ENC</th>
-                        <th class="small-col">AUTRES</th>
-                        <th class="small-col">NR</th>
-                        <th class="medium-col">Total Public</th>
-                        <th class="medium-col">Privé</th>
-                        <th class="total-col">Total Général</th>
+                    <tr class="header-row">
+                        <th rowspan="3" class="merged-cell">N°</th>
+                        <th rowspan="3" class="merged-cell">PROVINCE</th>
+                        <th rowspan="3" class="merged-cell">Sexe</th>
+                        <th colspan="8" class="text-center">Public</th>
+                        <th rowspan="3" class="merged-cell">Total Public</th>
+                        <th rowspan="3" class="merged-cell">Privé</th>
+                        <th rowspan="3" class="merged-cell">Total Général</th>
+                    </tr>
+                    <tr class="subheader-row">
+                        <th colspan="8">Régimes de Gestion</th>
+                    </tr>
+                    <tr class="subheader-row">
+                        <th>ECC</th>
+                        <th>ECF</th>
+                        <th>ECI</th>
+                        <th>ECK</th>
+                        <th>ECP</th>
+                        <th>ECS</th>
+                        <th>ENC</th>
+                        <th>Autres</th>
                     </tr>
                 </thead>
-                <tbody id="effectifs-regime-province-table-body">
+                <tbody id="effectifs-excel-province-regime-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
 
-            <!-- Tableau pour Effectifs par Secteur National -->
-            <table class="table effectif-table" id="effectifs-secteur-national-table" style="display: none;">
+            <!-- Tableau Excel 3: Effectifs par Province et Niveau -->
+            <table class="excel-table" id="effectifs-excel-province-niveau-table" style="display: none;">
                 <thead>
-                    <tr>
-                        <th>Secteur</th>
-                        <th>Régime</th>
-                        <th>Sexe</th>
-                        <th>Année</th>
-                        <th class="medium-col">1ère Maternelle</th>
-                        <th class="medium-col">2ème Maternelle</th>
-                        <th class="medium-col">3ème Maternelle</th>
-                        <th class="medium-col">Pré-primaire</th>
-                        <th class="total-col">Total Général</th>
+                    <tr class="header-row">
+                        <th rowspan="2" class="merged-cell">N°</th>
+                        <th rowspan="2" class="merged-cell">PROVINCE</th>
+                        <th rowspan="2" class="merged-cell">Sexe</th>
+                        <th colspan="4" class="text-center">Niveaux d'Enseignement</th>
+                        <th rowspan="2" class="merged-cell">Total Général</th>
+                    </tr>
+                    <tr class="subheader-row">
+                        <th>1ère Maternelle</th>
+                        <th>2ème Maternelle</th>
+                        <th>3ème Maternelle</th>
+                        <th>Classe Pré-primaire</th>
                     </tr>
                 </thead>
-                <tbody id="effectifs-secteur-national-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Effectifs par Province - Détail -->
-            <table class="table effectif-table" id="effectifs-province-detail-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="province-col">Province</th>
-                        <th>Sexe</th>
-                        <th>Année</th>
-                        <th class="medium-col">1ère Maternelle</th>
-                        <th class="medium-col">2ème Maternelle</th>
-                        <th class="medium-col">3ème Maternelle</th>
-                        <th class="medium-col">Pré-primaire</th>
-                        <th class="total-col">Total Général</th>
-                        <th class="small-col">NR</th>
-                    </tr>
-                </thead>
-                <tbody id="effectifs-province-detail-table-body">
-                    <!-- Les données seront chargées dynamiquement -->
-                </tbody>
-            </table>
-
-            <!-- Tableau pour Effectifs par Âge et Sexe -->
-            <table class="table effectif-table" id="effectifs-par-age-sexe-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th class="niveau-col">Niveau</th>
-                        <th>Sexe</th>
-                        <th>Année</th>
-                        <th class="age-col">-3 ans</th>
-                        <th class="age-col">3 ans</th>
-                        <th class="age-col">4 ans</th>
-                        <th class="age-col">5 ans</th>
-                        <th class="age-col">6 ans</th>
-                        <th class="total-col">Total Général</th>
-                    </tr>
-                </thead>
-                <tbody id="effectifs-par-age-sexe-table-body">
+                <tbody id="effectifs-excel-province-niveau-table-body">
                     <!-- Les données seront chargées dynamiquement -->
                 </tbody>
             </table>
@@ -950,7 +781,7 @@
     // Variables globales pour la pagination
     let currentPage = 1;
     let currentPageSize = 10;
-    let currentRapportType = 'effectifs_par_age_national';
+    let currentRapportType = 'effectifs_excel_secteur';
     let currentFilters = {};
     let totalPages = 1;
     let totalCount = 0;
@@ -965,11 +796,11 @@
         const filters = [anneeSelect, provinceSelect, milieuSelect, secteurSelect];
 
         // Charger les données initiales
-        loadEffectifsData('effectifs_par_age_national', 1, currentPageSize);
+        loadEffectifsData('effectifs_excel_secteur', 1, currentPageSize);
 
         // Écouter les changements de filtre
         rapportCombo.addEventListener('change', function () {
-            currentRapportType = this.value || 'effectifs_par_age_national';
+            currentRapportType = this.value || 'effectifs_excel_secteur';
             currentPage = 1;
             loadEffectifsData(currentRapportType, currentPage, currentPageSize);
         });
@@ -1212,33 +1043,24 @@
         const tableTitle = document.getElementById('table-title');
 
         switch (rapportType) {
-            case 'effectifs_par_age_national':
-                displayEffectifsParAgeNational(data);
-                tableTitle.textContent = 'Effectifs par Âge - Vue Nationale';
+            // TABLEAUX EXCEL
+            case 'effectifs_excel_secteur':
+                displayExcelSecteur(data);
+                tableTitle.textContent = 'Excel - Effectifs par Secteur d\'Enseignement';
                 break;
 
-            case 'effectifs_regime_province':
-                displayEffectifsRegimeProvince(data);
-                tableTitle.textContent = 'Effectifs par Régime et Province';
+            case 'effectifs_excel_province_regime':
+                displayExcelProvinceRegime(data);
+                tableTitle.textContent = 'Excel - Effectifs par Province et Régime';
                 break;
 
-            case 'effectifs_secteur_national':
-                displayEffectifsSecteurNational(data);
-                tableTitle.textContent = 'Effectifs par Secteur - Vue Nationale';
-                break;
-
-            case 'effectifs_province_detail':
-                displayEffectifsProvinceDetail(data);
-                tableTitle.textContent = 'Effectifs par Province - Détail';
-                break;
-
-            case 'effectifs_par_age_sexe':
-                displayEffectifsParAgeSexe(data);
-                tableTitle.textContent = 'Effectifs par Âge et Sexe';
+            case 'effectifs_excel_province_niveau':
+                displayExcelProvinceNiveau(data);
+                tableTitle.textContent = 'Excel - Effectifs par Province et Niveau';
                 break;
 
             default:
-                displayEffectifsParAgeNational(data);
+                displayExcelSecteur(data);
                 tableTitle.textContent = 'Statistiques des Effectifs ST1';
                 break;
         }
@@ -1246,11 +1068,10 @@
 
     function hideAllTables() {
         const tables = [
-            'effectifs-par-age-national-table',
-            'effectifs-regime-province-table', 
-            'effectifs-secteur-national-table',
-            'effectifs-province-detail-table',
-            'effectifs-par-age-sexe-table'
+            // TABLEAUX EXCEL
+            'effectifs-excel-secteur-table',
+            'effectifs-excel-province-regime-table',
+            'effectifs-excel-province-niveau-table'
         ];
 
         tables.forEach(tableId => {
@@ -1258,157 +1079,135 @@
         });
     }
 
-    // Fonctions d'affichage spécifiques pour chaque type de rapport
-    function displayEffectifsParAgeNational(data) {
-        const table = document.getElementById('effectifs-par-age-national-table');
-        const tbody = document.getElementById('effectifs-par-age-national-table-body');
+    // FONCTIONS D'AFFICHAGE POUR LES TABLEAUX EXCEL
+    function displayExcelSecteur(data) {
+        const table = document.getElementById('effectifs-excel-secteur-table');
+        const tbody = document.getElementById('effectifs-excel-secteur-table-body');
         tbody.innerHTML = '';
 
         if (data.length === 0) {
             displayNoData(tbody, 8);
         } else {
-            let totalGeneral = 0;
             data.forEach((row, index) => {
                 const tr = document.createElement('tr');
-                if (row.Niveau === 'Pré-primaire') {
+                
+                // Appliquer les classes CSS selon le type de ligne
+                if (row.sexe === 'Garçons') {
+                    tr.className = 'garcons-row';
+                } else if (row.sexe === 'Filles') {
+                    tr.className = 'filles-row';
+                } else if (row.sexe === 'Total') {
                     tr.className = 'total-row';
                 }
+                
+                // Appliquer une classe spéciale pour les lignes de section
+                if (row.secteur && !row.regime_gestion) {
+                    tr.className = 'section-row';
+                }
+
                 tr.innerHTML = `
-                    <td class="text-left">${escapeHtml(row.Niveau || 'N/A')}</td>
-                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
-                    <td class="number-col">${formatNumber(row['-3ans'])}</td>
-                    <td class="number-col">${formatNumber(row['3ans'])}</td>
-                    <td class="number-col">${formatNumber(row['4ans'])}</td>
-                    <td class="number-col">${formatNumber(row['5ans'])}</td>
-                    <td class="number-col">${formatNumber(row['6ans'])}</td>
-                    <td class="number-col total-col">${formatNumber(row['Total général'])}</td>
+                    <td class="text-left">${escapeHtml(row.secteur || '')}</td>
+                    <td>${escapeHtml(row.regime_gestion || '')}</td>
+                    <td>${escapeHtml(row.sexe || '')}</td>
+                    <td class="number-cell">${formatNumber(row['1ere_maternelle'])}</td>
+                    <td class="number-cell">${formatNumber(row['2eme_maternelle'])}</td>
+                    <td class="number-cell">${formatNumber(row['3eme_maternelle'])}</td>
+                    <td class="number-cell">${formatNumber(row['pre_primaire'])}</td>
+                    <td class="number-cell">${formatNumber(row['total_general'])}</td>
                 `;
                 tbody.appendChild(tr);
-                totalGeneral += parseInt(row['Total général']) || 0;
             });
-
-            // Ligne de total général
-            const totalTr = document.createElement('tr');
-            totalTr.className = 'grand-total';
-            totalTr.innerHTML = `
-                <td class="text-left"><strong>TOTAL GÉNÉRAL</strong></td>
-                <td></td>
-                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['-3ans']) || 0), 0))}</strong></td>
-                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['3ans']) || 0), 0))}</strong></td>
-                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['4ans']) || 0), 0))}</strong></td>
-                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['5ans']) || 0), 0))}</strong></td>
-                <td class="number-col"><strong>${formatNumber(data.reduce((sum, row) => sum + (parseInt(row['6ans']) || 0), 0))}</strong></td>
-                <td class="number-col"><strong>${formatNumber(totalGeneral)}</strong></td>
-            `;
-            tbody.appendChild(totalTr);
         }
 
         table.style.display = 'table';
     }
 
-    function displayEffectifsRegimeProvince(data) {
-        const table = document.getElementById('effectifs-regime-province-table');
-        const tbody = document.getElementById('effectifs-regime-province-table-body');
+    function displayExcelProvinceRegime(data) {
+        const table = document.getElementById('effectifs-excel-province-regime-table');
+        const tbody = document.getElementById('effectifs-excel-province-regime-table-body');
         tbody.innerHTML = '';
 
         if (data.length === 0) {
             displayNoData(tbody, 15);
         } else {
             let currentProvince = '';
-            let provinceTotals = {};
+            let provinceIndex = 0;
             
             data.forEach((row, index) => {
-                if (row['provinces.libelle'] !== currentProvince) {
-                    currentProvince = row['provinces.libelle'];
-                    provinceTotals[currentProvince] = {
-                        garcons: 0,
-                        filles: 0,
-                        total: 0
-                    };
+                if (row.province !== currentProvince) {
+                    currentProvince = row.province;
+                    provinceIndex++;
                 }
 
                 const tr = document.createElement('tr');
-                if (row.sexe === 'Garçons') {
-                    tr.className = 'sexe-garcons';
-                } else if (row.sexe === 'Filles') {
-                    tr.className = 'sexe-filles';
-                }
                 
+                if (row.sexe === 'Garçons') {
+                    tr.className = 'garcons-row';
+                } else if (row.sexe === 'Filles') {
+                    tr.className = 'filles-row';
+                } else if (row.sexe === 'Total') {
+                    tr.className = 'total-row';
+                }
+
                 tr.innerHTML = `
-                    <td class="text-left">${escapeHtml(row['provinces.libelle'] || 'N/A')}</td>
-                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
-                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
-                    <td class="number-col">${formatNumber(row.ECC)}</td>
-                    <td class="number-col">${formatNumber(row.ECF)}</td>
-                    <td class="number-col">${formatNumber(row.ECI)}</td>
-                    <td class="number-col">${formatNumber(row.ECK)}</td>
-                    <td class="number-col">${formatNumber(row.ECP)}</td>
-                    <td class="number-col">${formatNumber(row.ECS)}</td>
-                    <td class="number-col">${formatNumber(row.ENC)}</td>
-                    <td class="number-col">${formatNumber(row.AUTRES)}</td>
-                    <td class="number-col">${formatNumber(row.NR)}</td>
-                    <td class="number-col">${formatNumber(row['Total Public'])}</td>
-                    <td class="number-col">${formatNumber(row['Privé'])}</td>
-                    <td class="number-col total-col">${formatNumber(row['Total Général'])}</td>
+                    <td class="text-center">${row.sexe === 'Garçons' ? provinceIndex : ''}</td>
+                    <td class="text-left">${row.sexe === 'Garçons' ? escapeHtml(row.province) : ''}</td>
+                    <td>${escapeHtml(row.sexe || '')}</td>
+                    <td class="number-cell">${formatNumber(row.ECC)}</td>
+                    <td class="number-cell">${formatNumber(row.ECF)}</td>
+                    <td class="number-cell">${formatNumber(row.ECI)}</td>
+                    <td class="number-cell">${formatNumber(row.ECK)}</td>
+                    <td class="number-cell">${formatNumber(row.ECP)}</td>
+                    <td class="number-cell">${formatNumber(row.ECS)}</td>
+                    <td class="number-cell">${formatNumber(row.ENC)}</td>
+                    <td class="number-cell">${formatNumber(row.AUTRES)}</td>
+                    <td class="number-cell">${formatNumber(row.total_public)}</td>
+                    <td class="number-cell">${formatNumber(row.prive)}</td>
+                    <td class="number-cell">${formatNumber(row.total_general)}</td>
                 `;
                 tbody.appendChild(tr);
-
-                // Accumuler les totaux par province
-                if (row.sexe === 'Garçons') {
-                    provinceTotals[currentProvince].garcons += parseInt(row['Total Général']) || 0;
-                } else if (row.sexe === 'Filles') {
-                    provinceTotals[currentProvince].filles += parseInt(row['Total Général']) || 0;
-                }
-                provinceTotals[currentProvince].total += parseInt(row['Total Général']) || 0;
-            });
-
-            // Ajouter les lignes de total par province
-            Object.keys(provinceTotals).forEach(province => {
-                const totalTr = document.createElement('tr');
-                totalTr.className = 'sexe-total';
-                totalTr.innerHTML = `
-                    <td class="text-left"><strong>Total ${province}</strong></td>
-                    <td></td>
-                    <td><strong>Total</strong></td>
-                    <td colspan="10"></td>
-                    <td class="number-col"><strong>${formatNumber(provinceTotals[province].garcons + provinceTotals[province].filles)}</strong></td>
-                    <td class="number-col"><strong>${formatNumber(provinceTotals[province].total)}</strong></td>
-                `;
-                tbody.appendChild(totalTr);
             });
         }
 
         table.style.display = 'table';
     }
 
-    function displayEffectifsSecteurNational(data) {
-        const table = document.getElementById('effectifs-secteur-national-table');
-        const tbody = document.getElementById('effectifs-secteur-national-table-body');
+    function displayExcelProvinceNiveau(data) {
+        const table = document.getElementById('effectifs-excel-province-niveau-table');
+        const tbody = document.getElementById('effectifs-excel-province-niveau-table-body');
         tbody.innerHTML = '';
 
         if (data.length === 0) {
-            displayNoData(tbody, 9);
+            displayNoData(tbody, 8);
         } else {
+            let currentProvince = '';
+            let provinceIndex = 0;
+            
             data.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                if (row.sexe === 'Garçons') {
-                    tr.className = 'sexe-garcons';
-                } else if (row.sexe === 'Filles') {
-                    tr.className = 'sexe-filles';
-                } else if (row.sexe === 'Total') {
-                    tr.className = 'sexe-total';
+                if (row.province !== currentProvince) {
+                    currentProvince = row.province;
+                    provinceIndex++;
                 }
+
+                const tr = document.createElement('tr');
                 
+                if (row.sexe === 'Garçons') {
+                    tr.className = 'garcons-row';
+                } else if (row.sexe === 'Filles') {
+                    tr.className = 'filles-row';
+                } else if (row.sexe === 'Total') {
+                    tr.className = 'total-row';
+                }
+
                 tr.innerHTML = `
-                    <td>${escapeHtml(row.secteur || 'N/A')}</td>
-                    <td>${escapeHtml(row.regime_gestion || 'N/A')}</td>
-                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
-                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
-                    <td class="number-col">${formatNumber(row['1ere_maternelle'])}</td>
-                    <td class="number-col">${formatNumber(row['2eme_maternelle'])}</td>
-                    <td class="number-col">${formatNumber(row['3eme_maternelle'])}</td>
-                    <td class="number-col">${formatNumber(row['pre_primaire'])}</td>
-                    <td class="number-col total-col">${formatNumber(row['total_general'])}</td>
+                    <td class="text-center">${row.sexe === 'Garçons' ? provinceIndex : ''}</td>
+                    <td class="text-left">${row.sexe === 'Garçons' ? escapeHtml(row.province) : ''}</td>
+                    <td>${escapeHtml(row.sexe || '')}</td>
+                    <td class="number-cell">${formatNumber(row['1ere_maternelle'])}</td>
+                    <td class="number-cell">${formatNumber(row['2eme_maternelle'])}</td>
+                    <td class="number-cell">${formatNumber(row['3eme_maternelle'])}</td>
+                    <td class="number-cell">${formatNumber(row['pre_primaire'])}</td>
+                    <td class="number-cell">${formatNumber(row['total_general'])}</td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -1417,79 +1216,7 @@
         table.style.display = 'table';
     }
 
-    function displayEffectifsProvinceDetail(data) {
-        const table = document.getElementById('effectifs-province-detail-table');
-        const tbody = document.getElementById('effectifs-province-detail-table-body');
-        tbody.innerHTML = '';
-
-        if (data.length === 0) {
-            displayNoData(tbody, 9);
-        } else {
-            data.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                if (row.sexe === 'Garçons') {
-                    tr.className = 'sexe-garcons';
-                } else if (row.sexe === 'Filles') {
-                    tr.className = 'sexe-filles';
-                } else if (row.sexe === 'Total') {
-                    tr.className = 'sexe-total';
-                }
-                
-                tr.innerHTML = `
-                    <td class="text-left">${escapeHtml(row['provinces.libelle'] || 'N/A')}</td>
-                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
-                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
-                    <td class="number-col">${formatNumber(row['1ere_maternelle'])}</td>
-                    <td class="number-col">${formatNumber(row['2eme_maternelle'])}</td>
-                    <td class="number-col">${formatNumber(row['3eme_maternelle'])}</td>
-                    <td class="number-col">${formatNumber(row['pre_primaire'])}</td>
-                    <td class="number-col total-col">${formatNumber(row['total_general'])}</td>
-                    <td class="number-col">${formatNumber(row['NR'])}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        table.style.display = 'table';
-    }
-
-    function displayEffectifsParAgeSexe(data) {
-        const table = document.getElementById('effectifs-par-age-sexe-table');
-        const tbody = document.getElementById('effectifs-par-age-sexe-table-body');
-        tbody.innerHTML = '';
-
-        if (data.length === 0) {
-            displayNoData(tbody, 9);
-        } else {
-            data.forEach((row, index) => {
-                const tr = document.createElement('tr');
-                if (row.sexe === 'Garçons') {
-                    tr.className = 'sexe-garcons';
-                } else if (row.sexe === 'Filles') {
-                    tr.className = 'sexe-filles';
-                } else if (row.sexe === 'Total') {
-                    tr.className = 'sexe-total';
-                }
-                
-                tr.innerHTML = `
-                    <td class="text-left">${escapeHtml(row.Niveau || 'N/A')}</td>
-                    <td>${escapeHtml(row.sexe || 'N/A')}</td>
-                    <td>${escapeHtml(row.idannee || 'N/A')}</td>
-                    <td class="number-col">${formatNumber(row['-3ans'])}</td>
-                    <td class="number-col">${formatNumber(row['3ans'])}</td>
-                    <td class="number-col">${formatNumber(row['4ans'])}</td>
-                    <td class="number-col">${formatNumber(row['5ans'])}</td>
-                    <td class="number-col">${formatNumber(row['6ans'])}</td>
-                    <td class="number-col total-col">${formatNumber(row['Total général'])}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        table.style.display = 'table';
-    }
-
-    // Fonctions utilitaires
+    // FONCTIONS UTILITAIRES
     function displayNoData(tbody, colspan) {
         const tr = document.createElement('tr');
         tr.innerHTML = `
@@ -1529,7 +1256,7 @@
 
         currentPage = 1;
         currentPageSize = 10;
-        currentRapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
+        currentRapportType = document.getElementById('rapport-combo').value || 'effectifs_excel_secteur';
         loadEffectifsData(currentRapportType, currentPage, currentPageSize);
     }
 
@@ -1545,23 +1272,9 @@
 
     // FONCTIONS D'EXPORT
     function exportToExcel() {
-        const rapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
+        const rapportType = document.getElementById('rapport-combo').value || 'effectifs_excel_secteur';
         const filters = getCurrentFilters();
         const url = `{% url "export_effectifs_excel" %}?rapport_type=${rapportType}&${filters}`;
-        window.location.href = url;
-    }
-
-    function exportToPDF() {
-        const rapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
-        const filters = getCurrentFilters();
-        const url = `{% url "export_effectifs_pdf" %}?rapport_type=${rapportType}&${filters}`;
-        window.location.href = url;
-    }
-
-    function exportToCSV() {
-        const rapportType = document.getElementById('rapport-combo').value || 'effectifs_par_age_national';
-        const filters = getCurrentFilters();
-        const url = `{% url "export_effectifs_csv" %}?rapport_type=${rapportType}&${filters}`;
         window.location.href = url;
     }
 
@@ -1582,6 +1295,27 @@
         
         return params.join('&');
     }
+
+    // Script pour gérer l'affichage responsive des tableaux Excel
+    document.addEventListener('DOMContentLoaded', function() {
+        // Adapter les tableaux Excel pour le responsive
+        const excelTables = document.querySelectorAll('.excel-table');
+        
+        excelTables.forEach(table => {
+            const container = table.closest('.table-responsive');
+            if (container.scrollWidth > container.clientWidth) {
+                container.style.overflowX = 'auto';
+                container.style.border = '1px solid #ddd';
+                container.style.borderRadius = '4px';
+            }
+        });
+        
+        // Ajouter des tooltips pour les cellules fusionnées
+        const mergedCells = document.querySelectorAll('.merged-cell');
+        mergedCells.forEach(cell => {
+            cell.title = 'Cellule fusionnée - ' + cell.textContent.trim();
+        });
+    });
 </script>
 
 {% endblock content %}

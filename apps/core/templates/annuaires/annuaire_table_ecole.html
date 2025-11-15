@@ -592,8 +592,10 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    {% for annee in annees_scolaires %}
-                    <option value="{{ annee }}">{{ annee }}</option>
+                    {# CORRECTION : N'utilisez qu'une seule variable si get_annees_scolaires renvoie une seule colonne
+                    #}
+                    {% for annee in abbl %}
+                    <option value="{{ annee.id }}">{{ annee.lib_annee_scolaire }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -1319,25 +1321,25 @@
     }
 
     function getCurrentFilters() {
-    const filters = {
-        annee: document.getElementById('annee-scolaire').value,
-        type_enseignement: document.getElementById('type-enseignement').value,
-        province: document.getElementById('proved').value,
-        milieu: document.getElementById('milieu').value,
-        secteur: document.getElementById('secteur').value
-    };
-    
-    const params = [];
-    for (const [key, value] of Object.entries(filters)) {
-        if (value) {
-            params.push(`${key}=${encodeURIComponent(value)}`);
+        const filters = {
+            annee: document.getElementById('annee-scolaire').value,
+            type_enseignement: document.getElementById('type-enseignement').value,
+            province: document.getElementById('proved').value,
+            milieu: document.getElementById('milieu').value,
+            secteur: document.getElementById('secteur').value
+        };
+
+        const params = [];
+        for (const [key, value] of Object.entries(filters)) {
+            if (value) {
+                params.push(`${key}=${encodeURIComponent(value)}`);
+            }
         }
+
+        const queryString = params.join('&');
+        console.log('Filters query string:', queryString); // Debug
+        return queryString;
     }
-    
-    const queryString = params.join('&');
-    console.log('Filters query string:', queryString); // Debug
-    return queryString;
-}
 </script>
 
 {% endblock content %}

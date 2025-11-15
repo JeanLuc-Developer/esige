@@ -1,7 +1,6 @@
-<!-- templates/ratios/gestion_ratios.html -->
+<!-- templates/annuaires/gestion_ratios.html -->
 {% extends "base.html" %}
 {% load static %}
-{% block ratios_active %} active {% endblock %}
 {% block content %}
 
 <style>
@@ -132,6 +131,11 @@
 
     .pdf-btn {
         background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        color: white;
+    }
+
+    .csv-btn {
+        background: linear-gradient(135deg, #0052cc 0%, #0041a8 100%);
         color: white;
     }
 
@@ -502,6 +506,18 @@
             justify-content: center;
         }
     }
+
+    .status {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-active {
+        background-color: #d4edda;
+        color: #155724;
+    }
 </style>
 
 <div class="container">
@@ -522,7 +538,7 @@
                     <option value="ratio_provincial">Ratios par Province</option>
                     <option value="ratio_milieu">Ratios par Milieu</option>
                     <option value="ratio_secteur">Ratios par Secteur</option>
-                    <option value="ratio_comparatif">Vue comparative</option>
+                    
                 </select>
             </div>
         </div>
@@ -636,6 +652,9 @@
                     </button>
                     <button class="table-export-btn pdf-btn" onclick="exportToPDF()">
                         <i class="fas fa-file-pdf"></i> PDF
+                    </button>
+                    <button class="table-export-btn csv-btn" onclick="exportToCSV()">
+                        <i class="fas fa-file-csv"></i> CSV
                     </button>
                 </div>
             </div>
@@ -1243,38 +1262,77 @@
         return csrfToken ? csrfToken.value : '';
     }
 
-    // FONCTIONS D'EXPORT (à adapter selon vos besoins)
-    function exportToExcel() {
-        const ratioType = document.getElementById('ratio-combo').value || 'ratio_comparatif';
-        const filters = getCurrentFilters();
-        // Implémentez l'export Excel ici
-        alert('Export Excel pour ' + ratioType + ' - Fonction à implémenter');
+    // FONCTIONS D'EXPORT
+    async function exportToExcel() {
+        await exportData('excel');
     }
 
-    function exportToPDF() {
-        const ratioType = document.getElementById('ratio-combo').value || 'ratio_comparatif';
-        const filters = getCurrentFilters();
-        // Implémentez l'export PDF ici
-        alert('Export PDF pour ' + ratioType + ' - Fonction à implémenter');
+    async function exportToPDF() {
+        await exportData('pdf');
     }
 
-    function getCurrentFilters() {
-        const filters = {
+    async function exportToCSV() {
+        await exportData('csv');
+    }
+
+    async function exportData(format) {
+        const ratioType = document.getElementById('ratio-combo').value || 'ratio_comparatif';
+        const filters = getCurrentFiltersObject();
+        
+        try {
+            const response = await fetch('{% url "export_ratios" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCsrfToken()
+                },
+                body: JSON.stringify({
+                    ratio_type: ratioType,
+                    filters: filters,
+                    format: format
+                })
+            });
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                
+                // Nom du fichier basé sur l'en-tête Content-Disposition ou nom par défaut
+                const contentDisposition = response.headers.get('Content-Disposition');
+                let filename = `ratios_${ratioType}.${format}`;
+                if (contentDisposition) {
+                    const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+                    if (filenameMatch) {
+                        filename = filenameMatch[1];
+                    }
+                }
+                a.download = filename;
+                
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } else {
+                const errorData = await response.json();
+                showError('Erreur lors de l\'export: ' + (errorData.error || 'Erreur inconnue'));
+            }
+        } catch (error) {
+            console.error('Erreur export:', error);
+            showError('Erreur lors de l\'export des données');
+        }
+    }
+
+    function getCurrentFiltersObject() {
+        return {
             annee: document.getElementById('annee-scolaire').value,
             type_enseignement: document.getElementById('type-enseignement').value,
             province: document.getElementById('proved').value,
             milieu: document.getElementById('milieu').value,
             secteur: document.getElementById('secteur').value
         };
-        
-        const params = [];
-        for (const [key, value] of Object.entries(filters)) {
-            if (value) {
-                params.push(`${key}=${encodeURIComponent(value)}`);
-            }
-        }
-        
-        return params.join('&');
     }
 </script>
 

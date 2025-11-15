@@ -556,8 +556,8 @@
                 <label for="annee-scolaire">Année scolaire</label>
                 <select class="filter-select" id="annee-scolaire">
                     <option value="">Toutes les années</option>
-                    {% for annee in annees_scolaires %}
-                    <option value="{{ annee }}">{{ annee }}</option>
+                    {% for annee in abbl %}
+                    <option value="{{ annee.id }}">{{ annee.lib_annee_scolaire }}</option>
                     {% endfor %}
                 </select>
             </div>
@@ -664,18 +664,16 @@
             <table class="table" id="province-table">
                 <thead>
                     <tr>
-                        <th>Année</th>
-                        <th>ID Province</th>
+                        <th>N°</th>
                         <th>Province</th>
-                        <th>Type</th>
-                        <th>Point d'eau (%)</th>
-                        <th>Latrines (%)</th>
-                        <th>Électricité (%)</th>
-                        <th>Clôture (%)</th>
-                        <th>Programme réfugié (%)</th>
-                        <th>Programme officiel (%)</th>
-                        <th>COPA/COGES (%)</th>
-                        <th>Aire de jeux (%)</th>
+                        <th>Nbre Ecoles</th>
+                        <th>Point Eau</th>
+                        <th>Électricité</th>
+                        <th>Clôture</th>
+                        <th>Programme refugié</th>
+                        <th>Programme Officiel</th>
+                        <th>COPA/COGES</th>
+                        <th>Air de jeux</th>
                     </tr>
                 </thead>
                 <tbody id="province-table-body">
@@ -687,18 +685,15 @@
             <table class="table" id="secteur-regime-table" style="display: none;">
                 <thead>
                     <tr>
-                        <th>Année</th>
-                        <th>Type</th>
-                        <th>Secteur d'enseignement</th>
-                        <th>Régime de gestion</th>
-                        <th>Point d'eau (%)</th>
-                        <th>Latrines (%)</th>
-                        <th>Électricité (%)</th>
-                        <th>Clôture (%)</th>
-                        <th>Programme réfugié (%)</th>
-                        <th>Programme officiel (%)</th>
-                        <th>COPA/COGES (%)</th>
-                        <th>Aire de jeux (%)</th>
+                        <th>Secteur Enseignement</th>
+                        <th>Regime de gestion</th>
+                        <th>Nbre Ecoles</th>
+                        <th>Électricité</th>
+                        <th>Clôture</th>
+                        <th>Programme réfugié</th>
+                        <th>Programme officiel</th>
+                        <th>COPA/COGES</th>
+                        <th>Air de Jeux</th>
                     </tr>
                 </thead>
                 <tbody id="secteur-regime-table-body">
@@ -815,7 +810,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    updateTableDisplay(rapportType, data.data);
+                    updateTableDisplay(rapportType, data.data, data.totals);
                     updatePagination(data.pagination);
                     updateEntriesInfo(data.pagination, rapportType);
                     updateStats(data.data);
@@ -999,48 +994,42 @@
         }, 200);
     }
 
+    function updateStats(data) {
+        if (data.length === 0) {
+            document.getElementById('stat-point-eau').textContent = '0%';
+            document.getElementById('stat-latrines').textContent = '0%';
+            document.getElementById('stat-electricite').textContent = '0%';
+            document.getElementById('stat-cloture').textContent = '0%';
+            return;
+        }
 
-function updateStats(data) {
-    if (data.length === 0) {
-        document.getElementById('stat-point-eau').textContent = '0%';
-        document.getElementById('stat-latrines').textContent = '0%';
-        document.getElementById('stat-electricite').textContent = '0%';
-        document.getElementById('stat-cloture').textContent = '0%';
-        return;
+        // Calculer les moyennes
+        let totalPointEau = 0;
+        let totalLatrines = 0;
+        let totalElectricite = 0;
+        let totalCloture = 0;
+
+        data.forEach(row => {
+            totalPointEau += parseFloat(row["Point Eau"]) || 0;
+            totalElectricite += parseFloat(row["Électricité"]) || 0;
+            totalCloture += parseFloat(row["Clôture"]) || 0;
+        });
+
+        const count = data.length;
+        const avgPointEau = totalPointEau / count;
+        const avgElectricite = totalElectricite / count;
+        const avgCloture = totalCloture / count;
+
+        // Mettre à jour les cartes de statistiques
+        document.getElementById('stat-point-eau').textContent = `${avgPointEau.toFixed(1)}%`;
+        document.getElementById('stat-electricite').textContent = `${avgElectricite.toFixed(1)}%`;
+        document.getElementById('stat-cloture').textContent = `${avgCloture.toFixed(1)}%`;
+
+        // Appliquer des classes de couleur en fonction des pourcentages
+        applyPercentColor('stat-point-eau', avgPointEau);
+        applyPercentColor('stat-electricite', avgElectricite);
+        applyPercentColor('stat-cloture', avgCloture);
     }
-
-    // Calculer les moyennes - ADAPTÉ AUX NOUVEAUX NOMS DE COLONNES
-    let totalPointEau = 0;
-    let totalLatrines = 0;
-    let totalElectricite = 0;
-    let totalCloture = 0;
-
-    data.forEach(row => {
-        // Utiliser les nouveaux noms de colonnes avec "_pourcent"
-        totalPointEau += parseFloat(row["Point_eau_pourcent"]) || 0;
-        totalLatrines += parseFloat(row["Latrines_pourcent"]) || 0;
-        totalElectricite += parseFloat(row["Electricite_pourcent"]) || 0;
-        totalCloture += parseFloat(row["Cloture_pourcent"]) || 0;
-    });
-
-    const count = data.length;
-    const avgPointEau = totalPointEau / count;
-    const avgLatrines = totalLatrines / count;
-    const avgElectricite = totalElectricite / count;
-    const avgCloture = totalCloture / count;
-
-    // Mettre à jour les cartes de statistiques
-    document.getElementById('stat-point-eau').textContent = `${avgPointEau.toFixed(1)}%`;
-    document.getElementById('stat-latrines').textContent = `${avgLatrines.toFixed(1)}%`;
-    document.getElementById('stat-electricite').textContent = `${avgElectricite.toFixed(1)}%`;
-    document.getElementById('stat-cloture').textContent = `${avgCloture.toFixed(1)}%`;
-
-    // Appliquer des classes de couleur en fonction des pourcentages
-    applyPercentColor('stat-point-eau', avgPointEau);
-    applyPercentColor('stat-latrines', avgLatrines);
-    applyPercentColor('stat-electricite', avgElectricite);
-    applyPercentColor('stat-cloture', avgCloture);
-}
 
     function applyPercentColor(elementId, percent) {
         const element = document.getElementById(elementId);
@@ -1055,7 +1044,7 @@ function updateStats(data) {
         }
     }
 
-    function updateTableDisplay(rapportType, data) {
+    function updateTableDisplay(rapportType, data, totals) {
         // Cacher tous les tableaux
         hideAllTables();
 
@@ -1063,11 +1052,11 @@ function updateStats(data) {
 
         switch (rapportType) {
             case 'par_secteur_regime':
-                displaySecteurRegimeTable(data);
+                displaySecteurRegimeTable(data, totals);
                 tableTitle.textContent = 'Commodités par Secteur et Régime';
                 break;
             default: // par_province
-                displayProvinceTable(data);
+                displayProvinceTable(data, totals);
                 tableTitle.textContent = 'Commodités par Province';
                 break;
         }
@@ -1078,62 +1067,93 @@ function updateStats(data) {
         document.getElementById('secteur-regime-table').style.display = 'none';
     }
 
-function displayProvinceTable(data) {
-    const table = document.getElementById('province-table');
-    const tbody = document.getElementById('province-table-body');
-    tbody.innerHTML = '';
+    function displayProvinceTable(data, totals) {
+        const table = document.getElementById('province-table');
+        const tbody = document.getElementById('province-table-body');
+        tbody.innerHTML = '';
 
-    data.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row["Annee"] || 'N/A'}</td>
-            <td>${row["ID_Province"] || 'N/A'}</td>
-            <td>${row["Province"] || 'N/A'}</td>
-            <td>${row["Type"] || 'N/A'}</td>
-            <!-- ADAPTATION: Utiliser les nouveaux noms de colonnes avec "_pourcent" -->
-            <td class="${getPercentClass(row["Point_eau_pourcent"])}">${formatPercent(row["Point_eau_pourcent"])}</td>
-            <td class="${getPercentClass(row["Latrines_pourcent"])}">${formatPercent(row["Latrines_pourcent"])}</td>
-            <td class="${getPercentClass(row["Electricite_pourcent"])}">${formatPercent(row["Electricite_pourcent"])}</td>
-            <td class="${getPercentClass(row["Cloture_pourcent"])}">${formatPercent(row["Cloture_pourcent"])}</td>
-            <td class="${getPercentClass(row["Programme_refugie_pourcent"])}">${formatPercent(row["Programme_refugie_pourcent"])}</td>
-            <td class="${getPercentClass(row["Programme_officiel_pourcent"])}">${formatPercent(row["Programme_officiel_pourcent"])}</td>
-            <td class="${getPercentClass(row["COPA_COGES_pourcent"])}">${formatPercent(row["COPA_COGES_pourcent"])}</td>
-            <td class="${getPercentClass(row["Aire_jeux_pourcent"])}">${formatPercent(row["Aire_jeux_pourcent"])}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+        data.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row["N°"] || 'N/A'}</td>
+                <td>${row["Province"] || 'N/A'}</td>
+                <td>${row["Nbre Ecoles"] || 'N/A'}</td>
+                <td class="${getPercentClass(row["Point Eau"])}">${formatPercent(row["Point Eau"])}</td>
+                <td class="${getPercentClass(row["Électricité"])}">${formatPercent(row["Électricité"])}</td>
+                <td class="${getPercentClass(row["Clôture"])}">${formatPercent(row["Clôture"])}</td>
+                <td class="${getPercentClass(row["Programme refugié"])}">${formatPercent(row["Programme refugié"])}</td>
+                <td class="${getPercentClass(row["Programme Officiel"])}">${formatPercent(row["Programme Officiel"])}</td>
+                <td class="${getPercentClass(row["COPA/COGES"])}">${formatPercent(row["COPA/COGES"])}</td>
+                <td class="${getPercentClass(row["Air de jeux"])}">${formatPercent(row["Air de jeux"])}</td>
+            `;
+            tbody.appendChild(tr);
+        });
 
-    table.style.display = 'table';
-}
+        // Ajouter la ligne de total
+        if (totals && totals.length > 0) {
+            const total = totals[0];
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'total-row';
+            totalRow.innerHTML = `
+                <td></td>
+                <td><strong>${total["Province"] || 'Total général'}</strong></td>
+                <td><strong>${total["Nbre Ecoles"] || '0'}</strong></td>
+                <td class="${getPercentClass(total["Point Eau"])}"><strong>${formatPercent(total["Point Eau"])}</strong></td>
+                <td class="${getPercentClass(total["Électricité"])}"><strong>${formatPercent(total["Électricité"])}</strong></td>
+                <td class="${getPercentClass(total["Clôture"])}"><strong>${formatPercent(total["Clôture"])}</strong></td>
+                <td class="${getPercentClass(total["Programme refugié"])}"><strong>${formatPercent(total["Programme refugié"])}</strong></td>
+                <td class="${getPercentClass(total["Programme Officiel"])}"><strong>${formatPercent(total["Programme Officiel"])}</strong></td>
+                <td class="${getPercentClass(total["COPA/COGES"])}"><strong>${formatPercent(total["COPA/COGES"])}</strong></td>
+                <td class="${getPercentClass(total["Air de jeux"])}"><strong>${formatPercent(total["Air de jeux"])}</strong></td>
+            `;
+            tbody.appendChild(totalRow);
+        }
 
+        table.style.display = 'table';
+    }
 
-function displaySecteurRegimeTable(data) {
-    const table = document.getElementById('secteur-regime-table');
-    const tbody = document.getElementById('secteur-regime-table-body');
-    tbody.innerHTML = '';
+    function displaySecteurRegimeTable(data, totals) {
+        const table = document.getElementById('secteur-regime-table');
+        const tbody = document.getElementById('secteur-regime-table-body');
+        tbody.innerHTML = '';
 
-    data.forEach((row, index) => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-            <td>${row["Annee"] || 'N/A'}</td>
-            <td>${row["Type"] || 'N/A'}</td>
-            <td>${row["Secteur_enseignement"] || 'N/A'}</td>
-            <td>${row["Regime_gestion"] || 'N/A'}</td>
-            <!-- ADAPTATION: Utiliser les nouveaux noms de colonnes avec "_pourcent" -->
-            <td class="${getPercentClass(row["Point_eau_pourcent"])}">${formatPercent(row["Point_eau_pourcent"])}</td>
-            <td class="${getPercentClass(row["Latrines_pourcent"])}">${formatPercent(row["Latrines_pourcent"])}</td>
-            <td class="${getPercentClass(row["Electricite_pourcent"])}">${formatPercent(row["Electricite_pourcent"])}</td>
-            <td class="${getPercentClass(row["Cloture_pourcent"])}">${formatPercent(row["Cloture_pourcent"])}</td>
-            <td class="${getPercentClass(row["Programme_refugie_pourcent"])}">${formatPercent(row["Programme_refugie_pourcent"])}</td>
-            <td class="${getPercentClass(row["Programme_officiel_pourcent"])}">${formatPercent(row["Programme_officiel_pourcent"])}</td>
-            <td class="${getPercentClass(row["COPA_COGES_pourcent"])}">${formatPercent(row["COPA_COGES_pourcent"])}</td>
-            <td class="${getPercentClass(row["Aire_jeux_pourcent"])}">${formatPercent(row["Aire_jeux_pourcent"])}</td>
-        `;
-        tbody.appendChild(tr);
-    });
+        data.forEach((row, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${row["Secteur Enseignement"] || 'N/A'}</td>
+                <td>${row["Regime de gestion"] || 'N/A'}</td>
+                <td>${row["Nbre Ecoles"] || 'N/A'}</td>
+                <td class="${getPercentClass(row["Électricité"])}">${formatPercent(row["Électricité"])}</td>
+                <td class="${getPercentClass(row["Clôture"])}">${formatPercent(row["Clôture"])}</td>
+                <td class="${getPercentClass(row["Programme réfugié"])}">${formatPercent(row["Programme réfugié"])}</td>
+                <td class="${getPercentClass(row["Programme officiel"])}">${formatPercent(row["Programme officiel"])}</td>
+                <td class="${getPercentClass(row["COPA/COGES"])}">${formatPercent(row["COPA/COGES"])}</td>
+                <td class="${getPercentClass(row["Air de Jeux"])}">${formatPercent(row["Air de Jeux"])}</td>
+            `;
+            tbody.appendChild(tr);
+        });
 
-    table.style.display = 'table';
-}
+        // Ajouter la ligne de total
+        if (totals && totals.length > 0) {
+            const total = totals[0];
+            const totalRow = document.createElement('tr');
+            totalRow.className = 'total-row';
+            totalRow.innerHTML = `
+                <td><strong>${total["Secteur Enseignement"] || 'Total général'}</strong></td>
+                <td><strong>${total["Regime de gestion"] || ''}</strong></td>
+                <td><strong>${total["Nbre Ecoles"] || '0'}</strong></td>
+                <td class="${getPercentClass(total["Électricité"])}"><strong>${formatPercent(total["Électricité"])}</strong></td>
+                <td class="${getPercentClass(total["Clôture"])}"><strong>${formatPercent(total["Clôture"])}</strong></td>
+                <td class="${getPercentClass(total["Programme réfugié"])}"><strong>${formatPercent(total["Programme réfugié"])}</strong></td>
+                <td class="${getPercentClass(total["Programme officiel"])}"><strong>${formatPercent(total["Programme officiel"])}</strong></td>
+                <td class="${getPercentClass(total["COPA/COGES"])}"><strong>${formatPercent(total["COPA/COGES"])}</strong></td>
+                <td class="${getPercentClass(total["Air de Jeux"])}"><strong>${formatPercent(total["Air de Jeux"])}</strong></td>
+            `;
+            tbody.appendChild(totalRow);
+        }
+
+        table.style.display = 'table';
+    }
 
     function formatPercent(value) {
         if (value === null || value === undefined) return '0.00%';
